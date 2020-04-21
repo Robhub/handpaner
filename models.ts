@@ -77,7 +77,7 @@ export class Handpan {
     }
 
     genChords() {
-        const uniqueNotes = [...new Set([...this.absNotationClean.matchAll(/[A-G][♯♭]?/g)].map(m => m[0]))]
+        const uniqueNotes = [...new Set(Array.from(this.absNotationClean.matchAll(/[A-G][♯♭]?/g)).map(m => m[0]))]
         this.chords = genChords(uniqueNotes)
     }
 
