@@ -48,7 +48,7 @@ async function createApp (ssrContext) {
   // here we inject the router and store to all child components,
   // making them available everywhere as `this.$router` and `this.$store`.
   const app = {
-    head: {"titleTemplate":"Handpaner","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"}],"link":[],"style":[],"script":[]},
+    head: {"titleTemplate":"Handpaner","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"description","content":"Handpaner is a tool for Hang\u002FHandpan players and makers to help them finding scales and chords with musical harmony theory"},{"name":"og:title","content":"Handpaner : harmony for Hang\u002FHandpan players and makers"},{"name":"og:image","content":"https:\u002F\u002Fhandpaner.com\u002Fhandpaner.jpg"},{"name":"og:description","content":"Handpaner is a tool for Hang\u002FHandpan players and makers to help them finding scales and chords with musical harmony theory"},{"name":"twitter:image","content":"https:\u002F\u002Fhandpaner.com\u002Fhandpaner.jpg"},{"name":"twitter:description","content":"Handpaner is a tool for Hang\u002FHandpan players and makers to help them finding scales and chords with musical harmony theory"},{"name":"twitter:title","content":"Handpaner : harmony for Hang\u002FHandpan players and makers"}],"link":[],"style":[],"script":[]},
 
     router,
     nuxt: {
