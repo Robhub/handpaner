@@ -62,6 +62,7 @@ export const genPanScales = (handpan: Handpan): any[] => {
         const pan = new Handpan()
         pan.loadFromRelNotation(handpan.ding, panScale.val)
         return {
+            ding: handpan.ding,
             name: panScale.name,
             notesAll: pan.notesAll,
         }

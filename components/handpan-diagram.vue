@@ -4,8 +4,8 @@
             <div
                 class="ding"
                 v-bind:class="{
-                    highlight: isHighlighted(handpan.ding),
-                    isroot: handpan.ding === selectedChord.root,
+                    highlight: isHighlighted(handpan.ding, 3),
+                    isroot: isRoot(handpan.ding),
                 }"
             >
                 {{ handpan.ding }}<sub>3</sub>
@@ -14,8 +14,8 @@
                 <div class="note" v-for="note in handpan.notesTop" v-bind:key="note.key">
                     <span
                         v-bind:class="{
-                            highlight: isHighlighted(note.name),
-                            isroot: note.name === selectedChord.root,
+                            highlight: isHighlighted(note.name, note.octave),
+                            isroot: isRoot(note.name),
                         }"
                         >{{ note.name }}<sub>{{note.octave}}</sub></span
                     >
@@ -28,8 +28,8 @@
                 <div class="note" v-for="note in handpan.notesBottom" v-bind:key="note.key">
                     <span
                         v-bind:class="{
-                            highlight: isHighlighted(note.name),
-                            isroot: note.name === selectedChord.root,
+                            highlight: isHighlighted(note.name, note.octave),
+                            isroot: isRoot(note.name, note.octave),
                         }"
                         >{{ note.name }}<sub>{{note.octave}}</sub></span
                     >
@@ -47,6 +47,7 @@ export default Vue.extend({
     props: {
         handpan: Handpan,
         selectedChord: Object, // TODO typage chords
+        selectedPanScale: Object,
     },
     computed: {
         nbNotesTop(): any {
@@ -61,8 +62,13 @@ export default Vue.extend({
         }
     },
     methods: {
-        isHighlighted(noteName: any): any {
-            return this.selectedChord?.noteNames.indexOf(noteName) !== -1
+        isRoot(noteName: string): boolean {
+            return noteName === this.selectedChord?.root || noteName === this.selectedPanScale?.ding
+        },
+        isHighlighted(noteName: any, octave: number): boolean {
+            return this.selectedChord?.noteNames.indexOf(noteName) !== -1 || this.selectedPanScale?.notesAll?.some((n: any) => {
+                return n.octave === octave && n.name === noteName
+            })
         },
     }
 })

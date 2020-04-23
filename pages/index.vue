@@ -20,9 +20,18 @@
         <div>
             <h3>Handpan scales</h3>
             <div class="panscales">
-                <div v-for="panScale in displayedHandpan.panScales" v-bind:key="panScale.name" class="panscale">
-                    {{ panScale.name }}
-                </div>
+                <div
+                    v-for="panScale in displayedHandpan.panScales"
+                    v-bind:key="panScale.name"
+                    class="panscale"
+                    @click="selectPanScale(panScale)"
+                    @mouseover="selectPanScale(panScale)"
+                    @mouseout="unselectPanScale()"
+                    v-bind:class="{
+                        highlight: panScale.name === selectedPanScale.name,
+                    }"
+                    v-html="panScale.name + ' ' + panScale.ding"
+                ></div>
             </div>
         </div>
         <div>
@@ -45,7 +54,7 @@
         </div>
         <div>
             <h3>Diagram</h3>
-            <HandpanDiagram :handpan="displayedHandpan" :selectedChord="selectedChord" />
+            <HandpanDiagram :handpan="displayedHandpan" :selectedChord="selectedChord" :selectedPanScale="selectedPanScale"/>
         </div>
     </div>
 </template>
@@ -74,6 +83,7 @@ export default Vue.extend({
             scales: DATA.scales,
             notesAll: DATA.notesAll,
             chords: {},
+            selectedPanScale: {},
             selectedChord: {
                 label: '',
                 root: '',
@@ -95,7 +105,7 @@ export default Vue.extend({
         //handpan.loadFromAbsNotation('A/ C# D E F# G A B C#') // A mixo
         handpan.genChords()
         handpan.genPanScales()
-        
+
         this.handpans.push(handpan)
 
         this.displayHandpan()
@@ -123,6 +133,12 @@ export default Vue.extend({
             this.inputRelNotation = displayedHandpan.relNotation
             this.inputAbsNotation = displayedHandpan.absNotationUser
         },
+        selectPanScale(panScale: any) {
+            this.selectedPanScale = panScale
+        },
+        unselectPanScale() {
+            this.selectedPanScale = {}
+        },
         selectChord(chordType: any, chord: any) {
             this.selectedChord = {
                 label: chord.label,
@@ -147,7 +163,8 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.chord-type, .panscales {
+.chord-type,
+.panscales {
     display: flex;
     flex-wrap: wrap;
     margin-top: 8px;
@@ -168,7 +185,7 @@ export default Vue.extend({
     text-align: center;
     margin-left: 4px;
 }
-.chord.highlight {
+.chord.highlight, .panscale.highlight {
     background: #00ffcc80 !important;
 }
 </style>

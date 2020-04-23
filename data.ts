@@ -9,7 +9,7 @@ export const panScales = [
     { val: '1/ 3m 4 7m 1 3m 4 5 7m', name: 'Chao Guo 9' },
     { val: '1/ 3m 5 6m 7m 1 2 3m', name: 'Equinox 8' },
     { val: '1/ 3m 5 6m 7m 1 2 3m 5', name: 'Equinox 9' },
-    { val: '1/ 5 6m 7 1 2 3m 4 5', name: 'Hijaz (Sam) 9' },
+    { val: '1/ 5 6m 7 1 2 3m 4 5', name: 'Hijaz 9' },
     { val: '1/ 4 T 6 7m 1 2m 3m 4', name: 'Hijaz (Mercury) 9' },
     { val: '1/ 4 T 6 7m 1 2m 3m 3', name: 'Hijaz Kar (Mercury) 9' },
     { val: '1/ 5 6m 1 2 3m 4 5', name: 'Insen 8' },
@@ -34,7 +34,7 @@ export const panScales = [
     { val: '1/ 5 6 7m 1 2 3 5 6', name: 'Mixolydian 9' },
     { val: '1/ 3 4 5 6 1 3 4 5', name: 'Oxalis 9' },
     { val: '1/ 4 5 6m 1 3m 4 5 6m', name: 'Pygmy (Mercury) 9' },
-    { val: '1/ 2 3m 5 7m 1 2 3m 5', name: 'Pygmy (Sam) 9' },
+    { val: '1/ 2 3m 5 7m 1 2 3m 5', name: 'Pygmy 9' },
     { val: '1/ 5 7m 1 2m 3 4 5 7m', name: 'Raga Desh 9' }, // = Binnha
     { val: '1/ 4 5 6m 7 1 2 3m 5', name: 'Romanian Hijaz 9' },
     { val: '1/ 4 5 6m 1 2m 4 5 6m', name: 'Akebono 9'}, // = Goon Kali
@@ -50,6 +50,11 @@ export const scales = [
     { nom: 'Mixolydian', ecarts: ['1', '2', '3', '5', '6', '7m'] },
     { nom: 'Major', ecarts: ['1', '2', '3', '5', '6', '7'] },
 ]
+// https://musicstudent101.com/67-hexatonic-scales.html
+// https://www.scales-chords.com/scalefinder.php
+// https://scottdavies.net/chords_and_scales/music.html
+// https://www.jazz-guitar-licks.com/pages/guitar-scales-modes/pentatonic-scales/
+
 export const notesSharp = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B']
 export const notesFlat = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B']
 export const ecarts = ['1', '2m', '2', '3m', '3', '4', 'T', '5', '6m', '6', '7m', '7']
