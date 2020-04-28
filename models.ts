@@ -1,5 +1,5 @@
 import { notesAll } from './data'
-import { absToRel, genChords, genPanScales, relToAbsSharp } from './music'
+import { absToRel, genChords, genPanScales, relToAbsSharp, genScales } from './music'
 
 export interface NoteDefinition {
     key: number // 0
@@ -18,6 +18,7 @@ export class Handpan {
     notesAll: NoteDefinition[] = []
     chords: any[] = []
     panScales: any[] = []
+    scales: any[] = []
 
     loadFromRelNotation(ding: string, relNotation: string) {
         this.ding = ding
@@ -76,12 +77,19 @@ export class Handpan {
         this.notesBottom = this.notesAll.filter(note => note.isBottom)
     }
 
-    genChords() {
-        const uniqueNotes = [...new Set(Array.from(this.absNotationClean.matchAll(/[A-G][♯♭]?/g)).map(m => m[0]))]
-        this.chords = genChords(uniqueNotes)
+    getUniqueNotes() {
+        return [...new Set(Array.from(this.absNotationClean.matchAll(/[A-G][♯♭]?/g)).map(m => m[0]))]
     }
 
-    genPanScales() {
+    genChords(): void {
+        this.chords = genChords(this.getUniqueNotes())
+    }
+
+    genPanScales(): void {
         this.panScales = genPanScales(this)
+    }
+
+    genScales(): void {
+        this.scales = genScales(this)
     }
 }

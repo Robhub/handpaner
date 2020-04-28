@@ -15,9 +15,10 @@
                     <span
                         v-bind:class="{
                             highlight: isHighlighted(note.name, note.octave),
+                            special: isSpecial(note.name),
                             isroot: isRoot(note.name),
                         }"
-                        >{{ note.name }}<sub>{{note.octave}}</sub></span
+                        >{{ note.name }}<sub>{{ note.octave }}</sub></span
                     >
                 </div>
             </div>
@@ -29,9 +30,10 @@
                     <span
                         v-bind:class="{
                             highlight: isHighlighted(note.name, note.octave),
+                            special: isSpecial(note.name),
                             isroot: isRoot(note.name, note.octave),
                         }"
-                        >{{ note.name }}<sub>{{note.octave}}</sub></span
+                        >{{ note.name }}<sub>{{ note.octave }}</sub></span
                     >
                 </div>
             </div>
@@ -48,6 +50,7 @@ export default Vue.extend({
         handpan: Handpan,
         selectedChord: Object, // TODO typage chords
         selectedPanScale: Object,
+        selectedScale: Object,
     },
     computed: {
         nbNotesTop(): any {
@@ -59,18 +62,31 @@ export default Vue.extend({
             return {
                 '--nbnotes': this.handpan.notesBottom.length,
             }
-        }
+        },
     },
     methods: {
+        isSpecial(noteName: string): boolean {
+            return noteName === this.selectedScale?.special
+        },
         isRoot(noteName: string): boolean {
-            return noteName === this.selectedChord?.root || noteName === this.selectedPanScale?.ding
+            return (
+                noteName === this.selectedChord?.root || noteName === this.selectedPanScale?.ding || noteName === this.selectedScale?.tonic
+            )
         },
         isHighlighted(noteName: any, octave: number): boolean {
-            return this.selectedChord?.noteNames.indexOf(noteName) !== -1 || this.selectedPanScale?.notesAll?.some((n: any) => {
-                return n.octave === octave && n.name === noteName
-            })
+            let isInScale = false
+            if (this.selectedScale && this.selectedScale.noteNames) {
+                isInScale = this.selectedScale.noteNames.indexOf(noteName) !== -1
+            }
+            return (
+                this.selectedChord?.noteNames.indexOf(noteName) !== -1 ||
+                isInScale ||
+                this.selectedPanScale?.notesAll?.some((n: any) => {
+                    return n.octave === octave && n.name === noteName
+                })
+            )
         },
-    }
+    },
 })
 </script>
 
@@ -90,13 +106,15 @@ export default Vue.extend({
     background: #666;
 }
 
-.ding, .gu {
+.ding,
+.gu {
     position: absolute;
     left: 50%;
     top: 50%;
 }
 
-.ding, .gu,
+.ding,
+.gu,
 .note span {
     border: 1px solid #333;
     background: #ddd;
@@ -136,10 +154,12 @@ sub {
 .handpan-shape .isroot {
     background: #00ffcc80 !important;
 }
+.handpan-shape .special {
+    border-color: #ff00ff !important;
+}
 .bad .highlight {
     background: #ff000080 !important;
 }
-
 
 .note:nth-child(1) {
     transform: rotate(var(--deg));

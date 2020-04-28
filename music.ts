@@ -30,7 +30,7 @@ export function absToRel(ding: string, notesAsStringClean: string): string {
         relStr = relStr.replace(new RegExp(DATA.notesSharp[i] + '([^♯♭])', 'g'), relatives[i] + '$1')
         relStr = relStr.replace(new RegExp(DATA.notesFlat[i] + '([^♯♭])', 'g'), relatives[i] + '$1')
     }
-    return relStr
+    return relStr.trim()
 }
 
 export const genChords = (uniqueNotes: any): any => {
@@ -76,5 +76,27 @@ export const genPanScales = (handpan: Handpan): any[] => {
                 return panNote.octave === handpanNote.octave && panNote.name === sharpedNoteName
             })
         })
+    })
+}
+
+export const genScales = (handpan: Handpan): any[] => {
+    const uniqueNotes = handpan.getUniqueNotes()
+    return uniqueNotes.flatMap(tonic => {
+        const scalesWithAbs = DATA.scales.map(scale => {
+            return { ...scale, absSharp: scale.ecarts.map(ecart => relToAbsSharp(tonic, ecart)) }
+        })
+        return scalesWithAbs
+            .filter(scale => {
+                return scale.absSharp.every(note => {
+                    return note && uniqueNotes.indexOf(note) !== -1
+                })
+            })
+            .map(scale => ({
+                id: tonic + ' ' + scale.name,
+                tonic,
+                noteNames: scale.absSharp,
+                name: scale.name,
+                special: scale.special ? relToAbsSharp(tonic, scale.special) : null,
+            }))
     })
 }

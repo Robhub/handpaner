@@ -60,6 +60,9 @@ export const scales = [
 
     { name: 'Harmonic minor', ecarts: ['1', '2', '3m', '4', '5', '6m', '7'], special: '7'},
     { name: 'Phrygian dominant/Hijaz', ecarts: ['1', '2m', '3', '4', '5', '6m', '7m'], special: '3'},
+    // TODO : autres modes harmoniques mineur ?
+
+    // TODO : mélodique mineur ??
 
     // ==== HEXATONIC
     { name: 'Hexatonic major', ecarts: ['1', '2', '3', '4', '5', '6'] },
@@ -102,7 +105,7 @@ export const chords = [
         type: '7th',
         chords: [
             { val: '1 3 5 7m', name: 'Dominant seventh', abbr: '⁷' },
-            { val: '1 3 5 7M', name: 'Major seventh', abbr: 'M⁷' },
+            { val: '1 3 5 7', name: 'Major seventh', abbr: 'M⁷' },
             { val: '1 3m 5 7m', name: 'Minor seventh', abbr: 'm⁷' },
         ],
     },
