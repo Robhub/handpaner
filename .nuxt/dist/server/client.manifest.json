@@ -3,26 +3,23 @@
   "all": [
     "../server/index.spa.html",
     "../server/index.ssr.html",
-    "1c4dbbae6604a7d13751.js",
+    "1a521567dbd19b72d6e0.js",
     "332bcbed6bd3a6474faf.js",
-    "8e5225c7930a2b7a4024.js",
+    "70e148af0c1c7e83f247.js",
     "91100d58cae6686dbfcb.js",
     "LICENSES"
   ],
   "initial": [
-    "1c4dbbae6604a7d13751.js",
+    "1a521567dbd19b72d6e0.js",
     "91100d58cae6686dbfcb.js",
     "332bcbed6bd3a6474faf.js"
   ],
   "async": [
-    "8e5225c7930a2b7a4024.js"
+    "70e148af0c1c7e83f247.js"
   ],
   "modules": {
     "19103773": [
       3
-    ],
-    "19295148": [
-      4
     ],
     "30184438": [
       5
@@ -540,7 +537,7 @@
     "177a3036": [
       4
     ],
-    "7aa90a12": [
+    "fa95dc56": [
       4
     ],
     "224f550c": [
@@ -561,19 +558,22 @@
     "3dc9ce8c": [
       4
     ],
-    "cf0a204a": [
+    "588486b9": [
       4
     ],
-    "6b0f1af3": [
+    "2b18b1d1": [
       4
     ],
     "13ce4098": [
       4
     ],
-    "e576825c": [
+    "649b5398": [
       4
     ],
     "337170b4": [
+      4
+    ],
+    "5996e8aa": [
       4
     ],
     "3d37ad0e": [
@@ -623,9 +623,9 @@
     ]
   },
   "assetsMapping": {
-    "1c4dbbae6604a7d13751.js": "6fca0322",
+    "1a521567dbd19b72d6e0.js": "6fca0322",
     "332bcbed6bd3a6474faf.js": "1a3ae26b",
-    "8e5225c7930a2b7a4024.js": "3cdf16e1",
+    "70e148af0c1c7e83f247.js": "3cdf16e1",
     "91100d58cae6686dbfcb.js": "0859c165"
   }
 }

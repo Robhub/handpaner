@@ -2,20 +2,23 @@
     <div id="app">
         <h1>Handpaner</h1>
         <div>
-            <h3>Absolute scale</h3>
+            <h3>Absolute input</h3>
             Notes
             <br />
-            <input v-model="inputAbsNotation" size="40" @keyup="relChanged" />
+            <input v-model="inputAbsNotation" size="40" @keyup="absChanged" />
         </div>
         <div>
-            <h3>Relative scale</h3>
+            <h3>Relative input</h3>
             Ding
-            <select v-model="inputDing" disabled>
+            <select v-model="inputDing" @change="relChanged">
                 <option v-for="note in notesAll" v-bind:key="note">{{ note }}</option>
             </select>
-            <br />Relative scale:
-            <input v-model="inputRelNotation" size="40" readonly />
-            <br />
+            <br />Relative scale
+            <input v-model="inputRelNotation" size="40" @keyup="relChanged" />
+            <br />Handpan scale
+            <select v-model="inputPanscale" @change="panScaleChanged">
+                <option v-for="panScale in panScales" v-bind:key="panScale.name" :value="panScale">{{ panScale.name }}</option>
+            </select>
         </div>
         <div>
             <h3>Handpan scales</h3>
@@ -30,7 +33,7 @@
                     v-bind:class="{
                         highlight: panScale.name === selectedPanScale.name,
                     }"
-                    v-html="panScale.name + ' ' + panScale.ding"
+                    v-html="panScale.name"
                 ></div>
             </div>
         </div>
@@ -54,7 +57,7 @@
         </div>
         <div>
             <h3>Diagram</h3>
-            <HandpanDiagram :handpan="displayedHandpan" :selectedChord="selectedChord" :selectedPanScale="selectedPanScale"/>
+            <HandpanDiagram :handpan="displayedHandpan" :selectedChord="selectedChord" :selectedPanScale="selectedPanScale" />
         </div>
     </div>
 </template>
@@ -77,9 +80,11 @@ export default Vue.extend({
             handpans: <Handpan[]>[],
             inputAbsNotation: '',
             inputDing: '',
+            inputPanscale: <any>{},
             inputRelNotation: '',
             notes: <any[]>[],
             abs: '',
+            panScales: DATA.panScales,
             scales: DATA.scales,
             notesAll: DATA.notesAll,
             chords: {},
@@ -120,7 +125,21 @@ export default Vue.extend({
         //     const uniqueNotes = [...new Set([...this.abs.matchAll(/[A-G][♯♭]?/g)].map(m => m[0]))]
         //     this.chords = genChords(uniqueNotes)
         // },
+        panScaleChanged(): void {
+            this.inputRelNotation = this.inputPanscale.val
+            this.relChanged()
+        },
         relChanged(): void {
+            const displayedHandpan = this.handpans[this.displayedHandpanIndex]
+            displayedHandpan.loadFromRelNotation!(this.inputDing, this.inputRelNotation)
+            displayedHandpan.genChords()
+            displayedHandpan.genPanScales()
+
+            // si match identique, selectionner dans
+            //this.inputPanscale = 
+            this.displayHandpan()
+        },
+        absChanged(): void {
             const displayedHandpan = this.handpans[this.displayedHandpanIndex]
             displayedHandpan.loadFromAbsNotation!(this.inputAbsNotation)
             displayedHandpan.genChords()
@@ -185,7 +204,8 @@ export default Vue.extend({
     text-align: center;
     margin-left: 4px;
 }
-.chord.highlight, .panscale.highlight {
+.chord.highlight,
+.panscale.highlight {
     background: #00ffcc80 !important;
 }
 </style>

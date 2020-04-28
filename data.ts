@@ -37,18 +37,49 @@ export const panScales = [
     { val: '1/ 2 3m 5 7m 1 2 3m 5', name: 'Pygmy 9' },
     { val: '1/ 5 7m 1 2m 3 4 5 7m', name: 'Raga Desh 9' }, // = Binnha
     { val: '1/ 4 5 6m 7 1 2 3m 5', name: 'Romanian Hijaz 9' },
-    { val: '1/ 4 5 6m 1 2m 4 5 6m', name: 'Akebono 9'}, // = Goon Kali
-    { val: '1/ 5 7 1 2 3 4 5 1', name: 'Ysha Savita 9'},
-    { val: '1/ 5 6m 1 3 4 5 6m 1', name: 'Onoleo 9'},
-    { val: '1/ 5 7 1 2 3 T 5 7', name: 'Lydian'},
-
+    { val: '1/ 4 5 6m 1 2m 4 5 6m', name: 'Akebono 9' }, // = Goon Kali
+    { val: '1/ 5 7 1 2 3 4 5 1', name: 'Ysha Savita 9' },
+    { val: '1/ 5 6m 1 3 4 5 6m 1', name: 'Onoleo 9' },
+    { val: '1/ 5 7 1 2 3 T 5 7', name: 'Lydian' },
 ]
 export const scales = [
-    { nom: 'Phrygian', ecarts: ['1', '2m', '3m', '5', '6m', '7m'] },
-    { nom: 'Minor/Aeolian', ecarts: ['1', '2', '3m', '5', '6m', '7m'] },
-    { nom: 'Dorian', ecarts: ['1', '2', '3m', '5', '6', '7m'] },
-    { nom: 'Mixolydian', ecarts: ['1', '2', '3', '5', '6', '7m'] },
-    { nom: 'Major', ecarts: ['1', '2', '3', '5', '6', '7'] },
+    // ==== OCTATONIC
+    { name: 'Bebop major', ecarts: ['1', '2', '3', '4', '5', '6m', '6', '7'], special: '6m'},
+    { name: 'Bebop dorian', ecarts: ['1', '2', '3m', '3', '4', '5', '6', '7m'], special: '3'},
+    { name: 'Bebop dominant', ecarts: ['1', '2', '3', '4', '5', '6', '7m', '7'], special: '7'},
+    // TODO : les autres Bebop
+
+    // ==== HEPTATONIC
+    { name: 'Major/Ionian', ecarts: ['1', '2', '3', '4', '5', '6', '7'] },
+    { name: 'Dorian', ecarts: ['1', '2', '3m', '4', '5', '6', '7m'], special: '6' },
+    { name: 'Phrygian', ecarts: ['1', '2m', '3m', '4', '5', '6m', '7m'], special: '2m' },
+    { name: 'Lydian', ecarts: ['1', '2', '3', 'T', '5', '6', '7'], special: 'T' },
+    { name: 'Mixolydian', ecarts: ['1', '2', '3', '4', '5', '6', '7m'], special: '7m' },
+    { name: 'Minor/Aeolian', ecarts: ['1', '2', '3m', '4', '5', '6m', '7m'] },
+    { name: 'Locrian', ecarts: ['1', '2m', '3m', '4', 'T', '6m', '7m'] },
+
+    { name: 'Harmonic minor', ecarts: ['1', '2', '3m', '4', '5', '6m', '7'], special: '7'},
+    { name: 'Phrygian dominant/Hijaz', ecarts: ['1', '2m', '3', '4', '5', '6m', '7m'], special: '3'},
+
+    // ==== HEXATONIC
+    { name: 'Hexatonic major', ecarts: ['1', '2', '3', '4', '5', '6'] },
+    { name: 'Hexatonic major Blues', ecarts: ['1', '2', '3m', '3', '5', '6'], special: '3m' },
+    { name: 'Hexatonic minor', ecarts: ['1', '2', '3m', '4', '5', '7m'] },
+    { name: 'Hexatonic minor Blues T', ecarts: ['1', '3m', '4', 'T', '5', '7m'], special: 'T' },
+    { name: 'Hexatonic minor Blues 3', ecarts: ['1', '3m', '3', '4', '5', '7m'], special: '3' },
+
+    // ==== PENTATONIC
+    { name: 'Pentatonic major', ecarts: ['1', '2', '3', '5', '6'] },
+    { name: 'Pentatonic minor', ecarts: ['1', '3m', '4', '5', '7m'] },
+    { name: 'Hirajoshi', ecarts: ['1', '2', '3m', '5', '6m'] },
+    { name: 'Iwato', ecarts: ['1', '2m', '4', 'T', '7m'] },
+    { name: 'Insen', ecarts: ['1', '2m', '4', '5', '7m'] },
+    { name: 'Yo', ecarts: ['1', '2', '4', '5', '6'] },
+
+    // Dorian pentatonic
+    { name: 'Kumoï', ecarts: ['1', '2', '3m', '5', '6'] },
+    { name: 'Pygmy', ecarts: ['1', '2', '3m', '5', '7m'] },
+
 ]
 // https://musicstudent101.com/67-hexatonic-scales.html
 // https://www.scales-chords.com/scalefinder.php
@@ -77,9 +108,7 @@ export const chords = [
     },
     {
         type: 'sus',
-        chords: [
-            { val: '1 4 5', name: 'Suspended 4', abbr: '<sup>sus4</sup>' },
-        ],
+        chords: [{ val: '1 4 5', name: 'Suspended 4', abbr: '<sup>sus4</sup>' }],
     },
     {
         type: 'bad',

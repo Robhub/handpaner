@@ -30,8 +30,8 @@ export class Handpan {
         const absNotes = relNotes.map(relNote => {
             return relToAbsSharp(this.ding, relNote)
         })
-        this.absNotationClean = absNotes.join(' ')
-        this.absNotationUser = absNotes.join(' ').replace(/♯/g, '#').replace(/♭/g, 'b')
+        this.absNotationClean = this.ding + '/ ' + absNotes.join(' ')
+        this.absNotationUser = this.ding + '/ ' + absNotes.join(' ').replace(/♯/g, '#').replace(/♭/g, 'b')
         this.genNotes(absNotes as string[])
     }
 
