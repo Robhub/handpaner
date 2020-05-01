@@ -15,12 +15,17 @@ h3 {
 }
 
 #app {
-    max-width: 1000px;
     margin: auto;
     background: white;
-    padding: 16px;
     border-radius: 3px;
+    padding: 8px;
     --deg: 90deg;
     --nbnotes: 6;
+}
+@media screen and (min-width: 500px) {
+    #app {
+        max-width: 1000px;
+        padding: 16px;
+    }
 }
 </style>

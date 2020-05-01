@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <h1>Handpaner</h1>
+        <img src="../static/handpaner.png">
         <div>
             <h3>Absolute input</h3>
             Notes
@@ -21,64 +21,72 @@
             </select>
         </div>
         <div v-if="displayedHandpan">
-            <div>
-                <h3>Handpan scales</h3>
-                <div class="panscales">
-                    <div
-                        v-for="panScale in displayedHandpan.panScales"
-                        v-bind:key="panScale.name"
-                        class="panscale"
-                        @click="selectPanScale(panScale)"
-                        @mouseover="selectPanScale(panScale)"
-                        @mouseout="unselectPanScale()"
-                        v-bind:class="{
-                            highlight: panScale.name === selectedPanScale.name,
-                        }"
-                        v-html="panScale.name"
-                    ></div>
-                    <div v-if="!displayedHandpan.panScales.length">
-                        No handpan scale found.
+            <div class="zone">
+                <div class="tabs">
+                    <div class="tab" @click="displayMode = 'panScales'" v-bind:class="{ selected: displayMode === 'panScales' }">
+                        Handpan scales
+                    </div>
+                    <div class="tab" @click="displayMode = 'scales'" v-bind:class="{ selected: displayMode === 'scales' }">Scales</div>
+                    <div class="tab" @click="displayMode = 'chords'" v-bind:class="{ selected: displayMode === 'chords' }">Chords</div>
+                </div>
+                <div class="tab-content" v-if="displayMode === 'panScales'">
+                    <div class="panscales">
+                        <div
+                            v-for="panScale in displayedHandpan.panScales"
+                            v-bind:key="panScale.name"
+                            class="panscale"
+                            @click="selectPanScale(panScale)"
+                            @mouseover="selectPanScale(panScale)"
+                            @mouseout="unselectPanScale()"
+                            v-bind:class="{
+                                highlight: panScale.name === selectedPanScale.name,
+                            }"
+                            v-html="panScale.name"
+                        ></div>
+                        <div v-if="!displayedHandpan.panScales.length">
+                            Nothing…
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content" v-if="displayMode === 'scales'">
+                    <div class="scales">
+                        <div
+                            class="scale"
+                            v-for="scale in displayedHandpan.scales"
+                            v-bind:key="scale.id"
+                            @click="selectScale(scale)"
+                            @mouseover="selectScale(scale)"
+                            @mouseout="unselectScale()"
+                            v-bind:class="{
+                                highlight: scale.id === selectedScale.id,
+                            }"
+                        >
+                            {{ scale.tonic }} {{ scale.name }}
+                        </div>
+                        <div v-if="!displayedHandpan.scales.length">
+                            Nothing…
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content" v-if="displayMode === 'chords'">
+                    <div v-for="chord in displayedHandpan.chords" class="chord-type" v-bind:key="chord.type">
+                        <div class="chord-type-name">{{ chord.type }}</div>
+                        <div
+                            class="chord"
+                            v-for="chordd in chord.chords"
+                            v-bind:key="chordd.label"
+                            @click="selectChord(chord, chordd)"
+                            @mouseover="selectChord(chord, chordd)"
+                            @mouseout="unselectChord()"
+                            v-bind:class="{
+                                highlight: chordd.label === selectedChord.label,
+                            }"
+                            v-html="chordd.label"
+                        ></div>
                     </div>
                 </div>
             </div>
-            <div>
-                <h3>Scales</h3>
-                <div class="scales">
-                    <div
-                        class="scale"
-                        v-for="scale in displayedHandpan.scales"
-                        v-bind:key="scale.id"
-                        @click="selectScale(scale)"
-                        @mouseover="selectScale(scale)"
-                        @mouseout="unselectScale()"
-                        v-bind:class="{
-                            highlight: scale.id === selectedScale.id,
-                        }"
-                    >
-                        {{ scale.tonic }} {{ scale.name }}
-                    </div>
-                </div>
-            </div>
-            <div>
-                <h3>Chords</h3>
-                <div v-for="chord in displayedHandpan.chords" class="chord-type" v-bind:key="chord.type">
-                    <div class="chord-type-name">{{ chord.type }}</div>
-                    <div
-                        class="chord"
-                        v-for="chordd in chord.chords"
-                        v-bind:key="chordd.label"
-                        @click="selectChord(chord, chordd)"
-                        @mouseover="selectChord(chord, chordd)"
-                        @mouseout="unselectChord()"
-                        v-bind:class="{
-                            highlight: chordd.label === selectedChord.label,
-                        }"
-                        v-html="chordd.label"
-                    ></div>
-                </div>
-            </div>
-            <div>
-                <h3>Diagram</h3>
+            <div class="zone">
                 <HandpanDiagram
                     :handpan="displayedHandpan"
                     :selectedChord="selectedChord"
@@ -104,6 +112,7 @@ export default Vue.extend({
     },
     data() {
         return {
+            displayMode: 'panScales',
             displayedHandpanIndex: 0,
             handpans: <Handpan[]>[],
             inputAbsNotation: '',
@@ -224,7 +233,7 @@ export default Vue.extend({
 .scales {
     display: flex;
     flex-wrap: wrap;
-    margin-top: 8px;
+    margin-top: 4px;
 }
 
 .chord-type-name {
@@ -243,9 +252,44 @@ export default Vue.extend({
     text-align: center;
     margin-left: 4px;
 }
+.panscale, .scale {
+    margin-top: 4px;
+}
 .chord.highlight,
 .panscale.highlight,
 .scale.highlight {
     background: #00ffcc80 !important;
+}
+
+.tabs {
+    display: flex;
+    align-items: center;
+    margin-top: -1px;
+    position: relative;
+}
+.tab {
+    width: 150px;
+    padding: 8px 0;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    background: white;
+    border-bottom: 1px solid #666;
+    margin-bottom: -1px;
+}
+.tab.selected {
+    border: 1px solid #666;
+    border-bottom: none;
+}
+.tab:not(.selected):hover {
+    color: #0cc;
+}
+.tab-content {
+    border: 1px solid #666;
+    min-height: 130px;
+    padding: 8px;
+}
+.zone {
+    margin-top: 16px;
 }
 </style>
