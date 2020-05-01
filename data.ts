@@ -17,6 +17,7 @@ export const panScales = [
     { val: '1/ 5 6m 7m 1 2 3m 5 7m', name: 'Integral (Mercury) 9' },
     { val: '1/ 5 6m 7m 1 2 3m 5 6m', name: 'Integral (Sam) 9' },
     { val: '1/ 4 5 6 7m 1 2 3m 4', name: 'Jibuk 9' },
+    { val: '1/ 5 6 1 2 3 4 5 1', name: 'Anahata' },
     { val: '1/ 4 5 6m 1 2 3m 4', name: 'Minor 8' }, // Pas de 7m ??
     { val: '1/ 4 5 6m 1 2 3m 4 5', name: 'Minor 9' }, // Pas de 7m ??
     { val: '1/ 5 6m 7m 1 2 3m 4', name: 'Kurd 8' }, // = Annaziska
@@ -47,6 +48,9 @@ export const scales = [
     { name: 'Bebop major', ecarts: ['1', '2', '3', '4', '5', '6m', '6', '7'], special: '6m'},
     { name: 'Bebop dorian', ecarts: ['1', '2', '3m', '3', '4', '5', '6', '7m'], special: '3'},
     { name: 'Bebop dominant', ecarts: ['1', '2', '3', '4', '5', '6', '7m', '7'], special: '7'},
+    { name: 'Bebop mindor??', ecarts: ['1', '2', '3m', '4', '5', '6m', '6', '7m']},
+    { name: 'Bebop phrygian dominant', ecarts: ['1', '2m', '3', '4', '5', '6m', '7m', '7']},
+    { name: 'Bebop locrian', ecarts: ['1', '2m', '3m', '4', 'T', '5', '6m', '7m'], special: '5'},
     // TODO : les autres Bebop
 
     // ==== HEPTATONIC

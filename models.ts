@@ -32,7 +32,7 @@ export class Handpan {
             return relToAbsSharp(this.ding, relNote)
         })
         this.absNotationClean = this.ding + '/ ' + absNotes.join(' ')
-        this.absNotationUser = this.ding + '/ ' + absNotes.join(' ').replace(/♯/g, '#').replace(/♭/g, 'b')
+        this.absNotationUser = this.ding.replace(/♯/g, '#').replace(/♭/g, 'b') + '/ ' + absNotes.join(' ').replace(/♯/g, '#').replace(/♭/g, 'b')
         this.genNotes(absNotes as string[])
     }
 

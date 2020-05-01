@@ -131,7 +131,7 @@ export default Vue.extend({
         setTimeout(() => {
             const handpan = new Handpan()
             if (this.$nuxt.$route.hash) {
-                handpan.loadFromAbsNotation(this.$nuxt.$route.hash.substr(1).replace(/\%20/g, ' '))
+                handpan.loadFromAbsNotation(this.$nuxt.$route.hash.substr(1).replace(/-/g, ' '))
                 this.inputDing = handpan.ding
                 this.inputAbsNotation = handpan.absNotationUser
                 this.inputRelNotation = handpan.relNotation
@@ -156,15 +156,15 @@ export default Vue.extend({
         },
         relChanged(): void {
             const displayedHandpan = this.handpans[this.displayedHandpanIndex]
-            displayedHandpan.loadFromRelNotation!(this.inputDing.replace(/♯/g, '#').replace(/♭/g, 'b'), this.inputRelNotation)
+            displayedHandpan.loadFromRelNotation!(this.inputDing, this.inputRelNotation)
             this.panChanged()
-            this.$nuxt.$router.replace('#' + displayedHandpan.absNotationUser)
+            this.$nuxt.$router.replace('#' + displayedHandpan.absNotationUser.replace(/ /g, '-'))
         },
         absChanged(): void {
             const displayedHandpan = this.handpans[this.displayedHandpanIndex]
             displayedHandpan.loadFromAbsNotation!(this.inputAbsNotation)
             this.panChanged()
-            this.$nuxt.$router.replace('#' + displayedHandpan.absNotationUser)
+            this.$nuxt.$router.replace('#' + displayedHandpan.absNotationUser.replace(/ /g, '-'))
         },
         panChanged(): void {
             const displayedHandpan = this.handpans[this.displayedHandpanIndex]
