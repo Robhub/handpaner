@@ -45,6 +45,7 @@
 import Vue from 'vue'
 import { Chord } from '../models/chord'
 import { Handpan } from '../models'
+import { alternateFlatSharp } from '../music'
 export default Vue.extend({
     props: {
         handpan: Handpan,
@@ -66,25 +67,33 @@ export default Vue.extend({
     },
     methods: {
         isSpecial(noteName: string): boolean {
-            return noteName === this.selectedScale?.special
+            const otherNote = alternateFlatSharp(noteName)
+            return noteName === this.selectedScale?.special || otherNote === this.selectedScale?.special
         },
         isRoot(noteName: string): boolean {
-            return (
-                noteName === this.selectedChord?.root || noteName === this.selectedPanScale?.ding || noteName === this.selectedScale?.tonic
-            )
+            const otherNote = alternateFlatSharp(noteName)
+            const isRoot = noteName === this.selectedChord?.root || otherNote === this.selectedChord?.root
+            const isTonic = noteName === this.selectedScale?.tonic || otherNote === this.selectedScale?.tonic
+            const isDing = noteName === this.selectedPanScale?.ding || otherNote === this.selectedPanScale?.ding
+            return isRoot || isTonic || isDing
         },
         isHighlighted(noteName: any, octave: number): boolean {
+            const otherNote = alternateFlatSharp(noteName)
             let isInScale = false
-            if (this.selectedScale && this.selectedScale.noteNames) {
-                isInScale = this.selectedScale.noteNames.indexOf(noteName) !== -1
+            let isInPanScale = false
+            let isInChord = false
+            if (this.selectedChord) {
+                isInChord = this.selectedChord.noteNames.indexOf(noteName) !== -1 || this.selectedChord.noteNames.indexOf(otherNote) !== -1
             }
-            return (
-                this.selectedChord?.noteNames.indexOf(noteName) !== -1 ||
-                isInScale ||
-                this.selectedPanScale?.notesAll?.some((n: any) => {
-                    return n.octave === octave && n.name === noteName
+            if (this.selectedScale && this.selectedScale.noteNames) {
+                isInScale = this.selectedScale.noteNames.indexOf(noteName) !== -1 || this.selectedScale.noteNames.indexOf(otherNote) !== -1
+            }
+            if (this.selectedPanScale && this.selectedPanScale.notesAll) {
+                isInPanScale = this.selectedPanScale.notesAll.some((n: any) => {
+                    return n.octave === octave && (n.name === noteName || n.name === otherNote)
                 })
-            )
+            }
+            return isInChord || isInScale || isInPanScale
         },
     },
 })
@@ -123,7 +132,7 @@ export default Vue.extend({
     justify-content: center;
     width: 40px;
     height: 40px;
-    border-radius: 40px;
+    border-radius: 999px;
     margin-left: -20px;
     margin-top: -20px;
 }

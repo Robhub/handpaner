@@ -1,24 +1,42 @@
 <template>
     <div id="app">
-        <img src="../static/handpaner.png">
-        <div>
-            <h3>Absolute input</h3>
-            Notes
-            <br />
-            <input v-model="inputAbsNotation" size="40" @keyup="absChanged" />
+        <div class="config">
+            <div class="toggle">☰</div>
         </div>
-        <div>
-            <h3>Relative input</h3>
-            Ding
-            <select v-model="inputDing" @change="relChanged">
-                <option v-for="note in notesAll" v-bind:key="note">{{ note }}</option>
-            </select>
-            <br />Relative scale
-            <input v-model="inputRelNotation" size="40" @keyup="relChanged" />
-            <br />Handpan scale
-            <select v-model="inputPanscale" @change="panScaleChanged">
-                <option v-for="panScale in panScales" v-bind:key="panScale.name" :value="panScale">{{ panScale.name }}</option>
-            </select>
+        <img src="../static/handpaner.png" />
+        <div class="tabs">
+            <div
+                class="tab"
+                v-for="(handpan, index) in handpans"
+                v-bind:key="handpan.id"
+                @click="selectHandpan(index)"
+                v-bind:class="{ selected: displayedHandpanIndex === index }"
+            >
+                Pan n°{{ index + 1 }}
+                <span class="delete" @click="removeHandpan($event, index)" v-if="handpans.length > 1">×</span>
+            </div>
+            <div class="tab" @click="addHandpan()">+</div>
+        </div>
+        <div class="tab-content">
+            <div>
+                <h3>Absolute input</h3>
+                Notes
+                <br />
+                <input v-model="inputAbsNotation" size="40" @keyup="absChanged" />
+            </div>
+            <div>
+                <h3>Relative input</h3>
+                Ding
+                <select v-model="inputDing" @change="relChanged">
+                    <option v-for="note in notesAll" v-bind:key="note">{{ note }}</option>
+                </select>
+                <br />Relative scale
+                <input v-model="inputRelNotation" size="40" @keyup="relChanged" />
+                <br />Handpan scale
+                <select v-model="inputPanscale" @change="panScaleChanged">
+                    <option v-for="panScale in panScales" v-bind:key="panScale.name" :value="panScale">{{ panScale.name }}</option>
+                </select>
+            </div>
         </div>
         <div v-if="displayedHandpan">
             <div class="zone">
@@ -32,18 +50,19 @@
                 <div class="tab-content" v-if="displayMode === 'panScales'">
                     <div class="panscales">
                         <div
-                            v-for="panScale in displayedHandpan.panScales"
-                            v-bind:key="panScale.name"
+                            v-for="panScale in displayedPanScales"
+                            v-bind:key="panScale.ding + panScale.name"
                             class="panscale"
                             @click="selectPanScale(panScale)"
                             @mouseover="selectPanScale(panScale)"
                             @mouseout="unselectPanScale()"
                             v-bind:class="{
-                                highlight: panScale.name === selectedPanScale.name,
+                                highlight: panScale.ding === selectedPanScale.ding && panScale.name === selectedPanScale.name,
                             }"
-                            v-html="panScale.name"
-                        ></div>
-                        <div v-if="!displayedHandpan.panScales.length">
+                        >
+                            <span v-if="handpans.length > 1">{{ panScale.ding }}</span> {{ panScale.name }}
+                        </div>
+                        <div v-if="!displayedPanScales.length">
                             Nothing…
                         </div>
                     </div>
@@ -52,7 +71,7 @@
                     <div class="scales">
                         <div
                             class="scale"
-                            v-for="scale in displayedHandpan.scales"
+                            v-for="scale in displayedScalesSorted"
                             v-bind:key="scale.id"
                             @click="selectScale(scale)"
                             @mouseover="selectScale(scale)"
@@ -63,13 +82,13 @@
                         >
                             {{ scale.tonic }} {{ scale.name }}
                         </div>
-                        <div v-if="!displayedHandpan.scales.length">
+                        <div v-if="!displayedScales.length">
                             Nothing…
                         </div>
                     </div>
                 </div>
                 <div class="tab-content" v-if="displayMode === 'chords'">
-                    <div v-for="chord in displayedHandpan.chords" class="chord-type" v-bind:key="chord.type">
+                    <div v-for="chord in displayedChords" class="chord-type" v-bind:key="chord.type">
                         <div class="chord-type-name">{{ chord.type }}</div>
                         <div
                             class="chord"
@@ -86,9 +105,11 @@
                     </div>
                 </div>
             </div>
-            <div class="zone">
+            <div class="zone handpans">
                 <HandpanDiagram
-                    :handpan="displayedHandpan"
+                    v-for="handpan in handpans"
+                    v-bind:key="handpan.id"
+                    :handpan="handpan"
                     :selectedChord="selectedChord"
                     :selectedPanScale="selectedPanScale"
                     :selectedScale="selectedScale"
@@ -103,7 +124,7 @@ import Vue from 'vue'
 import * as DATA from '../data'
 import { Chord } from '../models/chord'
 import { Handpan } from '../models'
-import { genChords, relToAbsSharp, relToAbsFlat } from '../music'
+import { genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScales } from '../music'
 import { default as HandpanDiagram } from '../components/handpan-diagram.vue'
 
 export default Vue.extend({
@@ -134,56 +155,130 @@ export default Vue.extend({
                 noteNames: <any[]>[],
             },
             selectedChordNoteNames: [],
+            displayedScales: <any>[],
+            displayedChords: <any>[],
+            displayedPanScales: <any>[],
+            ignoreNextHashChange: false,
         }
     },
     created() {
         setTimeout(() => {
-            const handpan = new Handpan()
             if (this.$nuxt.$route.hash) {
-                handpan.loadFromAbsNotation(this.$nuxt.$route.hash.substr(1).replace(/-/g, ' '))
-                this.inputDing = handpan.ding
-                this.inputAbsNotation = handpan.absNotationUser
-                this.inputRelNotation = handpan.relNotation
-                this.handpans.push(handpan)
-                this.panChanged()
+                this.loadHandpansFromHash()
             } else {
+                let handpan = new Handpan()
                 handpan.loadFromAbsNotation('D/ A C D E F G A C')
                 this.handpans.push(handpan)
+                this.genScalesAndChords(handpan)
+                // handpan = new Handpan()
+                // handpan.loadFromAbsNotation('C#/ G# A B C# D# E F# G#')
+                // this.handpans.push(handpan)
+                // this.genScalesAndChords(handpan)
                 this.panChanged()
             }
         }, 1)
     },
     computed: {
+        displayedScalesSorted(): any[] {
+            return this.displayedScales.sort((a: any, b: any) => b.totalNotes - a.totalNotes)
+        },
         displayedHandpan(): Handpan {
             return this.handpans[this.displayedHandpanIndex]
         },
     },
+    watch: {
+        $route() {
+            if (this.ignoreNextHashChange) {
+                this.ignoreNextHashChange = false
+                return
+            }
+            this.handpans = []
+            this.loadHandpansFromHash()
+        },
+    },
     methods: {
+        loadHandpansFromHash(): void {
+            const panStrings = this.$nuxt.$route.hash.substr(1).split('_')
+            let handpan: Handpan
+            panStrings.forEach(panString => {
+                handpan = new Handpan()
+                handpan.loadFromAbsNotation(panString.replace(/-/g, ' '))
+                // this.inputDing = handpan.ding
+                // this.inputAbsNotation = handpan.absNotationUser
+                // this.inputRelNotation = handpan.relNotation
+                this.handpans.push(handpan)
+                this.panChanged()
+            })
+        },
+        removeHandpan(event: Event, index: number): void {
+            event.stopPropagation() // On ne veut pas clic sur le tab qui va être supprimé
+            this.handpans.splice(index, 1)
+            if (this.displayedHandpanIndex >= this.handpans.length) {
+                this.selectHandpan(this.handpans.length - 1)
+            }
+            this.genScalesAndChordsAllPans()
+            this.displayHandpan()
+        },
+        addHandpan(): void {
+            const handpan = new Handpan()
+            handpan.loadFromAbsNotation('C/ C')
+            this.handpans.push(handpan)
+            this.selectHandpan(this.handpans.length - 1)
+            this.genScalesAndChordsAllPans()
+        },
         panScaleChanged(): void {
             this.inputRelNotation = this.inputPanscale.val
             this.relChanged()
         },
         relChanged(): void {
-            const displayedHandpan = this.handpans[this.displayedHandpanIndex]
-            displayedHandpan.loadFromRelNotation!(this.inputDing, this.inputRelNotation)
-            this.panChanged()
-            this.$nuxt.$router.replace('#' + displayedHandpan.absNotationUser.replace(/ /g, '-'))
+            try {
+                this.displayedHandpan.loadFromRelNotation(this.inputDing, this.inputRelNotation)
+                this.panChanged()
+                this.updateHash()
+            } catch (err) {
+                console.error('Cannot load handpan', err)
+            }
         },
         absChanged(): void {
-            const displayedHandpan = this.handpans[this.displayedHandpanIndex]
-            displayedHandpan.loadFromAbsNotation!(this.inputAbsNotation)
-            this.panChanged()
-            this.$nuxt.$router.replace('#' + displayedHandpan.absNotationUser.replace(/ /g, '-'))
+            try {
+                this.displayedHandpan.loadFromAbsNotation(this.inputAbsNotation)
+                this.panChanged()
+                this.updateHash()
+            } catch (err) {
+                console.error('Cannot load handpan', err)
+            }
+        },
+        updateHash(): void {
+            const currentHash = this.$nuxt.$route.hash
+            const newHash = '#' + this.handpans.map(handpan => handpan.absNotationUser.replace(/ /g, '-')).join('_')
+            if (newHash !== currentHash) {
+                this.ignoreNextHashChange = true
+                this.$nuxt.$router.replace(newHash)
+            }
         },
         panChanged(): void {
-            const displayedHandpan = this.handpans[this.displayedHandpanIndex]
             const found = DATA.panScales.find(panScale => {
-                return displayedHandpan.relNotation.trim() === panScale.val.trim()
+                return this.displayedHandpan.relNotation.trim() === panScale.val.trim()
             })
             this.inputPanscale = found ? found : null
-            displayedHandpan.genChords()
-            displayedHandpan.genPanScales()
-            displayedHandpan.genScales()
+            this.genScalesAndChords(this.displayedHandpan)
+            this.displayHandpan()
+            this.genScalesAndChordsAllPans()
+        },
+        genScalesAndChordsAllPans() {
+            const uniqueNotesAllPans = [...new Set(Array.from(this.handpans.flatMap(handpan => handpan.getUniqueNotes())))]
+            this.displayedScales = genScales(this.handpans)
+            this.displayedPanScales = genPanScales(this.handpans)
+            this.displayedChords = genChords(uniqueNotesAllPans)
+        },
+        genScalesAndChords(handpan: Handpan) {
+            // Est-ce encore utile ?
+            handpan.genChords()
+            handpan.genPanScales()
+            handpan.genScales()
+        },
+        selectHandpan(index: number): void {
+            this.displayedHandpanIndex = index
             this.displayHandpan()
         },
         displayHandpan(): void {
@@ -228,6 +323,9 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+#app {
+    position: relative;
+}
 .chord-type,
 .panscales,
 .scales {
@@ -252,7 +350,8 @@ export default Vue.extend({
     text-align: center;
     margin-left: 4px;
 }
-.panscale, .scale {
+.panscale,
+.scale {
     margin-top: 4px;
 }
 .chord.highlight,
@@ -268,6 +367,7 @@ export default Vue.extend({
     position: relative;
 }
 .tab {
+    position: relative;
     width: 150px;
     padding: 8px 0;
     font-weight: bold;
@@ -291,5 +391,29 @@ export default Vue.extend({
 }
 .zone {
     margin-top: 16px;
+}
+.handpans {
+    display: flex;
+    flex-wrap: wrap;
+}
+.delete {
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    cursor: pointer;
+    padding: 6px;
+    margin-left: 16px;
+}
+.delete:hover {
+    color: red;
+}
+.config {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: none; /* TODO */
+}
+.toggle {
+    font-size: 32px;
 }
 </style>

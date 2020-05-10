@@ -1,4 +1,6 @@
 export const notesAll = ['C', 'C♯', 'D♭', 'D', 'D♯', 'E♭', 'E', 'F', 'F♯', 'G♭', 'G', 'G♯', 'A♭', 'A', 'A♯', 'B♭', 'B']
+export const notesSharp = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B']
+export const notesFlat = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B']
 
 // TODO : Générer les versions avec différent nombre de notes automatiquement..
 export const panScales = [
@@ -9,6 +11,7 @@ export const panScales = [
     { val: '1/ 3m 4 7m 1 3m 4 5 7m', name: 'Chao Guo 9' },
     { val: '1/ 3m 5 6m 7m 1 2 3m', name: 'Equinox 8' },
     { val: '1/ 3m 5 6m 7m 1 2 3m 5', name: 'Equinox 9' },
+    { val: '1/ 4 5 6m 7m 1 2m 3 4 5', name: 'Harmonic minor 9' },
     { val: '1/ 5 6m 7 1 2 3m 4 5', name: 'Hijaz 9' },
     { val: '1/ 4 T 6 7m 1 2m 3m 4', name: 'Hijaz (Mercury) 9' },
     { val: '1/ 4 T 6 7m 1 2m 3m 3', name: 'Hijaz Kar (Mercury) 9' },
@@ -48,7 +51,7 @@ export const scales = [
     { name: 'Bebop major', ecarts: ['1', '2', '3', '4', '5', '6m', '6', '7'], special: '6m'},
     { name: 'Bebop dorian', ecarts: ['1', '2', '3m', '3', '4', '5', '6', '7m'], special: '3'},
     { name: 'Bebop dominant', ecarts: ['1', '2', '3', '4', '5', '6', '7m', '7'], special: '7'},
-    { name: 'Bebop mindor??', ecarts: ['1', '2', '3m', '4', '5', '6m', '6', '7m']},
+    // { name: 'Bebop mindor??', ecarts: ['1', '2', '3m', '4', '5', '6m', '6', '7m']},
     { name: 'Bebop phrygian dominant', ecarts: ['1', '2m', '3', '4', '5', '6m', '7m', '7']},
     { name: 'Bebop locrian', ecarts: ['1', '2m', '3m', '4', 'T', '5', '6m', '7m'], special: '5'},
     // TODO : les autres Bebop
@@ -67,6 +70,7 @@ export const scales = [
     // TODO : autres modes harmoniques mineur ?
 
     // TODO : mélodique mineur ??
+    { name: 'Melodic minor (asc)', ecarts: ['1', '2', '3m', '4', '5', '6', '7'], special: '3m'},
 
     // ==== HEXATONIC
     { name: 'Hexatonic major', ecarts: ['1', '2', '3', '4', '5', '6'] },
@@ -93,8 +97,7 @@ export const scales = [
 // https://scottdavies.net/chords_and_scales/music.html
 // https://www.jazz-guitar-licks.com/pages/guitar-scales-modes/pentatonic-scales/
 
-export const notesSharp = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B']
-export const notesFlat = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B']
+
 export const ecarts = ['1', '2m', '2', '3m', '3', '4', 'T', '5', '6m', '6', '7m', '7']
 export const chords = [
     {

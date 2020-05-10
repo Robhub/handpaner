@@ -1,5 +1,5 @@
-import { notesAll } from './data'
-import { absToRel, genChords, genPanScales, relToAbsSharp, genScales } from './music'
+import * as DATA from './data'
+import { absToRel, genChords, genPanScales, relToAbsSharp, genScales, relToAbsFlat } from './music'
 
 export interface NoteDefinition {
     key: number // 0
@@ -9,6 +9,7 @@ export interface NoteDefinition {
 }
 
 export class Handpan {
+    id: number
     absNotationUser = '' // C# / G# A B C# D# E F# G# (A)
     absNotationClean = '' // pareil mais avec les vrais #
     relNotation = '' // 1 / 5 6m 7m 1 2 3m 4 5 (6m)
@@ -20,6 +21,10 @@ export class Handpan {
     panScales: any[] = []
     scales: any[] = []
 
+    constructor() {
+        this.id = new Date().getTime()
+    }
+
     loadFromRelNotation(ding: string, relNotation: string) {
         this.ding = ding
         this.relNotation = relNotation
@@ -27,13 +32,17 @@ export class Handpan {
         if (splitted.length < 2) {
             return
         }
-        const relNotes = splitted[1].trim().split(' ')
+        const relNotes = splitted[1].trim().split(' ').filter(Boolean)
         const absNotes = relNotes.map(relNote => {
-            return relToAbsSharp(this.ding, relNote)
+            const isBottom = relNote[0] === '('
+            const relNoteClean = relNote.replace(/\(|\)/g, '')
+            const preferSharp = DATA.notesSharp.indexOf(this.ding) !== -1
+            const absNote = preferSharp ? relToAbsSharp(this.ding, relNoteClean) : relToAbsFlat(this.ding, relNoteClean)
+            return isBottom ? '(' + absNote + ')' : absNote
         })
         this.absNotationClean = this.ding + '/ ' + absNotes.join(' ')
         this.absNotationUser = this.ding.replace(/♯/g, '#').replace(/♭/g, 'b') + '/ ' + absNotes.join(' ').replace(/♯/g, '#').replace(/♭/g, 'b')
-        this.genNotes(absNotes as string[])
+        this.genNotes(this.ding, absNotes as string[])
     }
 
     loadFromAbsNotation(absNotation: string) {
@@ -49,16 +58,19 @@ export class Handpan {
         this.ding = splitted[0].trim()
         this.absNotationClean = notesAsStringClean
         this.relNotation = absToRel(this.ding, notesAsStringClean)
-        const notes = splitted[1].trim().split(' ')
-        this.genNotes(notes)
+        const notes = splitted[1].trim().split(' ').filter(Boolean)
+        this.genNotes(this.ding, notes)
     }
 
-    genNotes(notes: string[]) {
+    genNotes(ding: string, notes: string[]) {
         let octave = 3
-        let previousNoteIndex: number
+        let previousNoteIndex = DATA.notesAll.indexOf(ding)
         this.notesAll = notes.map((noteName, index) => {
             const noteNameClean = noteName.replace(/\(/g, '').replace(/\)/g, '')
-            const noteIndex = notesAll.indexOf(noteNameClean)
+            const noteIndex = DATA.notesAll.indexOf(noteNameClean)
+            if (noteIndex === -1) {
+                throw new Error('Unknown note: ' + noteNameClean)
+            }
             if (!previousNoteIndex) {
                 previousNoteIndex = noteIndex
             }
@@ -86,10 +98,10 @@ export class Handpan {
     }
 
     genPanScales(): void {
-        this.panScales = genPanScales(this)
+        this.panScales = genPanScales([this])
     }
 
     genScales(): void {
-        this.scales = genScales(this)
+        this.scales = genScales([this])
     }
 }

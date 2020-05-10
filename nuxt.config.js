@@ -1,5 +1,6 @@
 const title = 'Handpaner : harmony for Hang/Handpan players and makers'
-const description = 'Handpaner is a tool for Hang/Handpan players and makers to help them finding scales and chords with musical harmony theory'
+const description =
+    'Handpaner is a tool for Hang/Handpan players and makers to help them finding scales and chords with musical harmony theory'
 const image = 'https://handpaner.com/handpaner.png'
 
 export default {
@@ -16,6 +17,7 @@ export default {
             { name: 'twitter:description', content: description },
             { name: 'twitter:title', content: title },
         ],
+        link: [{ rel: 'icon', type: 'image/png', href: 'favicon.png' }],
     },
     buildModules: ['@nuxt/typescript-build'],
 }
