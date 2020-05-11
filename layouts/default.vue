@@ -5,7 +5,7 @@
 <style>
 body {
     font-family: sans-serif;
-    background: #e5e5e5;
+    background: #f5f5f5;
 }
 
 h1,
@@ -16,7 +16,6 @@ h3 {
 
 #app {
     margin: auto;
-    background: white;
     border-radius: 3px;
     padding: 8px;
     --deg: 90deg;

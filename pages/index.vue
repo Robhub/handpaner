@@ -218,6 +218,7 @@ export default Vue.extend({
             }
             this.genScalesAndChordsAllPans()
             this.displayHandpan()
+            this.updateHash()
         },
         addHandpan(): void {
             const handpan = new Handpan()
@@ -225,6 +226,7 @@ export default Vue.extend({
             this.handpans.push(handpan)
             this.selectHandpan(this.handpans.length - 1)
             this.genScalesAndChordsAllPans()
+            this.updateHash()
         },
         panScaleChanged(): void {
             this.inputRelNotation = this.inputPanscale.val
@@ -363,8 +365,6 @@ export default Vue.extend({
 .tabs {
     display: flex;
     align-items: center;
-    margin-top: -1px;
-    position: relative;
 }
 .tab {
     position: relative;
@@ -373,11 +373,11 @@ export default Vue.extend({
     font-weight: bold;
     text-align: center;
     cursor: pointer;
-    background: white;
     border-bottom: 1px solid #666;
     margin-bottom: -1px;
 }
 .tab.selected {
+    background: white;
     border: 1px solid #666;
     border-bottom: none;
 }
@@ -385,6 +385,7 @@ export default Vue.extend({
     color: #0cc;
 }
 .tab-content {
+    background: white;
     border: 1px solid #666;
     min-height: 130px;
     padding: 8px;
