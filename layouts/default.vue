@@ -1,5 +1,8 @@
 <template>
-    <nuxt />
+    <div>
+        <nuxt />
+        <footer>Handpaner is an <a href="//github.com/Robhub/handpaner">open source</a> project developped with ♥ by <a href="//rojb.net/">Robin BERGÈRE</a></footer>
+    </div>
 </template>
 
 <style>
@@ -20,6 +23,11 @@ h3 {
     padding: 8px;
     --deg: 90deg;
     --nbnotes: 6;
+}
+footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 10px;
 }
 @media screen and (min-width: 500px) {
     #app {

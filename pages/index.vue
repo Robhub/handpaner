@@ -203,9 +203,6 @@ export default Vue.extend({
             panStrings.forEach(panString => {
                 handpan = new Handpan()
                 handpan.loadFromAbsNotation(panString.replace(/-/g, ' '))
-                // this.inputDing = handpan.ding
-                // this.inputAbsNotation = handpan.absNotationUser
-                // this.inputRelNotation = handpan.relNotation
                 this.handpans.push(handpan)
                 this.panChanged()
             })
@@ -259,10 +256,7 @@ export default Vue.extend({
             }
         },
         panChanged(): void {
-            const found = DATA.panScales.find(panScale => {
-                return this.displayedHandpan.relNotation.trim() === panScale.val.trim()
-            })
-            this.inputPanscale = found ? found : null
+            
             this.genScalesAndChords(this.displayedHandpan)
             this.displayHandpan()
             this.genScalesAndChordsAllPans()
@@ -284,10 +278,13 @@ export default Vue.extend({
             this.displayHandpan()
         },
         displayHandpan(): void {
-            const displayedHandpan = this.handpans[this.displayedHandpanIndex]
-            this.inputDing = displayedHandpan.ding
-            this.inputRelNotation = displayedHandpan.relNotation
-            this.inputAbsNotation = displayedHandpan.absNotationUser
+            const found = DATA.panScales.find(panScale => {
+                return this.displayedHandpan.relNotation.trim() === panScale.val.trim()
+            })
+            this.inputPanscale = found ? found : null
+            this.inputDing = this.displayedHandpan.ding
+            this.inputRelNotation = this.displayedHandpan.relNotation
+            this.inputAbsNotation = this.displayedHandpan.absNotationUser
         },
         selectPanScale(panScale: any) {
             this.selectedPanScale = panScale
