@@ -7,6 +7,7 @@
                     highlight: isHighlighted(handpan.ding, 3),
                     isroot: isRoot(handpan.ding),
                 }"
+                @click="playNote(handpan.ding, 3)"
             >
                 {{ handpan.ding }}<sub>3</sub>
             </div>
@@ -18,6 +19,7 @@
                             special: isSpecial(note.name),
                             isroot: isRoot(note.name),
                         }"
+                        @click="playNote(note.name, note.octave)"
                         >{{ note.name }}<sub>{{ note.octave }}</sub></span
                     >
                 </div>
@@ -33,6 +35,7 @@
                             special: isSpecial(note.name),
                             isroot: isRoot(note.name, note.octave),
                         }"
+                        @click="playNote(note.name, note.octave)"
                         >{{ note.name }}<sub>{{ note.octave }}</sub></span
                     >
                 </div>
@@ -46,6 +49,22 @@ import Vue from 'vue'
 import { Chord } from '../models/chord'
 import { Handpan } from '../models'
 import { alternateFlatSharp } from '../music'
+let audioctx: any
+let buffer: any = {}
+if (process.client) {
+    audioctx = new AudioContext()
+    const samplesDispo = ['C♯3', 'G♯3', 'A3', 'B3', 'C♯4', 'D♯4', 'E4', 'F♯4', 'G♯4']
+    for (let sampleDispo of samplesDispo) {
+        const request = new XMLHttpRequest()
+        request.open('GET', sampleDispo.replace('♯','s') + '.wav')
+        request.responseType = 'arraybuffer'
+        request.onload = function() {
+            let undecodedAudio = request.response
+            audioctx.decodeAudioData(undecodedAudio, (data: any) => (buffer[sampleDispo] = data))
+        }
+        request.send()
+    }
+}
 export default Vue.extend({
     props: {
         handpan: Handpan,
@@ -66,6 +85,15 @@ export default Vue.extend({
         },
     },
     methods: {
+        playNote(name: string, octave: number): void {
+            const noteBuffer:any = buffer[name + octave]
+            if (noteBuffer) {
+                const source = audioctx.createBufferSource()
+                source.buffer = noteBuffer
+                source.connect(audioctx.destination)
+                source.start(0)
+            }
+        },
         isSpecial(noteName: string): boolean {
             const otherNote = alternateFlatSharp(noteName)
             return noteName === this.selectedScale?.special || otherNote === this.selectedScale?.special
@@ -135,6 +163,9 @@ export default Vue.extend({
     border-radius: 999px;
     margin-left: -20px;
     margin-top: -20px;
+    pointer-events: all;
+    cursor: pointer;
+    user-select: none;
 }
 
 .gu {
@@ -142,6 +173,7 @@ export default Vue.extend({
 }
 
 .note {
+    pointer-events: none;
     position: absolute;
     top: 90px;
     padding-left: 175px;
