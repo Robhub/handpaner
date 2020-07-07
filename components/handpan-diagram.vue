@@ -7,7 +7,8 @@
                     highlight: isHighlighted(handpan.ding, 3),
                     isroot: isRoot(handpan.ding),
                 }"
-                @click="playNote(handpan.ding, 3)"
+                @mousedown="playNoteMouse(handpan.ding, 3)"
+                @touchstart="playNoteTouch(handpan.ding, 3)"
             >
                 {{ handpan.ding }}<sub>3</sub>
             </div>
@@ -19,7 +20,8 @@
                             special: isSpecial(note.name),
                             isroot: isRoot(note.name),
                         }"
-                        @click="playNote(note.name, note.octave)"
+                        @mousedown="playNoteMouse(note.name, note.octave)"
+                        @touchstart="playNoteTouch(note.name, note.octave)"
                         >{{ note.name }}<sub>{{ note.octave }}</sub></span
                     >
                 </div>
@@ -35,7 +37,8 @@
                             special: isSpecial(note.name),
                             isroot: isRoot(note.name, note.octave),
                         }"
-                        @click="playNote(note.name, note.octave)"
+                        @mousedown="playNoteMouse(note.name, note.octave)"
+                        @touchstart="playNoteTouch(note.name, note.octave)"
                         >{{ note.name }}<sub>{{ note.octave }}</sub></span
                     >
                 </div>
@@ -49,6 +52,7 @@ import Vue from 'vue'
 import { Chord } from '../models/chord'
 import { Handpan } from '../models'
 import { alternateFlatSharp } from '../music'
+let isMobile = false
 let audioctx: any
 let buffer: any = {}
 if (process.client) {
@@ -85,6 +89,15 @@ export default Vue.extend({
         },
     },
     methods: {
+        playNoteTouch(name: string, octave: number): void {
+            isMobile = true
+            this.playNote(name, octave)
+        },
+        playNoteMouse(name: string, octave: number): void {
+            if (!isMobile) {
+                this.playNote(name, octave)
+            }
+        },
         playNote(name: string, octave: number): void {
             const noteBuffer:any = buffer[name + octave]
             if (noteBuffer) {
@@ -173,6 +186,7 @@ export default Vue.extend({
 }
 
 .note {
+    user-select: none;
     pointer-events: none;
     position: absolute;
     top: 90px;
