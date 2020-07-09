@@ -4,46 +4,47 @@ export const notesFlat = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭
 
 // TODO : Générer les versions avec différent nombre de notes automatiquement..
 export const panScales = [
-    { val: '1/ 5 7m 1 2 3m 4 5', name: 'Amara 8' }, // = Celtic minor
-    { val: '1/ 5 7m 1 2 3m 4 5 7m', name: 'Amara 9' }, // = Celtic minor
-    { val: '1/ 3 5 7 1 3 T 5 7', name: 'Aegean 9' },
-    { val: '1/ 4 5 6m 7m 1 2m 3m 4', name: 'Aeolian 9' },
-    { val: '1/ 3m 4 7m 1 3m 4 5 7m', name: 'Chao Guo 9' },
-    { val: '1/ 3m 5 6m 7m 1 2 3m', name: 'Equinox 8' },
-    { val: '1/ 3m 5 6m 7m 1 2 3m 5', name: 'Equinox 9' },
-    { val: '1/ 4 5 6m 7m 1 2m 3 4 5', name: 'Harmonic minor 9' },
-    { val: '1/ 5 6m 7 1 2 3m 4 5', name: 'Hijaz 9' },
-    { val: '1/ 4 T 6 7m 1 2m 3m 4', name: 'Hijaz (Mercury) 9' },
-    { val: '1/ 4 T 6 7m 1 2m 3m 3', name: 'Hijaz Kar (Mercury) 9' },
-    { val: '1/ 5 6m 1 2 3m 4 5', name: 'Insen 8' },
-    { val: '1/ 5 6m 1 2 3m 4 5 6m', name: 'Insen 9' },
-    { val: '1/ 5 6m 7m 1 2 3m 5 7m', name: 'Integral (Mercury) 9' },
-    { val: '1/ 5 6m 7m 1 2 3m 5 6m', name: 'Integral (Sam) 9' },
-    { val: '1/ 4 5 6 7m 1 2 3m 4', name: 'Jibuk 9' },
+    { val: '1/ 5 7m 1 2 3m 4 5', name: 'Amara 7+1' }, // = Celtic minor
+    { val: '1/ 5 7m 1 2 3m 4 5 7m', name: 'Amara 8+1' }, // = Celtic minor
+    { val: '1/ 3 5 7 1 3 T 5 7', name: 'Aegean 8+1' },
+    { val: '1/ 4 5 6m 7m 1 2m 3m 4', name: 'Aeolian 8+1' },
+    { val: '1/ 3m 4 7m 1 3m 4 5 7m', name: 'Chao Guo 8+1' },
+    { val: '1/ 3m 5 6m 7m 1 2 3m', name: 'Equinox 7+1' },
+    { val: '1/ 3m 5 6m 7m 1 2 3m 5', name: 'Equinox 8+1' },
+    { val: '1/ 4 5 6m 7m 1 2m 3 4 5', name: 'Harmonic minor 8+1' },
+    { val: '1/ 5 6m 7 1 2 3m 4 5', name: 'Hijaz 8+1' },
+    { val: '1/ 4 T 6 7m 1 2m 3m 4', name: 'Hijaz (Mercury) 8+1' },
+    { val: '1/ 4 T 6 7m 1 2m 3m 3', name: 'Hijaz Kar (Mercury) 8+1' },
+    { val: '1/ 5 6m 1 2 3m 4 5', name: 'Insen 7+1' },
+    { val: '1/ 5 6m 1 2 3m 4 5 6m', name: 'Insen 8+1' },
+    { val: '1/ 5 6m 7m 1 2 3m 5 7m', name: 'Integral (Mercury) 8+1' },
+    { val: '1/ 5 6m 7m 1 2 3m 5 6m', name: 'Integral (Sam) 8+1' },
+    { val: '1/ 4 5 6 7m 1 2 3m 4', name: 'Jibuk 8+1' },
     { val: '1/ 5 6 1 2 3 4 5 1', name: 'Anahata' },
-    { val: '1/ 4 5 6m 1 2 3m 4', name: 'Minor 8' }, // Pas de 7m ??
-    { val: '1/ 4 5 6m 1 2 3m 4 5', name: 'Minor 9' }, // Pas de 7m ??
-    { val: '1/ 5 6m 7m 1 2 3m 4', name: 'Kurd 8' }, // = Annaziska
-    { val: '1/ 5 6m 7m 1 2 3m 4 5', name: 'Kurd 9' }, // = Annaziska
-    { val: '1/ 3m 5 6 7m 1 2 3m', name: 'La Sirena 8' },
-    { val: '1/ 3m 5 6 7m 1 2 3m 5', name: 'La Sirena 9' },
-    { val: '1/ 3m 5 7m 1 2 3m 5', name: 'Magic Voyage 8' },
-    { val: '1/ 3m 5 7m 1 2 3m 5 7m', name: 'Magic Voyage 9' },
-    { val: '1/ 4 5 6 7 1 2 3', name: 'Major 8' },
-    { val: '1/ 4 5 6 7 1 2 3 5', name: 'Major 9' }, // = Sabyie
-    { val: '1/ 3 4 5 7 1 3 4 5', name: 'Melog Selisir 9' },
-    { val: '1/ 3m 5 6m 1 2 3m 5', name: 'Mystic (Mercury) 8' },
-    { val: '1/ 5 6m 1 2 3m 4 5 7m', name: 'Mystic (Sam) 9' },
-    { val: '1/ 5 6 7m 1 2 3 5', name: 'Mixolydian 8' },
-    { val: '1/ 5 6 7m 1 2 3 5 6', name: 'Mixolydian 9' },
-    { val: '1/ 3 4 5 6 1 3 4 5', name: 'Oxalis 9' },
-    { val: '1/ 4 5 6m 1 3m 4 5 6m', name: 'Pygmy (Mercury) 9' },
-    { val: '1/ 2 3m 5 7m 1 2 3m 5', name: 'Pygmy 9' },
-    { val: '1/ 5 7m 1 2m 3 4 5 7m', name: 'Raga Desh 9' }, // = Binnha
-    { val: '1/ 4 5 6m 7 1 2 3m 5', name: 'Romanian Hijaz 9' },
-    { val: '1/ 4 5 6m 1 2m 4 5 6m', name: 'Akebono 9' }, // = Goon Kali
-    { val: '1/ 5 7 1 2 3 4 5 1', name: 'Ysha Savita 9' },
-    { val: '1/ 5 6m 1 3 4 5 6m 1', name: 'Onoleo 9' },
+    { val: '1/ 4 5 6m 1 2 3m 4', name: 'Minor 7+1' }, // Pas de 7m ??
+    { val: '1/ 4 5 6m 1 2 3m 4 5', name: 'Minor 8+1' }, // Pas de 7m ??
+    { val: '1/ 5 6m 7m 1 2 3m 4', name: 'Kurd 7+1' }, // = Annaziska
+    { val: '1/ 5 6m 7m 1 2 3m 4 5', name: 'Kurd 8+1' }, // = Annaziska
+    { val: '1/ 3m 5 6 7m 1 2 3m', name: 'La Sirena 7+1' },
+    { val: '1/ 3m 5 6 7m 1 2 3m 5', name: 'La Sirena 8+1' },
+    { val: '1/ 3m 5 7m 1 2 3m 5', name: 'Magic Voyage 7+1' },
+    { val: '1/ 3m 5 7m 1 2 3m 5 7m', name: 'Magic Voyage 8+1' },
+    { val: '1/ 4 5 6 7 1 2 3', name: 'Major 7+1' },
+    { val: '1/ 4 5 6 7 1 2 3 5', name: 'Major 8+1' }, // = Sabyie
+    { val: '1/ 3 4 5 7 1 3 4 5', name: 'Melog Selisir 8+1' },
+    { val: '1/ 3m 5 6m 1 2 3m 5', name: 'Mystic (Mercury) 7+1' },
+    { val: '1/ 5 6m 1 2 3m 4 5 7m', name: 'Mystic (Sam) 8+1' },
+    { val: '1/ 5 6 7m 1 2 3 5', name: 'Mixolydian 7+1' },
+    { val: '1/ 5 6 7m 1 2 3 5 6', name: 'Mixolydian 8+1' },
+    { val: '1/ 3 4 5 6 1 3 4 5', name: 'Oxalis 8+1' },
+    { val: '1/ 4 5 6m 1 3m 4 5 6m', name: 'Pygmy 8+1' },
+    { val: '1/ 2 3m 5 7m 1 2 3m 5', name: 'Low Pygmy 8+1' },
+    { val: '1/ 5 7m 1 2m 3 4 5 7m', name: 'Raga Desh 8+1' }, // = Binnha
+    { val: '1/ 4 5 6m 7 1 2 3m 5', name: 'Romanian Hijaz 8+1' },
+    { val: '1/ 3m 5 6m 7 1 2 3m 5', name: 'Romanian Mineur harmonique 8+1' },
+    { val: '1/ 4 5 6m 1 2m 4 5 6m', name: 'Akebono 8+1' }, // = Goon Kali
+    { val: '1/ 5 7 1 2 3 4 5 1', name: 'Ysha Savita 8+1' },
+    { val: '1/ 5 6m 1 3 4 5 6m 1', name: 'Onoleo 8+1' },
     { val: '1/ 5 7 1 2 3 T 5 7', name: 'Lydian' },
 ]
 export const scales = [
