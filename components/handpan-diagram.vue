@@ -57,7 +57,7 @@ let audioctx: any
 let buffer: any = {}
 if (process.client) {
     audioctx = new AudioContext()
-    const samplesDispo = ['C3', 'C♯3', 'E3', 'F3', 'G3', 'G♯3', 'A3', 'B3', 'C4', 'C♯4', 'D4', 'D♯4', 'E4', 'F4', 'F♯4', 'G4', 'G♯4', 'B4', 'C5']
+    const samplesDispo = ['C3', 'C♯3', 'D3', 'E3', 'F3', 'G3', 'G♯3', 'A3', 'B3', 'C4', 'C♯4', 'D4', 'D♯4', 'E4', 'F4', 'F♯4', 'G4', 'G♯4', 'A4', 'B4', 'C5']
     for (let sampleDispo of samplesDispo) {
         const request = new XMLHttpRequest()
         request.open('GET', sampleDispo.replace('♯','s') + '.wav')
