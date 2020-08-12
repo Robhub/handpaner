@@ -4,13 +4,16 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "nuxt"
+        "dev": "nuxt --hostname 0.0.0.0",
+        "generate": "nuxt generate"
     },
     "author": "Robin BERGERE",
     "license": "MIT",
     "dependencies": {
         "nuxt": "latest",
-        "@nuxt/typescript-build": "latest"
+        "@nuxt/typescript-build": "latest",
+        "lodash-es": "latest",
+        "@types/lodash": "latest"
     },
     "devDependencies": {
         "tslint": "latest"

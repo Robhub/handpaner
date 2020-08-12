@@ -1,5 +1,5 @@
 import * as DATA from './data'
-import { absToRel, genChords, genPanScales, relToAbsSharp, genScales, relToAbsFlat } from './music'
+import { absToRel, genChords, genPanScales, relToAbsSharp, genScales, relToAbsFlat, splitNoteNameAndOctave } from './music'
 
 export interface NoteDefinition {
     key: number // 0
@@ -14,6 +14,7 @@ export class Handpan {
     absNotationClean = '' // pareil mais avec les vrais #
     relNotation = '' // 1 / 5 6m 7m 1 2 3m 4 5 (6m)
     ding = '' // C#
+    dingOctave = 3
     notesTop: NoteDefinition[] = [] // [G#, A, B, C#, D#, E, F#, G#]
     notesBottom: NoteDefinition[] = [] // [A]
     notesAll: NoteDefinition[] = []
@@ -25,8 +26,9 @@ export class Handpan {
         this.id = new Date().getTime()
     }
 
-    loadFromRelNotation(ding: string, relNotation: string) {
+    loadFromRelNotation(ding: string, relNotation: string, dingOctave: number) {
         this.ding = ding
+        this.dingOctave = dingOctave
         this.relNotation = relNotation
         const splitted = relNotation.split('/')
         if (splitted.length < 2) {
@@ -40,9 +42,10 @@ export class Handpan {
             const absNote = preferSharp ? relToAbsSharp(this.ding, relNoteClean) : relToAbsFlat(this.ding, relNoteClean)
             return isBottom ? '(' + absNote + ')' : absNote
         })
-        this.absNotationClean = this.ding + '/ ' + absNotes.join(' ')
-        this.absNotationUser = this.ding.replace(/♯/g, '#').replace(/♭/g, 'b') + '/ ' + absNotes.join(' ').replace(/♯/g, '#').replace(/♭/g, 'b')
-        this.genNotes(this.ding, absNotes as string[])
+        const dingWithOctave = dingOctave === 3 ? this.ding : this.ding + dingOctave
+        this.absNotationClean = dingWithOctave + '/ ' + absNotes.join(' ')
+        this.absNotationUser = dingWithOctave.replace(/♯/g, '#').replace(/♭/g, 'b') + '/ ' + absNotes.join(' ').replace(/♯/g, '#').replace(/♭/g, 'b')
+        this.genNotes(this.ding, absNotes as string[], dingOctave)
     }
 
     loadFromAbsNotation(absNotation: string) {
@@ -55,34 +58,41 @@ export class Handpan {
         if (splitted.length < 2) {
             return
         }
-        this.ding = splitted[0].trim()
+        const dingNameAndOctaveMatched = splitNoteNameAndOctave(splitted[0].trim())
+        this.ding = dingNameAndOctaveMatched.noteName
+        this.dingOctave = dingNameAndOctaveMatched.octave ? dingNameAndOctaveMatched.octave : 3
         this.absNotationClean = notesAsStringClean
         this.relNotation = absToRel(this.ding, notesAsStringClean)
         const notes = splitted[1].trim().split(' ').filter(Boolean)
-        this.genNotes(this.ding, notes)
+        this.genNotes(this.ding, notes, 3) // TODO
     }
 
-    genNotes(ding: string, notes: string[]) {
-        let octave = 3
+    genNotes(ding: string, notes: string[], dingOctave: number) {
+        let octave = dingOctave
         let previousNoteIndex = DATA.notesAll.indexOf(ding)
-        this.notesAll = notes.map((noteName, index) => {
-            const noteNameClean = noteName.replace(/\(/g, '').replace(/\)/g, '')
-            const noteIndex = DATA.notesAll.indexOf(noteNameClean)
+        this.notesAll = notes.map((noteNameAndOctave, index) => {
+            const noteNameAndOctaveClean = noteNameAndOctave.replace(/\(/g, '').replace(/\)/g, '')
+            const noteNameAndOctaveMatched = splitNoteNameAndOctave(noteNameAndOctaveClean)
+            const noteName = noteNameAndOctaveMatched.noteName
+            const noteOctave = noteNameAndOctaveMatched.octave
+            const noteIndex = DATA.notesAll.indexOf(noteName)
             if (noteIndex === -1) {
-                throw new Error('Unknown note: ' + noteNameClean)
+                throw new Error('Unknown note: ' + noteName)
             }
             if (!previousNoteIndex) {
                 previousNoteIndex = noteIndex
             }
-            if (noteIndex < previousNoteIndex) {
+            if (noteOctave) {
+                octave = noteOctave
+            } else if (noteIndex < previousNoteIndex) {
                 octave++
             }
             previousNoteIndex = noteIndex
             return {
                 key: index,
                 octave,
-                name: noteNameClean,
-                isBottom: noteName[0] === '(',
+                name: noteName,
+                isBottom: noteNameAndOctave[0] === '(',
             }
         })
         this.notesTop = this.notesAll.filter(note => !note.isBottom)

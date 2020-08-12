@@ -4,13 +4,13 @@
             <div
                 class="ding"
                 v-bind:class="{
-                    highlight: isHighlighted(handpan.ding, 3),
+                    highlight: isHighlighted(handpan.ding, handpan.dingOctave),
                     isroot: isRoot(handpan.ding),
                 }"
-                @mousedown="playNoteMouse(handpan.ding, 3)"
-                @touchstart="playNoteTouch(handpan.ding, 3)"
+                @mousedown="playNoteMouse(handpan.ding, handpan.dingOctave)"
+                @touchstart="playNoteTouch(handpan.ding, handpan.dingOctave)"
             >
-                {{ handpan.ding }}<sub>3</sub>
+                {{ handpan.ding }}<sub>{{ handpan.dingOctave }}</sub>
             </div>
             <div class="notes" :style="nbNotesTop">
                 <div class="note" v-for="note in handpan.notesTop" v-bind:key="note.key">
@@ -49,24 +49,28 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import * as DATA from '../data'
 import { Chord } from '../models/chord'
 import { Handpan } from '../models'
-import { alternateFlatSharp } from '../music'
+import { flatToSharp, alternateFlatSharp } from '../music'
 let isMobile = false
 let audioctx: any
-let buffer: any = {}
+
 if (process.client) {
     audioctx = new AudioContext()
-    const samplesDispo = ['C3', 'C♯3', 'D3', 'E3', 'F3', 'G3', 'G♯3', 'A3', 'B3', 'C4', 'C♯4', 'D4', 'D♯4', 'E4', 'F4', 'F♯4', 'G4', 'G♯4', 'A4', 'A♯4', 'B4', 'C5']
-    for (let sampleDispo of samplesDispo) {
-        const request = new XMLHttpRequest()
-        request.open('GET', sampleDispo.replace('♯','s') + '.wav')
-        request.responseType = 'arraybuffer'
-        request.onload = function() {
-            let undecodedAudio = request.response
-            audioctx.decodeAudioData(undecodedAudio, (data: any) => (buffer[sampleDispo] = data))
+    for (let samplesBank of DATA.samplesBanks) {
+        const samplesDispo = samplesBank.samplesDispo
+        for (let sampleDispo of samplesDispo) {
+            const request = new XMLHttpRequest()
+            const path = samplesBank.folder + '/' + sampleDispo.replace('♯', 's') + '.flac'
+            request.open('GET', path)
+            request.responseType = 'arraybuffer'
+            request.onload = function() {
+                let undecodedAudio = request.response
+                audioctx.decodeAudioData(undecodedAudio, (data: any) => (samplesBank.buffer[sampleDispo] = data))
+            }
+            request.send()
         }
-        request.send()
     }
 }
 export default Vue.extend({
@@ -75,6 +79,7 @@ export default Vue.extend({
         selectedChord: Object, // TODO typage chords
         selectedPanScale: Object,
         selectedScale: Object,
+        samplesBank: Object,
     },
     computed: {
         nbNotesTop(): any {
@@ -99,7 +104,8 @@ export default Vue.extend({
             }
         },
         playNote(name: string, octave: number): void {
-            const noteBuffer:any = buffer[name + octave]
+            const nameSharp = flatToSharp(name)
+            const noteBuffer: any = this.samplesBank.buffer[nameSharp + octave] // TODO choix du samplebank
             if (noteBuffer) {
                 const source = audioctx.createBufferSource()
                 source.buffer = noteBuffer

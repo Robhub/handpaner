@@ -30,11 +30,15 @@
                 <select v-model="inputDing" @change="relChanged">
                     <option v-for="note in notesAll" v-bind:key="note">{{ note }}</option>
                 </select>
+                <select v-model="inputDingOctave" @change="relChanged">
+                    <option>2</option>
+                    <option>3</option>
+                </select>
                 <br />Relative scale
                 <input v-model="inputRelNotation" size="40" @keyup="relChanged" />
                 <br />Handpan scale
                 <select v-model="inputPanscale" @change="panScaleChanged">
-                    <option v-for="panScale in panScales" v-bind:key="panScale.name" :value="panScale">{{ panScale.name }}</option>
+                    <option v-for="panScale in allPanScalesSorted" v-bind:key="panScale.name" :value="panScale">{{ panScale.name }}</option>
                 </select>
             </div>
         </div>
@@ -105,6 +109,16 @@
                     </div>
                 </div>
             </div>
+            <div class="zone">
+                Sample bank
+                <select v-model="samplesBank">
+                    <option v-for="samplesBank in samplesBanks" v-bind:key="samplesBank.name" :value="samplesBank">
+                        {{ samplesBank.name }}
+                    </option>
+                </select>
+                <a v-if="samplesBank.website" :href="'//' + samplesBank.website">{{ samplesBank.website }}</a>
+                <img v-if="samplesBank.logo" :src="samplesBank.logo">
+            </div>
             <div class="zone handpans">
                 <HandpanDiagram
                     v-for="handpan in handpans"
@@ -113,6 +127,7 @@
                     :selectedChord="selectedChord"
                     :selectedPanScale="selectedPanScale"
                     :selectedScale="selectedScale"
+                    :samplesBank="samplesBank"
                 />
             </div>
         </div>
@@ -122,6 +137,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import * as DATA from '../data'
+import sortBy from 'lodash'
 import { Chord } from '../models/chord'
 import { Handpan } from '../models'
 import { genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScales } from '../music'
@@ -138,11 +154,11 @@ export default Vue.extend({
             handpans: <Handpan[]>[],
             inputAbsNotation: '',
             inputDing: '',
+            inputDingOctave: 3,
             inputPanscale: <any>{},
             inputRelNotation: '',
             notes: <any[]>[],
             abs: '',
-            panScales: DATA.panScales,
             scales: DATA.scales,
             notesAll: DATA.notesAll,
             chords: {},
@@ -159,6 +175,8 @@ export default Vue.extend({
             displayedChords: <any>[],
             displayedPanScales: <any>[],
             ignoreNextHashChange: false,
+            samplesBank: DATA.samplesBanks[0],
+            samplesBanks: DATA.samplesBanks,
         }
     },
     created() {
@@ -170,15 +188,14 @@ export default Vue.extend({
                 handpan.loadFromAbsNotation('D/ A C D E F G A C')
                 this.handpans.push(handpan)
                 this.genScalesAndChords(handpan)
-                // handpan = new Handpan()
-                // handpan.loadFromAbsNotation('C#/ G# A B C# D# E F# G#')
-                // this.handpans.push(handpan)
-                // this.genScalesAndChords(handpan)
                 this.panChanged()
             }
         }, 1)
     },
     computed: {
+        allPanScalesSorted(): any[] {
+            return DATA.panScales.sort((a: any, b: any) => a.name.localeCompare(b.name))
+        },
         displayedScalesSorted(): any[] {
             return this.displayedScales.sort((a: any, b: any) => b.totalNotes - a.totalNotes)
         },
@@ -231,7 +248,7 @@ export default Vue.extend({
         },
         relChanged(): void {
             try {
-                this.displayedHandpan.loadFromRelNotation(this.inputDing, this.inputRelNotation)
+                this.displayedHandpan.loadFromRelNotation(this.inputDing, this.inputRelNotation, this.inputDingOctave)
                 this.panChanged()
                 this.updateHash()
             } catch (err) {
@@ -256,7 +273,6 @@ export default Vue.extend({
             }
         },
         panChanged(): void {
-            
             this.genScalesAndChords(this.displayedHandpan)
             this.displayHandpan()
             this.genScalesAndChordsAllPans()
@@ -269,9 +285,9 @@ export default Vue.extend({
         },
         genScalesAndChords(handpan: Handpan) {
             // Est-ce encore utile ?
-            handpan.genChords()
-            handpan.genPanScales()
-            handpan.genScales()
+            // handpan.genChords()
+            // handpan.genPanScales()
+            // handpan.genScales()
         },
         selectHandpan(index: number): void {
             this.displayedHandpanIndex = index

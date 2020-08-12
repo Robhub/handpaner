@@ -1,6 +1,23 @@
 import * as DATA from './data'
 import { Handpan } from './models'
 
+// F5 => {noteName:'F', octave:5}
+// F#5 => {noteName:'F#', octave:5}
+// G# => {noteName:'G#'}
+export function splitNoteNameAndOctave(noteNameAndOctave: string) {
+    const noteNameAndOctaveMatched = /([A-G][♯♭]?)([0-9]?)/.exec(noteNameAndOctave)
+    if (noteNameAndOctaveMatched === null) {
+        throw new Error('Cannot read note: ' + noteNameAndOctaveMatched)
+    }
+    const noteName = noteNameAndOctaveMatched[1]
+    const octave = noteNameAndOctaveMatched[2]
+    if (octave) {
+        return { noteName, octave: parseInt(octave, 10) }
+    } else {
+        return { noteName }
+    }
+}
+
 // A => A
 // A# => Bb
 // Bb => A#
@@ -8,6 +25,14 @@ export function alternateFlatSharp(noteName: string): string {
     const indexSharp = DATA.notesSharp.indexOf(noteName)
     const indexFlat = DATA.notesFlat.indexOf(noteName)
     return indexSharp !== -1 ? DATA.notesFlat[indexSharp] : DATA.notesSharp[indexFlat]
+}
+
+// A => A
+// A# => A#
+// Bb => A#
+export function flatToSharp(noteName: string): string {
+    const indexFlat = DATA.notesFlat.indexOf(noteName)
+    return indexFlat !== -1 ? DATA.notesSharp[indexFlat] : noteName
 }
 
 // A, 3m => C
@@ -50,8 +75,8 @@ export function absToRel(ding: string, notesAsStringClean: string): string {
     }
     let relStr = notesAsStringClean + ' '
     for (let i = 0; i < 12; i++) {
-        relStr = relStr.replace(new RegExp(DATA.notesSharp[i] + '([^♯♭])', 'g'), relatives[i] + '$1')
-        relStr = relStr.replace(new RegExp(DATA.notesFlat[i] + '([^♯♭])', 'g'), relatives[i] + '$1')
+        relStr = relStr.replace(new RegExp(DATA.notesSharp[i] + '[0-9]?([^♯♭])', 'g'), relatives[i] + '$1')
+        relStr = relStr.replace(new RegExp(DATA.notesFlat[i] + '[0-9]?([^♯♭])', 'g'), relatives[i] + '$1')
     }
     return relStr.trim()
 }
@@ -84,7 +109,7 @@ export const genPanScales = (handpans: Handpan[]): any[] => {
     const panScalesAbsolute = handpans.flatMap(handpan =>
         DATA.panScales.map(panScale => {
             const pan = new Handpan()
-            pan.loadFromRelNotation(handpan.ding, panScale.val)
+            pan.loadFromRelNotation(handpan.ding, panScale.val, handpan.dingOctave)
             return {
                 ding: handpan.ding,
                 name: panScale.name,
