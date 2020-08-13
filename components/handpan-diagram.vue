@@ -83,6 +83,7 @@ export default Vue.extend({
     },
     computed: {
         nbNotesTop(): any {
+            console.log('nb notes top', this.handpan.notesTop.length)
             return {
                 '--nbnotes': this.handpan.notesTop.length,
             }
@@ -105,7 +106,7 @@ export default Vue.extend({
         },
         playNote(name: string, octave: number): void {
             const nameSharp = flatToSharp(name)
-            const noteBuffer: any = this.samplesBank.buffer[nameSharp + octave] // TODO choix du samplebank
+            const noteBuffer: any = this.samplesBank.buffer[nameSharp + octave]
             if (noteBuffer) {
                 const source = audioctx.createBufferSource()
                 source.buffer = noteBuffer
@@ -152,7 +153,7 @@ export default Vue.extend({
     width: 200px;
     height: 200px;
     border-radius: 200px;
-    background: #ccc;
+    background: radial-gradient(#ddd, #999);
 }
 .handpan-shape.is-bottom {
     margin-left: 25px;
@@ -172,8 +173,7 @@ export default Vue.extend({
 .ding,
 .gu,
 .note span {
-    border: 1px solid #333;
-    background: #ddd;
+    border: 1px solid #33333340;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -185,6 +185,15 @@ export default Vue.extend({
     pointer-events: all;
     cursor: pointer;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.ding {
+    background: radial-gradient(#ddd, #999);
+}
+
+.note span {
+    background: radial-gradient(#99999980, #dddddd80);
 }
 
 .gu {
@@ -206,7 +215,7 @@ export default Vue.extend({
 
 sub {
     margin-bottom: -10px;
-    font-size: 11px;
+    font-size: 0.5em;
 }
 
 .handpan-shape .highlight {

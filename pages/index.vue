@@ -40,16 +40,18 @@
                 <select v-model="inputPanscale" @change="panScaleChanged">
                     <option v-for="panScale in allPanScalesSorted" v-bind:key="panScale.name" :value="panScale">{{ panScale.name }}</option>
                 </select>
+                <br /><a :href="playPath">Play in full page</a>
             </div>
         </div>
         <div v-if="displayedHandpan">
             <div class="zone">
                 <div class="tabs">
                     <div class="tab" @click="displayMode = 'panScales'" v-bind:class="{ selected: displayMode === 'panScales' }">
-                        Handpan scales
+                        Models
                     </div>
                     <div class="tab" @click="displayMode = 'scales'" v-bind:class="{ selected: displayMode === 'scales' }">Scales</div>
                     <div class="tab" @click="displayMode = 'chords'" v-bind:class="{ selected: displayMode === 'chords' }">Chords</div>
+                    <div class="tab" @click="displayMode = 'songs'" v-bind:class="{ selected: displayMode === 'songs' }">Songs</div>
                 </div>
                 <div class="tab-content" v-if="displayMode === 'panScales'">
                     <div class="panscales">
@@ -108,6 +110,9 @@
                         ></div>
                     </div>
                 </div>
+                <div class="tab-content" v-if="displayMode === 'songs'">
+                    Coming soon!
+                </div>
             </div>
             <div class="zone">
                 Sample bank
@@ -116,8 +121,14 @@
                         {{ samplesBank.name }}
                     </option>
                 </select>
-                <a v-if="samplesBank.website" :href="'//' + samplesBank.website">{{ samplesBank.website }}</a>
-                <img v-if="samplesBank.logo" :src="samplesBank.logo">
+                <span v-if="samplesBank.website && samplesBank.logo">
+                    <a v-if="samplesBank.website" :href="'//' + samplesBank.website"
+                        ><img v-if="samplesBank.logo" :src="samplesBank.logo"
+                    /></a>
+                </span>
+                <span v-if="samplesBank.website && !samplesBank.logo">
+                    <a v-if="samplesBank.website" :href="'//' + samplesBank.website">{{ samplesBank.website }}</a>
+                </span>
             </div>
             <div class="zone handpans">
                 <HandpanDiagram
@@ -193,6 +204,13 @@ export default Vue.extend({
         }, 1)
     },
     computed: {
+        playPath(): string {
+            if (this.displayedHandpan) {
+                return 'play#' + this.displayedHandpan.absNotationUser.replace(/ /g, '-')
+            } else {
+                return 'play'
+            }
+        },
         allPanScalesSorted(): any[] {
             return DATA.panScales.sort((a: any, b: any) => a.name.localeCompare(b.name))
         },
