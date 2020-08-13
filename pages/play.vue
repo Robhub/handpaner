@@ -70,29 +70,29 @@ export default Vue.extend({
 /deep/ .handpan-diagram {
     --size: min(98vw, 90vh);
     --deg: 90deg;
-    width: 100vw;
-    height: 90vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    width: 100vw !important;
+    height: 90vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
 }
 /deep/ .handpan-shape {
-    width: var(--size);
-    height: var(--size);
-    border-radius: var(--size);
+    width: var(--size) !important;
+    height: var(--size) !important;
+    border-radius: var(--size) !important;
 }
 /deep/ .ding,
 /deep/ .gu,
 /deep/ .note span {
-    width: calc(var(--size) * 0.23);
-    height: calc(var(--size) * 0.23);
-    margin-left: calc(var(--size) * (-0.1));
-    margin-top: calc(var(--size) * (-0.1));
-    font-size: calc(var(--size) * 0.05);
+    width: calc(var(--size) * 0.23) !important;
+    height: calc(var(--size) * 0.23) !important;
+    margin-left: calc(var(--size) * (-0.1)) !important;
+    margin-top: calc(var(--size) * (-0.1)) !important;
+    font-size: calc(var(--size) * 0.05) !important;
 }
 /deep/ .note {
-    top: calc(var(--size) * 0.432);
-    padding-left: calc(var(--size) * 0.432 * 2);
+    top: calc(var(--size) * 0.432) !important;
+    padding-left: calc(var(--size) * 0.432 * 2) !important;
 }
 </style>
