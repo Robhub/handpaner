@@ -199,6 +199,6 @@ export const samplesDispoVarious = [
 ]
 
 export const samplesBanks = [
-    { name: 'Shellopan', website: 'www.shellopan.fr', folder: 'shellopan', samplesDispo: samplesDispoShello, buffer: {} as any, logo: 'shellopan_sm.png' },
+    { name: 'Shellopan', website: 'www.shellopan.fr', folder: 'shellopan', samplesDispo: samplesDispoShello, buffer: {} as any, logo: '/shellopan_sm.png' },
     { name: 'Various', folder: 'various', samplesDispo: samplesDispoVarious, buffer: {} as any },
 ]

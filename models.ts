@@ -64,7 +64,6 @@ export class Handpan {
         this.absNotationClean = notesAsStringClean
         this.relNotation = absToRel(this.ding, notesAsStringClean)
         const notes = splitted[1].trim().split(' ').filter(Boolean)
-        console.log('load from abs', notes)
         this.genNotes(this.ding, notes, 3) // TODO
     }
 
@@ -98,7 +97,6 @@ export class Handpan {
         })
         this.notesTop = this.notesAll.filter(note => !note.isBottom)
         this.notesBottom = this.notesAll.filter(note => note.isBottom)
-        console.log('notes top', this.notesTop)
     }
 
     getUniqueNotes() {

@@ -62,7 +62,7 @@ if (process.client) {
         const samplesDispo = samplesBank.samplesDispo
         for (let sampleDispo of samplesDispo) {
             const request = new XMLHttpRequest()
-            const path = samplesBank.folder + '/' + sampleDispo.replace('♯', 's') + '.flac'
+            const path = '/' + samplesBank.folder + '/' + sampleDispo.replace('♯', 's') + '.flac'
             request.open('GET', path)
             request.responseType = 'arraybuffer'
             request.onload = function() {
@@ -83,7 +83,6 @@ export default Vue.extend({
     },
     computed: {
         nbNotesTop(): any {
-            console.log('nb notes top', this.handpan.notesTop.length)
             return {
                 '--nbnotes': this.handpan.notesTop.length,
             }
