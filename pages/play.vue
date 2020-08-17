@@ -1,7 +1,21 @@
 <template>
     <div>
         <div class="bank-select">
-            Sample bank : 
+            Volume:&nbsp;
+            <select v-model="volume">
+                <option :value="1">100%</option>
+                <option :value="0.9">90%</option>
+                <option :value="0.8">80%</option>
+                <option :value="0.7">70%</option>
+                <option :value="0.6">60%</option>
+                <option :value="0.5">50%</option>
+                <option :value="0.4">40%</option>
+                <option :value="0.3">30%</option>
+                <option :value="0.2">20%</option>
+                <option :value="0.1">10%</option>
+            </select>
+            &nbsp;
+            Samples:&nbsp;
             <select v-model="samplesBank">
                 <option v-for="samplesBank in samplesBanks" v-bind:key="samplesBank.name" :value="samplesBank">
                     {{ samplesBank.name }}
@@ -21,6 +35,7 @@
             :selectedPanScale="null"
             :selectedScale="null"
             :samplesBank="samplesBank"
+            :volume="volume"
         />
     </div>
 </template>
@@ -43,6 +58,7 @@ export default Vue.extend({
     },
     data() {
         return {
+            volume: 0.5,
             handpan: null as any,
             samplesBank: DATA.samplesBanks[0],
             samplesBanks: DATA.samplesBanks,
@@ -71,6 +87,7 @@ export default Vue.extend({
     height: 30px;
     overflow-y: hidden;
     display: flex;
+    font-size: 11px;
     align-items: center;
     justify-content: center;
 }

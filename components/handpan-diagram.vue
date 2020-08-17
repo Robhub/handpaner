@@ -80,6 +80,7 @@ export default Vue.extend({
         selectedPanScale: Object,
         selectedScale: Object,
         samplesBank: Object,
+        volume: Number,
     },
     computed: {
         nbNotesTop(): any {
@@ -107,9 +108,12 @@ export default Vue.extend({
             const nameSharp = flatToSharp(name)
             const noteBuffer: any = this.samplesBank.buffer[nameSharp + octave]
             if (noteBuffer) {
+                const gainNode = audioctx.createGain()
+                gainNode.gain.value = this.volume
                 const source = audioctx.createBufferSource()
                 source.buffer = noteBuffer
-                source.connect(audioctx.destination)
+                gainNode.connect(audioctx.destination)
+                source.connect(gainNode)
                 source.start(0)
             }
         },

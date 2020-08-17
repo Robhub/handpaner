@@ -114,8 +114,22 @@
                     Coming soon!
                 </div>
             </div>
-            <div class="zone">
-                Sample bank
+            <div class="zone bank-select">
+                Volume:&nbsp;
+                <select v-model="volume">
+                    <option :value="1">100%</option>
+                    <option :value="0.9">90%</option>
+                    <option :value="0.8">80%</option>
+                    <option :value="0.7">70%</option>
+                    <option :value="0.6">60%</option>
+                    <option :value="0.5">50%</option>
+                    <option :value="0.4">40%</option>
+                    <option :value="0.3">30%</option>
+                    <option :value="0.2">20%</option>
+                    <option :value="0.1">10%</option>
+                </select>
+                &nbsp;
+                Samples:&nbsp;
                 <select v-model="samplesBank">
                     <option v-for="samplesBank in samplesBanks" v-bind:key="samplesBank.name" :value="samplesBank">
                         {{ samplesBank.name }}
@@ -137,6 +151,7 @@
                     :selectedPanScale="selectedPanScale"
                     :selectedScale="selectedScale"
                     :samplesBank="samplesBank"
+                    :volume="volume"
                 />
             </div>
         </div>
@@ -158,6 +173,7 @@ export default Vue.extend({
     },
     data() {
         return {
+            volume: 0.5,
             displayMode: 'panScales',
             displayedHandpanIndex: 0,
             handpans: <Handpan[]>[],
@@ -441,5 +457,13 @@ export default Vue.extend({
 }
 .toggle {
     font-size: 32px;
+}
+.bank-select {
+    height: 30px;
+    overflow-y: hidden;
+    display: flex;
+    font-size: 11px;
+    align-items: center;
+    justify-content: center;
 }
 </style>

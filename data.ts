@@ -45,7 +45,8 @@ export const panScales = [
     { val: '1/ 4 5 6m 1 2m 4 5 6m', name: 'Akebono 8+1' }, // = Goon Kali
     { val: '1/ 5 7 1 2 3 4 5 1', name: 'Ysha Savita 8+1' },
     { val: '1/ 5 6m 1 3 4 5 6m 1', name: 'Onoleo 8+1' },
-    { val: '1/ 5 7 1 2 3 T 5 7', name: 'Lydian' },
+    { val: '1/ 5 7 1 2 3 T 5 7', name: 'Lydian 8+1' },
+    { val: '1/ (2) (3m) 4 5 6m (7m) 7 1 2 3m 4 5 (6m) 1', name: 'Kamaji 10+1+4' },
 ]
 export const scales = [
     // ==== OCTATONIC
@@ -199,6 +200,13 @@ export const samplesDispoVarious = [
 ]
 
 export const samplesBanks = [
-    { name: 'Shellopan', website: 'www.shellopan.fr', folder: 'shellopan', samplesDispo: samplesDispoShello, buffer: {} as any, logo: '/shellopan_sm.png' },
+    {
+        name: 'Shellopan',
+        website: 'www.shellopan.fr',
+        folder: 'shellopan',
+        samplesDispo: samplesDispoShello,
+        buffer: {} as any,
+        logo: '/shellopan_sm.png',
+    },
     { name: 'Various', folder: 'various', samplesDispo: samplesDispoVarious, buffer: {} as any },
 ]
