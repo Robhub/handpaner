@@ -169,11 +169,7 @@ export default Vue.extend({
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
     border-radius: 999px;
-    margin-left: -20px;
-    margin-top: -20px;
     pointer-events: all;
     cursor: pointer;
     user-select: none;

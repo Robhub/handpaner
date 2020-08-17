@@ -46,6 +46,14 @@ export default Vue.extend({
     height: 150px;
     border-radius: 150px;
 }
+/deep/ .ding,
+/deep/ .gu,
+/deep/ .note span {
+    width: 40px;
+    height: 40px;
+    margin-left: -20px;
+    margin-top: -20px;
+}
 /deep/ .note {
     top: 90px;
     padding-left: 175px;
