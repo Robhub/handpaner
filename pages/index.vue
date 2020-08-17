@@ -130,11 +130,9 @@
                     <a v-if="samplesBank.website" :href="'//' + samplesBank.website">{{ samplesBank.website }}</a>
                 </span>
             </div>
-            <div class="zone handpans">
-                <HandpanDiagram
-                    v-for="handpan in handpans"
-                    v-bind:key="handpan.id"
-                    :handpan="handpan"
+            <div class="zone">
+                <HandpanDiagrams
+                    :handpans="handpans"
                     :selectedChord="selectedChord"
                     :selectedPanScale="selectedPanScale"
                     :selectedScale="selectedScale"
@@ -152,11 +150,11 @@ import sortBy from 'lodash'
 import { Chord } from '../models/chord'
 import { Handpan } from '../models'
 import { genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScales } from '../music'
-import { default as HandpanDiagram } from '../components/handpan-diagram.vue'
+import { default as HandpanDiagrams } from '../components/handpan-diagrams.vue'
 
 export default Vue.extend({
     components: {
-        HandpanDiagram,
+        HandpanDiagrams,
     },
     data() {
         return {
@@ -423,10 +421,6 @@ export default Vue.extend({
 }
 .zone {
     margin-top: 16px;
-}
-.handpans {
-    display: flex;
-    flex-wrap: wrap;
 }
 .delete {
     position: absolute;

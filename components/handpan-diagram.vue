@@ -1,5 +1,5 @@
 <template>
-    <div class="handpan-diagram" v-bind:class="{ bad: selectedChord.type === 'bad' }">
+    <div class="handpan-diagram" v-bind:class="{ bad: selectedChord.type === 'bad', hasBottom: handpan.notesBottom.length > 0 }">
         <div class="handpan-shape is-top">
             <div
                 class="ding"
@@ -149,16 +149,9 @@ export default Vue.extend({
 <style scoped>
 .handpan-shape {
     position: relative;
-    width: 200px;
-    height: 200px;
-    border-radius: 200px;
     background: radial-gradient(#ddd, #999);
 }
 .handpan-shape.is-bottom {
-    margin-left: 25px;
-    width: 150px;
-    height: 150px;
-    border-radius: 150px;
     background: #666;
 }
 
@@ -203,13 +196,6 @@ export default Vue.extend({
     user-select: none;
     pointer-events: none;
     position: absolute;
-    top: 90px;
-    padding-left: 175px;
-}
-
-.is-bottom .note {
-    top: 65px;
-    padding-left: 125px;
 }
 
 sub {

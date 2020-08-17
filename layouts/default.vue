@@ -1,7 +1,13 @@
 <template>
     <div>
         <nuxt />
-        <footer>Handpaner is an <a href="//github.com/Robhub/handpaner">open source</a> project developped with ♥ by <a href="//rojb.net/">Robin BERGÈRE</a></footer>
+        <footer>
+            Handpaner is an <a href="//github.com/Robhub/handpaner">open source</a> project developped with ♥ by
+            <a href="//rojb.net/">Robin BERGÈRE</a>.
+            <span class="support"
+                >You can support this project's devlopment with a <a href="https://paypal.me/robinbergere">donation</a>, thank you.</span
+            >
+        </footer>
     </div>
 </template>
 
@@ -33,6 +39,11 @@ footer {
     #app {
         max-width: 1000px;
         padding: 16px;
+    }
+}
+@media screen and (max-width: 500px) {
+    .support {
+        display: block;
     }
 }
 </style>
