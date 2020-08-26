@@ -8,7 +8,6 @@
             :selectedPanScale="selectedPanScale"
             :selectedScale="selectedScale"
             :samplesBank="samplesBank"
-            :volume="volume"
         />
     </div>
 </template>
@@ -27,7 +26,6 @@ export default Vue.extend({
         selectedPanScale: Object,
         selectedScale: Object,
         samplesBank: Object,
-        volume: Number,
     },
 })
 </script>

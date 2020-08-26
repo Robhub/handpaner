@@ -1,32 +1,8 @@
 <template>
     <div>
-        <div class="bank-select">
-            Volume:&nbsp;
-            <select v-model="volume">
-                <option :value="1">100%</option>
-                <option :value="0.9">90%</option>
-                <option :value="0.8">80%</option>
-                <option :value="0.7">70%</option>
-                <option :value="0.6">60%</option>
-                <option :value="0.5">50%</option>
-                <option :value="0.4">40%</option>
-                <option :value="0.3">30%</option>
-                <option :value="0.2">20%</option>
-                <option :value="0.1">10%</option>
-            </select>
-            &nbsp;
-            Samples:&nbsp;
-            <select v-model="samplesBank">
-                <option v-for="samplesBank in samplesBanks" v-bind:key="samplesBank.name" :value="samplesBank">
-                    {{ samplesBank.name }}
-                </option>
-            </select>
-            <span v-if="samplesBank.website && samplesBank.logo">
-                <a v-if="samplesBank.website" :href="'//' + samplesBank.website"><img v-if="samplesBank.logo" :src="samplesBank.logo"/></a>
-            </span>
-            <span v-if="samplesBank.website && !samplesBank.logo">
-                <a v-if="samplesBank.website" :href="'//' + samplesBank.website">{{ samplesBank.website }}</a>
-            </span>
+        <div class="play-options">
+            <SelectVolume/>
+            <SelectSamplesBank/>
         </div>
         <HandpanDiagram
             v-if="handpan"
@@ -34,8 +10,6 @@
             :selectedChord="selectedChord"
             :selectedPanScale="null"
             :selectedScale="null"
-            :samplesBank="samplesBank"
-            :volume="volume"
         />
     </div>
 </template>
@@ -43,12 +17,16 @@
 <script lang="ts">
 import Vue from 'vue'
 import { default as HandpanDiagram } from '../components/handpan-diagram.vue'
+import { default as SelectVolume } from '../components/select-volume.vue'
+import { default as SelectSamplesBank } from '../components/select-samplesbank.vue'
 import { Handpan } from '../models'
 import * as DATA from '../data'
 
 export default Vue.extend({
     components: {
         HandpanDiagram,
+        SelectVolume,
+        SelectSamplesBank,
     },
     layout: 'empty',
     head() {
@@ -58,10 +36,7 @@ export default Vue.extend({
     },
     data() {
         return {
-            volume: 0.5,
             handpan: null as any,
-            samplesBank: DATA.samplesBanks[0],
-            samplesBanks: DATA.samplesBanks,
             selectedChord: {
                 label: '',
                 root: '',
@@ -69,6 +44,16 @@ export default Vue.extend({
                 noteNames: <any[]>[],
             },
         }
+    },
+    computed: {
+        volume: {
+            get() {
+                return this.$store.getters['options/getVolume']
+            },
+            set(value) {
+                this.$store.commit('options/setVolume', value)
+            }
+        },
     },
     mounted() {
         this.handpan = new Handpan()
@@ -83,13 +68,12 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.bank-select {
-    height: 30px;
-    overflow-y: hidden;
+.play-options {
     display: flex;
-    font-size: 11px;
-    align-items: center;
     justify-content: center;
+}
+.play-options > * {
+    margin: 0 8px;
 }
 /deep/ .handpan-diagram {
     --deg: 90deg;

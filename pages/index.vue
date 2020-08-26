@@ -40,7 +40,7 @@
                 <select v-model="inputPanscale" @change="panScaleChanged">
                     <option v-for="panScale in allPanScalesSorted" v-bind:key="panScale.name" :value="panScale">{{ panScale.name }}</option>
                 </select>
-                <br /><a :href="playPath">Play in full page</a>
+                <br /><nuxt-link :to="playPath">Play in full page</nuxt-link>
             </div>
         </div>
         <div v-if="displayedHandpan">
@@ -114,35 +114,9 @@
                     Coming soon!
                 </div>
             </div>
-            <div class="zone bank-select">
-                Volume:&nbsp;
-                <select v-model="volume">
-                    <option :value="1">100%</option>
-                    <option :value="0.9">90%</option>
-                    <option :value="0.8">80%</option>
-                    <option :value="0.7">70%</option>
-                    <option :value="0.6">60%</option>
-                    <option :value="0.5">50%</option>
-                    <option :value="0.4">40%</option>
-                    <option :value="0.3">30%</option>
-                    <option :value="0.2">20%</option>
-                    <option :value="0.1">10%</option>
-                </select>
-                &nbsp;
-                Samples:&nbsp;
-                <select v-model="samplesBank">
-                    <option v-for="samplesBank in samplesBanks" v-bind:key="samplesBank.name" :value="samplesBank">
-                        {{ samplesBank.name }}
-                    </option>
-                </select>
-                <span v-if="samplesBank.website && samplesBank.logo">
-                    <a v-if="samplesBank.website" :href="'//' + samplesBank.website"
-                        ><img v-if="samplesBank.logo" :src="samplesBank.logo"
-                    /></a>
-                </span>
-                <span v-if="samplesBank.website && !samplesBank.logo">
-                    <a v-if="samplesBank.website" :href="'//' + samplesBank.website">{{ samplesBank.website }}</a>
-                </span>
+            <div class="zone play-options">
+                <SelectVolume/>
+                <SelectSamplesBank/>
             </div>
             <div class="zone">
                 <HandpanDiagrams
@@ -151,7 +125,6 @@
                     :selectedPanScale="selectedPanScale"
                     :selectedScale="selectedScale"
                     :samplesBank="samplesBank"
-                    :volume="volume"
                 />
             </div>
         </div>
@@ -159,6 +132,7 @@
 </template>
 
 <script lang="ts">
+import { mapGetters } from 'vuex'
 import Vue from 'vue'
 import * as DATA from '../data'
 import sortBy from 'lodash'
@@ -166,14 +140,17 @@ import { Chord } from '../models/chord'
 import { Handpan } from '../models'
 import { genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScales } from '../music'
 import { default as HandpanDiagrams } from '../components/handpan-diagrams.vue'
+import { default as SelectVolume } from '../components/select-volume.vue'
+import { default as SelectSamplesBank } from '../components/select-samplesbank.vue'
 
 export default Vue.extend({
     components: {
         HandpanDiagrams,
+        SelectVolume,
+        SelectSamplesBank,
     },
     data() {
         return {
-            volume: 0.5,
             displayMode: 'panScales',
             displayedHandpanIndex: 0,
             handpans: <Handpan[]>[],
@@ -200,8 +177,6 @@ export default Vue.extend({
             displayedChords: <any>[],
             displayedPanScales: <any>[],
             ignoreNextHashChange: false,
-            samplesBank: DATA.samplesBanks[0],
-            samplesBanks: DATA.samplesBanks,
         }
     },
     created() {
@@ -220,9 +195,9 @@ export default Vue.extend({
     computed: {
         playPath(): string {
             if (this.displayedHandpan) {
-                return 'play#' + this.displayedHandpan.absNotationUser.replace(/ /g, '-')
+                return 'play/#' + this.displayedHandpan.absNotationUser.replace(/ /g, '-')
             } else {
-                return 'play'
+                return 'play/'
             }
         },
         allPanScalesSorted(): any[] {
@@ -458,12 +433,11 @@ export default Vue.extend({
 .toggle {
     font-size: 32px;
 }
-.bank-select {
-    height: 30px;
-    overflow-y: hidden;
+.play-options {
     display: flex;
-    font-size: 11px;
-    align-items: center;
     justify-content: center;
+}
+.play-options > * {
+    margin: 0 8px;
 }
 </style>

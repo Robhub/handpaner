@@ -79,8 +79,7 @@ export default Vue.extend({
         selectedChord: Object, // TODO typage chords
         selectedPanScale: Object,
         selectedScale: Object,
-        samplesBank: Object,
-        volume: Number,
+        // samplesBank: Object,
     },
     computed: {
         nbNotesTop(): any {
@@ -106,10 +105,11 @@ export default Vue.extend({
         },
         playNote(name: string, octave: number): void {
             const nameSharp = flatToSharp(name)
-            const noteBuffer: any = this.samplesBank.buffer[nameSharp + octave]
+            const chosenSamplesBankIndex = this.$store.getters['options/getChosenSamplesBankIndex']
+            const noteBuffer: any = DATA.samplesBanks[chosenSamplesBankIndex].buffer[nameSharp + octave]
             if (noteBuffer) {
                 const gainNode = audioctx.createGain()
-                gainNode.gain.value = this.volume
+                gainNode.gain.value = this.$store.getters['options/getVolume']
                 const source = audioctx.createBufferSource()
                 source.buffer = noteBuffer
                 gainNode.connect(audioctx.destination)
