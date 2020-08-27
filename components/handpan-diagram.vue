@@ -202,9 +202,6 @@ export default Vue.extend({
 
 .inside {
     background: radial-gradient(#ccc, #a9a9a9);
-    width: 24px;
-    height: 24px;
-    border-radius: 24px;
     border: 1px solid #808080;
     position: absolute;
     display: flex;
@@ -213,9 +210,6 @@ export default Vue.extend({
 }
 
 .ding .inside {
-    width: 32px;
-    height: 32px;
-    border-radius: 32px;
     background: radial-gradient(#fcfcfc, #a9a9a9);
 }
 

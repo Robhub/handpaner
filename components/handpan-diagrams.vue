@@ -67,4 +67,16 @@ export default Vue.extend({
     top: 65px;
     padding-left: 125px;
 }
+/deep/ .inside {
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+}
+
+/deep/ .ding .inside {
+    width: 32px;
+    height: 32px;
+    border-radius: 32px;
+}
+
 </style>
