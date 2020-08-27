@@ -123,4 +123,22 @@ export default Vue.extend({
     top: calc(var(--size) * 0.432);
     padding-left: calc(var(--size) * 0.432 * 2);
 }
+
+/deep/ .inside {
+    width: calc(var(--size) * 0.1);
+    height: calc(var(--size) * 0.1);
+    border-radius: calc(var(--size) * 0.1);
+}
+
+/deep/ .ding .inside {
+    width: calc(var(--size) * 0.12);
+    height: calc(var(--size) * 0.12);
+    border-radius: calc(var(--size) * 0.12);
+}
+/deep/ .ding {
+    width: calc(var(--size) * 0.4);
+    height: calc(var(--size) * 0.4);
+    margin-left: calc(var(--size) * (-0.2));
+    margin-top: calc(var(--size) * (-0.2));
+}
 </style>

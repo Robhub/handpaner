@@ -6,6 +6,7 @@ export interface NoteDefinition {
     octave: number // 3
     name: string // C#
     isBottom: boolean
+    animated: boolean
 }
 
 export class Handpan {
@@ -15,6 +16,7 @@ export class Handpan {
     relNotation = '' // 1 / 5 6m 7m 1 2 3m 4 5 (6m)
     ding = '' // C#
     dingOctave = 3
+    dingAnimated = false
     notesTop: NoteDefinition[] = [] // [G#, A, B, C#, D#, E, F#, G#]
     notesBottom: NoteDefinition[] = [] // [A]
     notesAll: NoteDefinition[] = []
@@ -93,6 +95,7 @@ export class Handpan {
                 octave,
                 name: noteName,
                 isBottom: noteNameAndOctave[0] === '(',
+                animated: false,
             }
         })
         this.notesTop = this.notesAll.filter(note => !note.isBottom)

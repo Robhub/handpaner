@@ -7,10 +7,13 @@
                     highlight: isHighlighted(handpan.ding, handpan.dingOctave),
                     isroot: isRoot(handpan.ding),
                 }"
-                @mousedown="playNoteMouse(handpan.ding, handpan.dingOctave)"
-                @touchstart="playNoteTouch(handpan.ding, handpan.dingOctave)"
+                @mousedown="playNoteMouse({ name: handpan.ding, octave: handpan.dingOctave, })"
+                @touchstart="playNoteTouch({ name: handpan.ding, octave: handpan.dingOctave })"
             >
-                {{ handpan.ding }}<sub>{{ handpan.dingOctave }}</sub>
+                <div class="inside">
+                    {{ handpan.ding }}<sub>{{ handpan.dingOctave }}</sub>
+                </div>
+                <div class="animation" :class="{ animated: handpan.dingAnimated }" @animationend="handpan.dingAnimated = false"></div>
             </div>
             <div class="notes" :style="nbNotesTop">
                 <div class="note" v-for="note in handpan.notesTop" v-bind:key="note.key">
@@ -20,10 +23,14 @@
                             special: isSpecial(note.name),
                             isroot: isRoot(note.name),
                         }"
-                        @mousedown="playNoteMouse(note.name, note.octave)"
-                        @touchstart="playNoteTouch(note.name, note.octave)"
-                        >{{ note.name }}<sub>{{ note.octave }}</sub></span
+                        @mousedown="playNoteMouse(note)"
+                        @touchstart="playNoteTouch(note)"
                     >
+                        <div class="inside">
+                            {{ note.name }}<sub>{{ note.octave }}</sub>
+                        </div>
+                        <div class="animation" :class="{ animated: note.animated }" @animationend="note.animated = false"></div>
+                    </span>
                 </div>
             </div>
         </div>
@@ -37,10 +44,14 @@
                             special: isSpecial(note.name),
                             isroot: isRoot(note.name, note.octave),
                         }"
-                        @mousedown="playNoteMouse(note.name, note.octave)"
-                        @touchstart="playNoteTouch(note.name, note.octave)"
-                        >{{ note.name }}<sub>{{ note.octave }}</sub></span
+                        @mousedown="playNoteMouse(note)"
+                        @touchstart="playNoteTouch(note)"
                     >
+                        <div class="inside">
+                            {{ note.name }}<sub>{{ note.octave }}</sub>
+                        </div>
+                        <div class="animation" :class="{ animated: note.animated }" @animationend="note.animated = false"></div>
+                    </span>
                 </div>
             </div>
         </div>
@@ -79,7 +90,6 @@ export default Vue.extend({
         selectedChord: Object, // TODO typage chords
         selectedPanScale: Object,
         selectedScale: Object,
-        // samplesBank: Object,
     },
     computed: {
         nbNotesTop(): any {
@@ -94,16 +104,18 @@ export default Vue.extend({
         },
     },
     methods: {
-        playNoteTouch(name: string, octave: number): void {
+        playNoteTouch(note: any): void {
             isMobile = true
-            this.playNote(name, octave)
+            this.playNote(note)
         },
-        playNoteMouse(name: string, octave: number): void {
+        playNoteMouse(note: any): void {
             if (!isMobile) {
-                this.playNote(name, octave)
+                this.playNote(note)
             }
         },
-        playNote(name: string, octave: number): void {
+        playNote(note: any): void {
+            const name = note.name
+            const octave = note.octave
             const nameSharp = flatToSharp(name)
             const chosenSamplesBankIndex = this.$store.getters['options/getChosenSamplesBankIndex']
             const noteBuffer: any = DATA.samplesBanks[chosenSamplesBankIndex].buffer[nameSharp + octave]
@@ -115,6 +127,13 @@ export default Vue.extend({
                 gainNode.connect(audioctx.destination)
                 source.connect(gainNode)
                 source.start(0)
+                if (note.animated === undefined) {
+                    this.handpan.dingAnimated = false
+                    setTimeout(() => { this.handpan.dingAnimated = true}, 0)
+                } else {
+                    note.animated = false
+                    setTimeout(() => { note.animated = true}, 0)
+                }
             }
         },
         isSpecial(noteName: string): boolean {
@@ -153,7 +172,7 @@ export default Vue.extend({
 <style scoped>
 .handpan-shape {
     position: relative;
-    background: radial-gradient(#ddd, #999);
+    background: radial-gradient(#fdfdfd, #606060);
 }
 .handpan-shape.is-bottom {
     background: #666;
@@ -169,7 +188,8 @@ export default Vue.extend({
 .ding,
 .gu,
 .note span {
-    border: 1px solid #33333340;
+    border: 1px solid #808080;
+    font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -180,12 +200,31 @@ export default Vue.extend({
     -webkit-tap-highlight-color: transparent;
 }
 
+.inside {
+    background: radial-gradient(#ccc, #a9a9a9);
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    border: 1px solid #808080;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ding .inside {
+    width: 32px;
+    height: 32px;
+    border-radius: 32px;
+    background: radial-gradient(#fcfcfc, #a9a9a9);
+}
+
 .ding {
-    background: radial-gradient(#ddd, #999);
+    background: #e6e6e6;
 }
 
 .note span {
-    background: radial-gradient(#99999980, #dddddd80);
+    background: #aaa;
 }
 
 .gu {
@@ -200,7 +239,7 @@ export default Vue.extend({
 
 sub {
     margin-bottom: -10px;
-    font-size: 0.5em;
+    font-size: 0.7em;
 }
 
 .handpan-shape .highlight {
@@ -214,6 +253,32 @@ sub {
 }
 .bad .highlight {
     background: #ff000080 !important;
+}
+
+@keyframes noteanim {
+    0% {
+        background: #ffffff00;
+        width: 0px;
+        height: 0px;
+    }
+    10% {
+        background: #ffffffa0;
+        width: 60px;
+        height: 60px;
+    }
+    100% {
+        background: #ffffff00;
+    }
+}
+
+.animation {
+    position: absolute;
+    border-radius: 100px;
+    display: block;
+}
+
+.animated {
+    animation: noteanim 0.2s;
 }
 
 .note:nth-child(1) {

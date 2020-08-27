@@ -7,7 +7,6 @@
             :selectedChord="selectedChord"
             :selectedPanScale="selectedPanScale"
             :selectedScale="selectedScale"
-            :samplesBank="samplesBank"
         />
     </div>
 </template>
@@ -46,7 +45,13 @@ export default Vue.extend({
     height: 150px;
     border-radius: 150px;
 }
-/deep/ .ding,
+/deep/ .ding {
+    width: 80px;
+    height: 80px;
+    margin-left: -40px;
+    margin-top: -40px;
+}
+
 /deep/ .gu,
 /deep/ .note span {
     width: 40px;

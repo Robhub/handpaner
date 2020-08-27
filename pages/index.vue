@@ -124,7 +124,6 @@
                     :selectedChord="selectedChord"
                     :selectedPanScale="selectedPanScale"
                     :selectedScale="selectedScale"
-                    :samplesBank="samplesBank"
                 />
             </div>
         </div>
