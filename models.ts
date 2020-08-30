@@ -66,7 +66,7 @@ export class Handpan {
         this.absNotationClean = notesAsStringClean
         this.relNotation = absToRel(this.ding, notesAsStringClean)
         const notes = splitted[1].trim().split(' ').filter(Boolean)
-        this.genNotes(this.ding, notes, 3) // TODO
+        this.genNotes(this.ding, notes, this.dingOctave)
     }
 
     genNotes(ding: string, notes: string[], dingOctave: number) {

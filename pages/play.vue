@@ -136,9 +136,9 @@ export default Vue.extend({
     border-radius: calc(var(--size) * 0.12);
 }
 /deep/ .ding {
-    width: calc(var(--size) * 0.4);
-    height: calc(var(--size) * 0.4);
-    margin-left: calc(var(--size) * (-0.2));
-    margin-top: calc(var(--size) * (-0.2));
+    width: calc(var(--size) * 0.34);
+    height: calc(var(--size) * 0.34);
+    margin-left: calc(var(--size) * (-0.17));
+    margin-top: calc(var(--size) * (-0.17));
 }
 </style>

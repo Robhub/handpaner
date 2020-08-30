@@ -1,14 +1,14 @@
 <template>
     <div class="handpan-diagram" v-bind:class="{ bad: selectedChord.type === 'bad', hasBottom: handpan.notesBottom.length > 0 }">
-        <div class="handpan-shape is-top">
+        <div class="handpan-shape is-top" @mousedown="playClacMouse()" @touchstart="playClacTouch()">
             <div
                 class="ding"
                 v-bind:class="{
                     highlight: isHighlighted(handpan.ding, handpan.dingOctave),
-                    isroot: isRoot(handpan.ding),
+                    highlightplus: isRoot(handpan.ding),
                 }"
-                @mousedown="playNoteMouse({ name: handpan.ding, octave: handpan.dingOctave, })"
-                @touchstart="playNoteTouch({ name: handpan.ding, octave: handpan.dingOctave })"
+                @mousedown="playNoteMouse($event, { name: handpan.ding, octave: handpan.dingOctave })"
+                @touchstart="playNoteTouch($event, { name: handpan.ding, octave: handpan.dingOctave })"
             >
                 <div class="inside">
                     {{ handpan.ding }}<sub>{{ handpan.dingOctave }}</sub>
@@ -21,10 +21,11 @@
                         v-bind:class="{
                             highlight: isHighlighted(note.name, note.octave),
                             special: isSpecial(note.name),
-                            isroot: isRoot(note.name),
+                            highlightplus: isHighlighted(note.name, note.octave) && isRoot(note.name),
+                            highlightless: isNoteInModel(note.name, note.octave),
                         }"
-                        @mousedown="playNoteMouse(note)"
-                        @touchstart="playNoteTouch(note)"
+                        @mousedown="playNoteMouse($event, note)"
+                        @touchstart="playNoteTouch($event, note)"
                     >
                         <div class="inside">
                             {{ note.name }}<sub>{{ note.octave }}</sub>
@@ -34,18 +35,18 @@
                 </div>
             </div>
         </div>
-        <div class="handpan-shape is-bottom" v-if="handpan.notesBottom.length">
-            <div class="gu"></div>
+        <div class="handpan-shape is-bottom" v-if="handpan.notesBottom.length" @mousedown="playClacMouse()" @touchstart="playClacTouch()">
+            <div class="gu" @mousedown="playGuMouse($event)" @touchstart="playGuTouch($event)"></div>
             <div class="notes" :style="nbNotesBottom">
                 <div class="note" v-for="note in handpan.notesBottom" v-bind:key="note.key">
                     <span
                         v-bind:class="{
                             highlight: isHighlighted(note.name, note.octave),
                             special: isSpecial(note.name),
-                            isroot: isRoot(note.name, note.octave),
+                            highlightplus: isHighlighted(note.name, note.octave) && isRoot(note.name),
                         }"
-                        @mousedown="playNoteMouse(note)"
-                        @touchstart="playNoteTouch(note)"
+                        @mousedown="playNoteMouse($event, note)"
+                        @touchstart="playNoteTouch($event, note)"
                     >
                         <div class="inside">
                             {{ note.name }}<sub>{{ note.octave }}</sub>
@@ -66,23 +67,30 @@ import { Handpan } from '../models'
 import { flatToSharp, alternateFlatSharp } from '../music'
 let isMobile = false
 let audioctx: any
+let clacBuffer: any
+let guBuffer: any
 
+function loadSample(path: string, fncb: Function): void {
+    const request = new XMLHttpRequest()
+    request.open('GET', path)
+    request.responseType = 'arraybuffer'
+    request.onload = function() {
+        let undecodedAudio = request.response
+        audioctx.decodeAudioData(undecodedAudio, fncb)
+    }
+    request.send()
+}
 if (process.client) {
     audioctx = new AudioContext()
     for (let samplesBank of DATA.samplesBanks) {
         const samplesDispo = samplesBank.samplesDispo
         for (let sampleDispo of samplesDispo) {
-            const request = new XMLHttpRequest()
             const path = '/' + samplesBank.folder + '/' + sampleDispo.replace('♯', 's') + '.flac'
-            request.open('GET', path)
-            request.responseType = 'arraybuffer'
-            request.onload = function() {
-                let undecodedAudio = request.response
-                audioctx.decodeAudioData(undecodedAudio, (data: any) => (samplesBank.buffer[sampleDispo] = data))
-            }
-            request.send()
+            loadSample(path, (data: any) => (samplesBank.buffer[sampleDispo] = data))
         }
     }
+    loadSample('/gu/D2.flac', (data: any) => (guBuffer = data))
+    loadSample('/clac/clac.flac', (data: any) => (clacBuffer = data))
 }
 export default Vue.extend({
     props: {
@@ -104,11 +112,37 @@ export default Vue.extend({
         },
     },
     methods: {
-        playNoteTouch(note: any): void {
+        playClacMouse(): void {
+            if (!isMobile) {
+                this.playClac()
+            }
+        },
+        playClacTouch(): void {
+            this.playClac()
+        },
+        playClac(): void {
+            this.playSample(clacBuffer)
+        },
+        playGuMouse(event: Event): void {
+            event.stopPropagation() // prevents clac
+            if (!isMobile) {
+                this.playGu()
+            }
+        },
+        playGuTouch(event: Event): void {
+            event.stopPropagation() // prevents clac
+            this.playGu()
+        },
+        playGu(): void {
+            this.playSample(guBuffer)
+        },
+        playNoteTouch(event: Event, note: any): void {
+            event.stopPropagation() // prevents clac
             isMobile = true
             this.playNote(note)
         },
-        playNoteMouse(note: any): void {
+        playNoteMouse(event: Event, note: any): void {
+            event.stopPropagation() // prevents clac
             if (!isMobile) {
                 this.playNote(note)
             }
@@ -120,21 +154,28 @@ export default Vue.extend({
             const chosenSamplesBankIndex = this.$store.getters['options/getChosenSamplesBankIndex']
             const noteBuffer: any = DATA.samplesBanks[chosenSamplesBankIndex].buffer[nameSharp + octave]
             if (noteBuffer) {
-                const gainNode = audioctx.createGain()
-                gainNode.gain.value = this.$store.getters['options/getVolume']
-                const source = audioctx.createBufferSource()
-                source.buffer = noteBuffer
-                gainNode.connect(audioctx.destination)
-                source.connect(gainNode)
-                source.start(0)
+                this.playSample(noteBuffer)
                 if (note.animated === undefined) {
                     this.handpan.dingAnimated = false
-                    setTimeout(() => { this.handpan.dingAnimated = true}, 0)
+                    setTimeout(() => {
+                        this.handpan.dingAnimated = true
+                    }, 0)
                 } else {
                     note.animated = false
-                    setTimeout(() => { note.animated = true}, 0)
+                    setTimeout(() => {
+                        note.animated = true
+                    }, 0)
                 }
             }
+        },
+        playSample(sampleBuffer: any): void {
+            const gainNode = audioctx.createGain()
+            gainNode.gain.value = this.$store.getters['options/getVolume']
+            const source = audioctx.createBufferSource()
+            source.buffer = sampleBuffer
+            gainNode.connect(audioctx.destination)
+            source.connect(gainNode)
+            source.start(0)
         },
         isSpecial(noteName: string): boolean {
             const otherNote = alternateFlatSharp(noteName)
@@ -146,6 +187,16 @@ export default Vue.extend({
             const isTonic = noteName === this.selectedScale?.tonic || otherNote === this.selectedScale?.tonic
             const isDing = noteName === this.selectedPanScale?.ding || otherNote === this.selectedPanScale?.ding
             return isRoot || isTonic || isDing
+        },
+        isNoteInModel(noteName: any, octave: number): boolean {
+            let isInPanScale = false
+            const otherNote = alternateFlatSharp(noteName)
+            if (this.selectedPanScale && this.selectedPanScale.notesAll) {
+                isInPanScale = this.selectedPanScale.notesAll.some((n: any) => {
+                    return n.name === noteName || n.name === otherNote
+                })
+            }
+            return isInPanScale
         },
         isHighlighted(noteName: any, octave: number): boolean {
             const otherNote = alternateFlatSharp(noteName)
@@ -236,10 +287,13 @@ sub {
     font-size: 0.7em;
 }
 
+.handpan-shape .highlightless {
+    background: #ffff0080 !important;
+}
 .handpan-shape .highlight {
     background: #00ff0080 !important;
 }
-.handpan-shape .isroot {
+.handpan-shape .highlightplus {
     background: #00ffcc80 !important;
 }
 .handpan-shape .special {

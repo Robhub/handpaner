@@ -17,7 +17,7 @@ export default {
             { name: 'twitter:description', content: description },
             { name: 'twitter:title', content: title },
         ],
-        link: [{ rel: 'icon', type: 'image/png', href: 'favicon.png' }],
+        link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }],
     },
     buildModules: ['@nuxt/typescript-build'],
 }

@@ -46,10 +46,10 @@ export default Vue.extend({
     border-radius: 150px;
 }
 /deep/ .ding {
-    width: 80px;
-    height: 80px;
-    margin-left: -40px;
-    margin-top: -40px;
+    width: 76px;
+    height: 76px;
+    margin-left: -38px;
+    margin-top: -38px;
 }
 
 /deep/ .gu,
