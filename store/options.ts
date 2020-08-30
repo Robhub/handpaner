@@ -2,7 +2,7 @@ import * as DATA from '../data'
 
 export const state = () => ({
     handpans: '',
-    volume: 0.4,
+    volume: 0.6,
     chosenSamplesBankIndex: 0,
     samplesBanks: DATA.samplesBanks,
 })
