@@ -199,6 +199,10 @@ export default Vue.extend({
             return isInPanScale
         },
         isHighlighted(noteName: any, octave: number): boolean {
+            const highlightedNotes = this.$store.state.selection.highlightedNotes
+            if (highlightedNotes.indexOf(noteName + octave) !== -1) {
+                return true
+            }
             const otherNote = alternateFlatSharp(noteName)
             let isInScale = false
             let isInPanScale = false

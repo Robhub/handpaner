@@ -111,12 +111,24 @@
                     </div>
                 </div>
                 <div class="tab-content" v-if="displayMode === 'songs'">
-                    Coming soon!
+                    {{ uniqueSongs.length }} different songs.
+                    <div class="selectables">
+                        <div
+                            class="selectable"
+                            v-for="song in displayedSongs"
+                            v-bind:key="song.name + song.transpo"
+                            @click="selectSong(song)"
+                            @mouseover="selectSong(song)"
+                            @mouseout="unselectSong()"
+                        >
+                            {{ song.name }} ({{ song.transpo }})
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="zone play-options">
-                <SelectVolume/>
-                <SelectSamplesBank/>
+                <SelectVolume />
+                <SelectSamplesBank />
             </div>
             <div class="zone">
                 <HandpanDiagrams
@@ -137,10 +149,11 @@ import * as DATA from '../data'
 import sortBy from 'lodash'
 import { Chord } from '../models/chord'
 import { Handpan } from '../models'
-import { genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScales } from '../music'
+import { genSongs, genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScales } from '../music'
 import { default as HandpanDiagrams } from '../components/handpan-diagrams.vue'
 import { default as SelectVolume } from '../components/select-volume.vue'
 import { default as SelectSamplesBank } from '../components/select-samplesbank.vue'
+import { Song } from '../data/songs'
 
 export default Vue.extend({
     components: {
@@ -175,6 +188,7 @@ export default Vue.extend({
             displayedScales: <any>[],
             displayedChords: <any>[],
             displayedPanScales: <any>[],
+            displayedSongs: <Song[]>[],
             ignoreNextHashChange: false,
         }
     },
@@ -192,6 +206,9 @@ export default Vue.extend({
         }, 1)
     },
     computed: {
+        uniqueSongs(): string[] {
+            return [...new Set(Array.from(this.displayedSongs.map(song => song.name)))]
+        },
         playPath(): string {
             if (this.displayedHandpan) {
                 return 'play/#' + this.displayedHandpan.absNotationUser.replace(/ /g, '-')
@@ -288,6 +305,7 @@ export default Vue.extend({
             this.displayedScales = genScales(this.handpans)
             this.displayedPanScales = genPanScales(this.handpans)
             this.displayedChords = genChords(uniqueNotesAllPans)
+            this.displayedSongs = genSongs(this.handpans)
         },
         genScalesAndChords(handpan: Handpan) {
             // Est-ce encore utile ?
@@ -320,6 +338,12 @@ export default Vue.extend({
         unselectScale() {
             this.selectedScale = {}
         },
+        selectSong(song: Song) {
+            this.$store.commit('selection/setHighlightedNotes', song.notes)
+        },
+        unselectSong() {
+            this.$store.commit('selection/setHighlightedNotes', [])
+        },
         selectChord(chordType: any, chord: any) {
             this.selectedChord = {
                 label: chord.label,
@@ -347,6 +371,7 @@ export default Vue.extend({
 #app {
     position: relative;
 }
+.selectables,
 .chord-type,
 .panscales,
 .scales {
@@ -360,6 +385,7 @@ export default Vue.extend({
     padding-right: 8px;
     text-align: right;
 }
+.selectable,
 .chord,
 .panscale,
 .scale {

@@ -24,7 +24,6 @@ export default Vue.extend({
         selectedChord: Object, // TODO typage chords
         selectedPanScale: Object,
         selectedScale: Object,
-        samplesBank: Object,
     },
 })
 </script>

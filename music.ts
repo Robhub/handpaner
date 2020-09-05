@@ -1,4 +1,5 @@
 import * as DATA from './data'
+import SONGS from './data/songs'
 import { Handpan } from './models'
 
 // F5 => {noteName:'F', octave:5}
@@ -163,5 +164,61 @@ export const genScales = (handpans: Handpan[]): any[] => {
                     }).length,
                 special: scale.special ? relToAbsSharp(tonic, scale.special) : null,
             }))
+    })
+}
+
+export const genSongs = (handpans: Handpan[]): any[] => {
+    const notesAllPans = handpans.flatMap(handpan => [
+        handpan.ding + handpan.dingOctave,
+        ...handpan.notesAll.map(note => note.name + note.octave),
+    ]) // En attendant le ding dans notesAll
+    const uniqueNotesAllPans = [...new Set(notesAllPans)]
+    return SONGS.flatMap(song => {
+        if (!song.notes) {
+            return []
+        }
+        const results = []
+        for (let i = -30; i < 20; i++) {
+            const transposedNotes = transpose(song.notes, i)
+            const songComplete = transposedNotes.every(note => {
+                return uniqueNotesAllPans.indexOf(note) >= 0
+            })
+            if (songComplete) {
+                results.push({
+                    name: song.name,
+                    notes: transposedNotes,
+                    transpo: i
+                })
+            }
+        }
+        return results
+    })
+}
+
+// A1 B1 C2, 1 => A#1 C2 C#2
+// A1 B1 C2, 2 => B1 C#2 D2
+// A1 B1 C2, 3 => C2 D2 D#2
+export const transpose = (notes: string[], semitones: number) => {
+    if (semitones === 0) {
+        return notes
+    }
+    return notes.map(note => {
+        const { noteName, octave } = splitNoteNameAndOctave(note)
+        if (!octave) {
+            throw new Error('Octave missing: ' + note)
+        }
+        const noteNameSharp = flatToSharp(noteName)
+        const noteIndex = DATA.notesSharp.indexOf(noteNameSharp)
+        let newNoteIndex = noteIndex + semitones
+        let newOctave = octave
+        while (newNoteIndex < 0) {
+            newNoteIndex += 12
+            newOctave--
+        }
+        while (newNoteIndex >= 12) {
+            newNoteIndex -= 12
+            newOctave++
+        }
+        return DATA.notesSharp[newNoteIndex] + newOctave
     })
 }
