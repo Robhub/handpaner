@@ -44,6 +44,7 @@
                             highlight: isHighlighted(note.name, note.octave),
                             special: isSpecial(note.name),
                             highlightplus: isHighlighted(note.name, note.octave) && isRoot(note.name),
+                            highlightless: isNoteInModel(note.name, note.octave),
                         }"
                         @mousedown="playNoteMouse($event, note)"
                         @touchstart="playNoteTouch($event, note)"
