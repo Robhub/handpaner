@@ -1,24 +1,20 @@
 <template>
     <div>
         <div class="play-options">
-            <SelectVolume/>
-            <SelectSamplesBank/>
+            <SelectVolume />
+            <SelectSamplesBank />
         </div>
-        <HandpanDiagram
-            v-if="handpan"
-            :handpan="handpan"
-            :selectedChord="selectedChord"
-            :selectedPanScale="null"
-            :selectedScale="null"
-        />
+        <Record />
+        <HandpanDiagram v-if="handpan" :handpan="handpan" :selectedChord="selectedChord" :selectedPanScale="null" :selectedScale="null" />
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { default as HandpanDiagram } from '../components/handpan-diagram.vue'
-import { default as SelectVolume } from '../components/select-volume.vue'
-import { default as SelectSamplesBank } from '../components/select-samplesbank.vue'
+import HandpanDiagram from '../components/handpan-diagram.vue'
+import SelectVolume from '../components/select-volume.vue'
+import SelectSamplesBank from '../components/select-samplesbank.vue'
+import Record from '../components/record.vue'
 import { Handpan } from '../models'
 import * as DATA from '../data'
 
@@ -27,6 +23,7 @@ export default Vue.extend({
         HandpanDiagram,
         SelectVolume,
         SelectSamplesBank,
+        Record,
     },
     layout: 'empty',
     head() {
@@ -52,7 +49,7 @@ export default Vue.extend({
             },
             set(value) {
                 this.$store.commit('options/setVolume', value)
-            }
+            },
         },
     },
     mounted() {

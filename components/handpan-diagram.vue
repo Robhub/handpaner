@@ -70,6 +70,7 @@ let isMobile = false
 let audioctx: any
 let clacBuffer: any
 let guBuffer: any
+let playInterval: any
 
 function loadSample(path: string, fncb: Function): void {
     const request = new XMLHttpRequest()
@@ -112,7 +113,30 @@ export default Vue.extend({
             }
         },
     },
+    mounted() {
+        this.$root.$on('playRecord', (xx: any) => {
+            const { record, endTime } = xx
+            this.beginPlayback(record, endTime)
+        })
+        this.$root.$on('stopPlayback', () => {
+            clearTimeout(playInterval)
+        })
+    },
+    destroyed() {
+        this.$root.$off('playRecord')
+        this.$root.$off('stopPlayback')
+    },
     methods: {
+        beginPlayback(record: any, endTime: any): void {
+            record.forEach((elt: any) => {
+                setTimeout(() => {
+                    this.playNoteByFullname(elt.note)
+                }, elt.time)
+            })
+            playInterval = setTimeout(() => {
+                this.beginPlayback(record, endTime)
+            }, endTime)
+        },
         playClacMouse(): void {
             if (!isMobile) {
                 this.playClac()
@@ -148,6 +172,22 @@ export default Vue.extend({
                 this.playNote(note)
             }
         },
+        playNoteByFullname(noteFullname: string): void {
+            let noteFound = null
+            if (this.handpan.ding + this.handpan.dingOctave === noteFullname) {
+                // TODO : Déplacer le DING dans notesAll
+                noteFound = { name: this.handpan.ding, octave: this.handpan.dingOctave }
+            } else {
+                noteFound = this.handpan.notesAll.find(note => {
+                    return note.name + note.octave === noteFullname
+                })
+            }
+            if (noteFound) {
+                this.playNote(noteFound)
+            } else {
+                console.log('note not found in the pan', noteFullname)
+            }
+        },
         playNote(note: any): void {
             const name = note.name
             const octave = note.octave
@@ -156,6 +196,7 @@ export default Vue.extend({
             const noteBuffer: any = DATA.samplesBanks[chosenSamplesBankIndex].buffer[nameSharp + octave]
             if (noteBuffer) {
                 this.playSample(noteBuffer)
+                this.$store.commit('recorder/playNote', nameSharp + octave)
                 if (note.animated === undefined) {
                     this.handpan.dingAnimated = false
                     setTimeout(() => {
