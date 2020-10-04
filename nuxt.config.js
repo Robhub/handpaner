@@ -4,6 +4,9 @@ const description =
 const image = 'https://handpaner.com/handpaner.png'
 
 export default {
+    server: {
+        host: '0.0.0.0',
+    },
     head: {
         titleTemplate: 'Handpaner',
         meta: [

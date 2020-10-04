@@ -10,12 +10,13 @@
     "author": "Robin BERGERE",
     "license": "MIT",
     "dependencies": {
-        "nuxt": "latest",
         "@nuxt/typescript-build": "latest",
+        "@types/lodash": "latest",
         "lodash-es": "latest",
-        "@types/lodash": "latest"
+        "nuxt": "latest",
+        "@nuxt/types": "latest"
     },
     "devDependencies": {
-        "tslint": "latest"
+        "eslint": "latest"
     }
 }
