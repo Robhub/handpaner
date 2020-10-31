@@ -8,19 +8,24 @@ export const panScales = [
     { val: '1/ 5 7m 1 2 3m 4 5 7m', name: 'Amara 8+1' }, // = Celtic minor
     { val: '1/ 3 5 7 1 3 T 5 7', name: 'Aegean 8+1' },
     { val: '1/ 4 5 6m 7m 1 2m 3m 4', name: 'Aeolian 8+1' },
+    { val: '1/ 3m 4 5 6m 7m 1 3m 4', name: 'Avalon 8+1' },
+    { val: '1/ 3m 4 5 6m 7m 1 3m 4 5', name: 'Avalon 9+1' },
+    { val: '1/ 4 6m 7m 7 1 3m 4 6m', name: 'Blues 8+1' },
     { val: '1/ 3m 4 7m 1 3m 4 5 7m', name: 'Chao Guo 8+1' },
     { val: '1/ 3m 5 6m 7m 1 2 3m', name: 'Equinox 7+1' },
     { val: '1/ 3m 5 6m 7m 1 2 3m 5', name: 'Equinox 8+1' },
     { val: '1/ 4 5 6m 7m 1 2m 3 4 5', name: 'Harmonic minor 8+1' },
+    { val: '1/ 3m 4 5 6m 1 3m 4 5', name: 'High Avalon 8+1' },
     { val: '1/ 5 6m 7 1 2 3m 4 5', name: 'Hijaz 8+1' },
     { val: '1/ 4 T 6 7m 1 2m 3m 4', name: 'Hijaz (Mercury) 8+1' },
     { val: '1/ 4 T 6 7m 1 2m 3m 3', name: 'Hijaz Kar (Mercury) 8+1' },
+    { val: '1/ 5 6m 7m 1 2m 3 4 5', name: 'Hijaz Major 8+1' },
     { val: '1/ 5 6m 1 2 3m 4 5', name: 'Insen 7+1' },
     { val: '1/ 5 6m 1 2 3m 4 5 6m', name: 'Insen 8+1' },
     { val: '1/ 5 6m 7m 1 2 3m 5 7m', name: 'Integral (Mercury) 8+1' },
     { val: '1/ 5 6m 7m 1 2 3m 5 6m', name: 'Integral (Sam) 8+1' },
     { val: '1/ 4 5 6 7m 1 2 3m 4', name: 'Jibuk 8+1' },
-    { val: '1/ 5 6 1 2 3 4 5 1', name: 'Anahata' },
+    { val: '1/ 5 6 1 2 3 4 5 1', name: 'Anahata 8+1' },
     { val: '1/ 4 5 6m 1 2 3m 4', name: 'Minor 7+1' }, // Pas de 7m ??
     { val: '1/ 4 5 6m 1 2 3m 4 5', name: 'Minor 8+1' }, // Pas de 7m ??
     { val: '1/ 5 6m 7m 1 2 3m 4', name: 'Kurd 7+1' }, // = Annaziska
@@ -34,15 +39,20 @@ export const panScales = [
     { val: '1/ 3 4 5 7 1 3 4 5', name: 'Melog Selisir 8+1' },
     { val: '1/ 3m 5 6m 1 2 3m 5', name: 'Mystic (Mercury) 7+1' },
     { val: '1/ 5 6m 1 2 3m 4 5 7m', name: 'Mystic (Sam) 8+1' },
-    { val: '1/ 5 6 7m 1 2 3 5', name: 'Mixolydian 7+1' },
-    { val: '1/ 5 6 7m 1 2 3 5 6', name: 'Mixolydian 8+1' },
+    { val: '1/ 5 6m 1 2 3m 5 7m', name: 'Mystic (Hagane) 8+1' },
+    { val: '1/ 5 6 7m 1 2 3 5', name: 'Mixolydian (-4) 7+1' },
+    { val: '1/ 5 6 7m 1 2 3 5 6', name: 'Mixolydian (-4) 8+1' },
+    { val: '1/ 5 6 1 2 3 4 5 6', name: 'Mixolydian (-7m) 8+1' },
     { val: '1/ 3 4 5 6 1 3 4 5', name: 'Oxalis 8+1' },
+    { val: '1/ 3 5 7 1 2 3 5', name: 'Paradise (v1) 7+1' },
+    { val: '1/ 3 4 5 1 2 3 5', name: 'Paradise (v2) 7+1' },
     { val: '1/ 4 5 6m 1 3m 4 5 6m', name: 'Pygmy 8+1' },
     { val: '1/ 2 3m 5 7m 1 2 3m 5', name: 'Low Pygmy 8+1' },
+    { val: '1/ 4 5 6 1 2 4 5 6', name: 'Pentatonic Major 8+1' },
     { val: '1/ 5 7m 1 2m 3 4 5 7m', name: 'Raga Desh 8+1' }, // = Binnha
     { val: '1/ 4 5 6m 7 1 2 3m 5', name: 'Romanian Hijaz 8+1' },
     { val: '1/ 3m 5 6m 7 1 2 3m 5', name: 'Romanian Mineur harmonique 8+1' },
-    { val: '1/ 4 5 6m 1 2m 4 5 6m', name: 'Akebono 8+1' }, // = Goon Kali
+    { val: '1/ 4 5 6m 1 2m 4 5 6m', name: 'Akebono 8+1' }, // = Goon Kali ????
     { val: '1/ 5 7 1 2 3 4 5 1', name: 'Ysha Savita 8+1' },
     { val: '1/ 5 6m 1 3 4 5 6m 1', name: 'Onoleo 8+1' },
     { val: '1/ 5 7 1 2 3 T 5 7', name: 'Lydian 8+1' },
@@ -68,7 +78,8 @@ export const scales = [
     { name: 'Locrian', ecarts: ['1', '2m', '3m', '4', 'T', '6m', '7m'] },
 
     { name: 'Harmonic minor', ecarts: ['1', '2', '3m', '4', '5', '6m', '7'], special: '7' },
-    { name: 'Phrygian dominant/Hijaz', ecarts: ['1', '2m', '3', '4', '5', '6m', '7m'], special: '3' },
+    { name: 'Phrygian dominant/Hijaz', ecarts: ['1', '2m', '3', '4', '5', '6m', '7m'], special: '3' }, // 5eme mode Phrygian Major, Balkan, Spanish Gipsy, Ahava Rabah
+    { name: 'Romanian minor/Ukrainian dorian', ecarts: ['1', '2', '3m', 'T', '5', '6', '7m'], special: 'T'  }, // 4eme mode (Dorian #4)
     // TODO : autres modes harmoniques mineur ?
 
     // TODO : mélodique mineur ??
