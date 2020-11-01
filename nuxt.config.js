@@ -11,6 +11,7 @@ export default {
         titleTemplate: 'Handpaner',
         meta: [
             { charset: 'utf-8' },
+            { name: 'color-scheme', content: 'light' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
             { name: 'description', content: description },
             { name: 'og:title', content: title },
@@ -23,4 +24,8 @@ export default {
         link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }],
     },
     buildModules: ['@nuxt/typescript-build'],
+    build: {
+        publicPath: '/nuxt/'
+    },
+    target: 'static',
 }

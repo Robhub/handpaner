@@ -1,0 +1,13 @@
+{
+  "appId": "com.handpaner.app",
+  "appName": "handpaner",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}

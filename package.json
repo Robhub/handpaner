@@ -10,11 +10,14 @@
     "author": "Robin BERGERE",
     "license": "MIT",
     "dependencies": {
+        "@capacitor/android": "^2.4.2",
+        "@capacitor/cli": "^2.4.2",
+        "@capacitor/core": "^2.4.2",
+        "@nuxt/types": "latest",
         "@nuxt/typescript-build": "latest",
         "@types/lodash": "latest",
         "lodash-es": "latest",
-        "nuxt": "latest",
-        "@nuxt/types": "latest"
+        "nuxt": "latest"
     },
     "devDependencies": {
         "eslint": "latest"
