@@ -479,4 +479,38 @@ sub {
 .note:nth-child(15) span {
     transform: rotate(calc((var(--deg) - 360deg / var(--nbnotes) * 7) * -1));
 }
+
+
+
+
+.note:nth-child(16) {
+    transform: rotate(calc(var(--deg) + 360deg / var(--nbnotes) * 8));
+}
+.note:nth-child(16) span {
+    transform: rotate(calc((var(--deg) + 360deg / var(--nbnotes) * 8) * -1));
+}
+
+.note:nth-child(17) {
+    transform: rotate(calc(var(--deg) - 360deg / var(--nbnotes) * 8));
+}
+.note:nth-child(17) span {
+    transform: rotate(calc((var(--deg) - 360deg / var(--nbnotes) * 8) * -1));
+}
+
+
+
+.note:nth-child(18) {
+    transform: rotate(calc(var(--deg) + 360deg / var(--nbnotes) * 9));
+}
+.note:nth-child(18) span {
+    transform: rotate(calc((var(--deg) + 360deg / var(--nbnotes) * 9) * -1));
+}
+
+.note:nth-child(19) {
+    transform: rotate(calc(var(--deg) - 360deg / var(--nbnotes) * 9));
+}
+.note:nth-child(19) span {
+    transform: rotate(calc((var(--deg) - 360deg / var(--nbnotes) * 9) * -1));
+}
+
 </style>

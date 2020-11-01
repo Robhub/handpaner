@@ -6,14 +6,17 @@ export const notesFlat = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭
 export const panScales = [
     { val: '1/ 5 7m 1 2 3m 4 5', name: 'Amara 7+1' }, // = Celtic minor
     { val: '1/ 5 7m 1 2 3m 4 5 7m', name: 'Amara 8+1' }, // = Celtic minor
+    { val: '1/ 5 7m 1 2 3m 4 5 1', name: 'Amara Triple 8+1' },
     { val: '1/ 3 5 7 1 3 T 5 7', name: 'Aegean 8+1' },
     { val: '1/ 4 5 6m 7m 1 2m 3m 4', name: 'Aeolian 8+1' },
+    { val: '1/ (2) (3) 4 5 6 7 1 2 3 (4) 5 6 (7) (1) (2) (3)', name: 'Ashakiran 9+7+1' },
     { val: '1/ 3m 4 5 6m 7m 1 3m 4', name: 'Avalon 8+1' },
     { val: '1/ 3m 4 5 6m 7m 1 3m 4 5', name: 'Avalon 9+1' },
     { val: '1/ 4 6m 7m 7 1 3m 4 6m', name: 'Blues 8+1' },
     { val: '1/ 3m 4 7m 1 3m 4 5 7m', name: 'Chao Guo 8+1' },
     { val: '1/ 3m 5 6m 7m 1 2 3m', name: 'Equinox 7+1' },
     { val: '1/ 3m 5 6m 7m 1 2 3m 5', name: 'Equinox 8+1' },
+    { val: '1/ (2) (3m) (4) 5 6m 7 1 2 3m 4 5 (7) 1 (2) (3m)', name: 'Harmonic Lora 9+6+1' },
     { val: '1/ 4 5 6m 7m 1 2m 3 4 5', name: 'Harmonic minor 8+1' },
     { val: '1/ 3m 4 5 6m 1 3m 4 5', name: 'High Avalon 8+1' },
     { val: '1/ 5 6m 7 1 2 3m 4 5', name: 'Hijaz 8+1' },
