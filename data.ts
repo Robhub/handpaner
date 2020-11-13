@@ -123,6 +123,12 @@ export const chords = [
         chords: [{ val: '1 3m 5', name: 'Minor', abbr: 'm' }],
     },
     {
+        type: '5th',
+        chords: [
+            { val: '1 5', name: 'Fifth', abbr: '⁵' },
+        ],
+    },
+    {
         type: '7th',
         chords: [
             { val: '1 3 5 7m', name: 'Dominant seventh', abbr: '⁷' },
