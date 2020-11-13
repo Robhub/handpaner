@@ -15,10 +15,13 @@
 import { Capacitor } from '@capacitor/core'
 import Vue from 'vue'
 export default Vue.extend({
-    computed: {
-        showDonationLink(): boolean {
-            return Capacitor.getPlatform() === 'web' || !Capacitor.isNative
+    data() {
+        return {
+            showDonationLink: false
         }
+    },
+    mounted() {
+        this.showDonationLink = Capacitor.getPlatform() === 'web'
     }
 })
 </script>
