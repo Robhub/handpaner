@@ -1,9 +1,5 @@
 <template>
     <div id="app">
-        <div class="config">
-            <div class="toggle">☰</div>
-        </div>
-        <img src="../static/handpaner.png" />
         <div class="tabs">
             <div
                 class="tab"
@@ -22,7 +18,7 @@
                 <h3>Absolute input</h3>
                 Notes
                 <br />
-                <input v-model="inputAbsNotation" size="40" @keyup="absChanged" />
+                <input v-model="inputAbsNotation" size="40" @keyup="absChanged" placeholder="Ex: C/ D E F G A B C" />
             </div>
             <div>
                 <h3>Relative input</h3>
@@ -126,10 +122,6 @@
                     </div>
                 </div>
             </div>
-            <div class="zone play-options">
-                <SelectVolume />
-                <SelectSamplesBank />
-            </div>
             <div class="zone">
                 <HandpanDiagrams
                     :handpans="handpans"
@@ -151,15 +143,11 @@ import { Chord } from '../models/chord'
 import { Handpan } from '../models'
 import { genSongs, genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScales } from '../music'
 import { default as HandpanDiagrams } from '../components/handpan-diagrams.vue'
-import { default as SelectVolume } from '../components/select-volume.vue'
-import { default as SelectSamplesBank } from '../components/select-samplesbank.vue'
 import { Song } from '../data/songs'
 
 export default Vue.extend({
     components: {
         HandpanDiagrams,
-        SelectVolume,
-        SelectSamplesBank,
     },
     data() {
         return {
@@ -200,12 +188,14 @@ export default Vue.extend({
                 let handpan = new Handpan()
                 handpan.loadFromAbsNotation('D/ A C D E F G A C')
                 this.handpans.push(handpan)
-                this.genScalesAndChords(handpan)
                 this.panChanged()
             }
         }, 1)
     },
     computed: {
+        showBebop(): boolean {
+            return this.$store.state.options.showBebop
+        },
         uniqueSongs(): string[] {
             return [...new Set(Array.from(this.displayedSongs.map(song => song.name)))]
         },
@@ -296,22 +286,15 @@ export default Vue.extend({
             }
         },
         panChanged(): void {
-            this.genScalesAndChords(this.displayedHandpan)
             this.displayHandpan()
             this.genScalesAndChordsAllPans()
         },
         genScalesAndChordsAllPans() {
             const uniqueNotesAllPans = [...new Set(Array.from(this.handpans.flatMap(handpan => handpan.getUniqueNotes())))]
-            this.displayedScales = genScales(this.handpans)
+            this.displayedScales = genScales(this.handpans, { showBebop: this.showBebop })
             this.displayedPanScales = genPanScales(this.handpans)
             this.displayedChords = genChords(uniqueNotesAllPans)
             this.displayedSongs = genSongs(this.handpans)
-        },
-        genScalesAndChords(handpan: Handpan) {
-            // Est-ce encore utile ?
-            // handpan.genChords()
-            // handpan.genPanScales()
-            // handpan.genScales()
         },
         selectHandpan(index: number): void {
             this.displayedHandpanIndex = index
@@ -368,9 +351,6 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-#app {
-    position: relative;
-}
 .selectables,
 .chord-type,
 .panscales,
@@ -448,15 +428,6 @@ export default Vue.extend({
 }
 .delete:hover {
     color: red;
-}
-.config {
-    position: absolute;
-    right: 0;
-    top: 0;
-    display: none; /* TODO */
-}
-.toggle {
-    font-size: 32px;
 }
 .play-options {
     display: flex;

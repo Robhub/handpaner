@@ -30,8 +30,8 @@ export default [
     { category: SongCategory.IRISH, name: 'Lannigan’s Ball', notes: ['D4', 'E4', 'F♯4', 'G4', 'A4', 'B4', 'C5', 'C♯5', 'D5', 'E5', 'F♯5', 'G5', 'A5']},
     { category: SongCategory.IRISH, name: 'Father O’Flynn', notes: ['D4', 'F♯4', 'G4', 'A4', 'B4', 'C♯5', 'D5', 'E5', 'F♯5', 'G5', 'A5']},
     { category: SongCategory.IRISH, name: 'Star of the County Down', notes: ['E4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'G5']},
-    { category: SongCategory.IRISH, name: 'Drowsy Maggie', notes: ['E4', 'F♯4', 'A4', 'B4', 'C♯5', 'D5', 'E5', 'F♯5', 'G5', 'A5']},
-    { category: SongCategory.IRISH, name: 'Killavil jig', notes: ['E4', 'F♯4', 'A4', 'B4', 'D5', 'E5', 'F♯5', 'G5']},
+    { category: SongCategory.IRISH, name: 'Drowsy Maggie', notes: ['D4', 'E4', 'F♯4', 'A4', 'B4', 'C♯5', 'D5', 'E5', 'F♯5', 'G5', 'A5']},
+    { category: SongCategory.IRISH, name: 'Killavil jig', notes: ['D4', 'E4', 'F♯4', 'A4', 'B4', 'D5', 'E5', 'F♯5', 'G5']},
     { category: SongCategory.IRISH, name: 'Musical priest', notes: ['F♯4', 'A4', 'B4', 'C♯5', 'D5', 'E5', 'F♯5', 'A5', 'B5']},
-    { category: SongCategory.IRISH, name: 'Trip to Pakistan', notes: ['E4', 'F♯4', 'G4', 'A4', 'B4', 'C5']},
+    { category: SongCategory.IRISH, name: 'Trip to Pakistan', notes: ['D4', 'E4', 'F♯4', 'G4', 'A4', 'B4', 'C5']},
 ] as Song[]

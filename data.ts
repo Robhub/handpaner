@@ -9,6 +9,7 @@ export const panScales = [
     { val: '1/ 5 7m 1 2 3m 4 5 1', name: 'Amara Triple 8+1' },
     { val: '1/ 3 5 7 1 3 T 5 7', name: 'Aegean 8+1' },
     { val: '1/ 4 5 6m 7m 1 2m 3m 4', name: 'Aeolian 8+1' },
+    { val: '1/ 5 6m 7m 1 3m 5 6m 7m', name: 'Arboreal 8+1' },
     { val: '1/ (2) (3) 4 5 6 7 1 2 3 (4) 5 6 (7) (1) (2) (3)', name: 'Ashakiran 9+7+1' },
     { val: '1/ 3m 4 5 6m 7m 1 3m 4', name: 'Avalon 8+1' },
     { val: '1/ 3m 4 5 6m 7m 1 3m 4 5', name: 'Avalon 9+1' },
@@ -25,6 +26,7 @@ export const panScales = [
     { val: '1/ 5 6m 7m 1 2m 3 4 5', name: 'Hijaz Major 8+1' },
     { val: '1/ 5 6m 1 2 3m 4 5', name: 'Insen 7+1' },
     { val: '1/ 5 6m 1 2 3m 4 5 6m', name: 'Insen 8+1' },
+    { val: '1/ 5 6m 1 2 3m 4 5 1', name: 'Ursa minor 8+1' },
     { val: '1/ 5 6m 7m 1 2 3m 5 7m', name: 'Integral (Mercury) 8+1' },
     { val: '1/ 5 6m 7m 1 2 3m 5 6m', name: 'Integral (Sam) 8+1' },
     { val: '1/ 4 5 6 7m 1 2 3m 4', name: 'Jibuk 8+1' },
@@ -40,9 +42,9 @@ export const panScales = [
     { val: '1/ 4 5 6 7 1 2 3', name: 'Major 7+1' },
     { val: '1/ 4 5 6 7 1 2 3 5', name: 'Major 8+1' }, // = Sabyie
     { val: '1/ 3 4 5 7 1 3 4 5', name: 'Melog Selisir 8+1' },
-    { val: '1/ 3m 5 6m 1 2 3m 5', name: 'Mystic (Mercury) 7+1' },
+    { val: '1/ 3m 5 6m 1 2 3m 5', name: 'Low Mystic 7+1' },
     { val: '1/ 5 6m 1 2 3m 4 5 7m', name: 'Mystic (Sam) 8+1' },
-    { val: '1/ 5 6m 1 2 3m 5 7m', name: 'Mystic (Hagane) 8+1' },
+    { val: '1/ 5 6m 1 2 3m 5 7m', name: 'Mystic (Hagane) 7+1' },
     { val: '1/ 5 6 7m 1 2 3 5', name: 'Mixolydian (-4) 7+1' },
     { val: '1/ 5 6 7m 1 2 3 5 6', name: 'Mixolydian (-4) 8+1' },
     { val: '1/ 5 6 1 2 3 4 5 6', name: 'Mixolydian (-7m) 8+1' },
@@ -63,12 +65,12 @@ export const panScales = [
 ]
 export const scales = [
     // ==== OCTATONIC
-    { name: 'Bebop major', ecarts: ['1', '2', '3', '4', '5', '6m', '6', '7'], special: '6m' },
-    { name: 'Bebop dorian', ecarts: ['1', '2', '3m', '3', '4', '5', '6', '7m'], special: '3' },
-    { name: 'Bebop dominant', ecarts: ['1', '2', '3', '4', '5', '6', '7m', '7'], special: '7' },
+    { name: 'Bebop major', ecarts: ['1', '2', '3', '4', '5', '6m', '6', '7'], special: '6m', category: 'bebop' },
+    { name: 'Bebop dorian', ecarts: ['1', '2', '3m', '3', '4', '5', '6', '7m'], special: '3', category: 'bebop' },
+    { name: 'Bebop dominant', ecarts: ['1', '2', '3', '4', '5', '6', '7m', '7'], special: '7', category: 'bebop' },
     // { name: 'Bebop mindor??', ecarts: ['1', '2', '3m', '4', '5', '6m', '6', '7m']},
-    { name: 'Bebop phrygian dominant', ecarts: ['1', '2m', '3', '4', '5', '6m', '7m', '7'] },
-    { name: 'Bebop locrian', ecarts: ['1', '2m', '3m', '4', 'T', '5', '6m', '7m'], special: '5' },
+    { name: 'Bebop phrygian dominant', ecarts: ['1', '2m', '3', '4', '5', '6m', '7m', '7'], special: '7', category: 'bebop' },
+    { name: 'Bebop locrian', ecarts: ['1', '2m', '3m', '4', 'T', '5', '6m', '7m'], special: '5', category: 'bebop' },
     // TODO : les autres Bebop
 
     // ==== HEPTATONIC
@@ -82,7 +84,7 @@ export const scales = [
 
     { name: 'Harmonic minor', ecarts: ['1', '2', '3m', '4', '5', '6m', '7'], special: '7' },
     { name: 'Phrygian dominant/Hijaz', ecarts: ['1', '2m', '3', '4', '5', '6m', '7m'], special: '3' }, // 5eme mode Phrygian Major, Balkan, Spanish Gipsy, Ahava Rabah
-    { name: 'Romanian minor/Ukrainian dorian', ecarts: ['1', '2', '3m', 'T', '5', '6', '7m'], special: 'T'  }, // 4eme mode (Dorian #4)
+    { name: 'Romanian minor/Ukrainian dorian', ecarts: ['1', '2', '3m', 'T', '5', '6', '7m'], special: 'T' }, // 4eme mode (Dorian #4)
     // TODO : autres modes harmoniques mineur ?
 
     // TODO : mélodique mineur ??
@@ -124,9 +126,7 @@ export const chords = [
     },
     {
         type: '5th',
-        chords: [
-            { val: '1 5', name: 'Fifth', abbr: '⁵' },
-        ],
+        chords: [{ val: '1 5', name: 'Fifth', abbr: '⁵' }],
     },
     {
         type: '7th',

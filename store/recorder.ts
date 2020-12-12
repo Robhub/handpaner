@@ -1,5 +1,5 @@
-export function stringifyRecord(st: any): string {
-    return st.record.map((evt: any) => evt.note + '@' + evt.time).join(',') + ',end@' + (st.endTime - st.startTime)
+export function stringifyRecord(state: any): string {
+    return state.record.map((evt: any) => evt.note + '@' + evt.time).join(',') + ',end@' + (state.endTime - state.startTime)
 }
 export function parseRecord(str: string): any {
     const evts = str.split(',').map(evt => evt.split('@'))
@@ -19,6 +19,7 @@ export function parseRecord(str: string): any {
 }
 
 export const state = () => ({
+    isListening: false,
     isRecording: false,
     startTime: 0,
     endTime: 0,
@@ -26,20 +27,37 @@ export const state = () => ({
 })
 
 export const mutations = {
-    newRecord(st: any) {
-        st.record = []
-        st.isRecording = true
-        st.startTime = new Date().getTime()
-        st.endTime = 0
+    startListening(state: any) {
+        state.isListening = true
     },
-    stopRecord(st: any) {
-        st.isRecording = false
-        st.endTime = new Date().getTime()
-        const str = stringifyRecord(st)
+    newRecord(state: any) {
+        state.record = []
+        state.isListening = false
+        state.isRecording = true
+        state.startTime = new Date().getTime()
+        state.endTime = 0
     },
-    playNote(st: any, note: string) {
+    stopRecord(state: any) {
+        state.isRecording = false
+        state.endTime = new Date().getTime()
+        const str = stringifyRecord(state)
+    },
+    addNote(state: any, note: string) {
         const noteTime = new Date().getTime()
-        const relativeTime = noteTime - st.startTime
-        st.record.push({ time: relativeTime, note })
+        const relativeTime = noteTime - state.startTime
+        state.record.push({ time: relativeTime, note })
+    },
+}
+
+export const actions = {
+    playNote({ commit, state }: any, note: string) {
+        console.log('play note', state.isListening, state.isRecording)
+        if (state.isListening) {
+            commit('newRecord')
+        }
+        if (!state.isRecording) {
+            return
+        }
+        commit('addNote', note)
     },
 }

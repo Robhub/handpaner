@@ -132,13 +132,20 @@ export const genPanScales = (handpans: Handpan[]): any[] => {
     })
 }
 
-export const genScales = (handpans: Handpan[]): any[] => {
+export const genScales = (handpans: Handpan[], options: any): any[] => {
     const notesAllPans = handpans.flatMap(handpan => [handpan.ding, ...handpan.notesAll.map(note => note.name)]) // En attendant le ding dans notesAll
     const uniqueNotesAllPans = [...new Set(notesAllPans)]
     return uniqueNotesAllPans.flatMap(tonic => {
-        const scalesWithAbs = DATA.scales.map(scale => {
-            return { ...scale, absSharp: scale.ecarts.map(ecart => relToAbsSharp(tonic, ecart)) }
-        })
+        const scalesWithAbs = DATA.scales
+            .filter(scale => {
+                if (!options.showBebop && scale.category === 'bebop') {
+                    return false
+                }
+                return true
+            })
+            .map(scale => {
+                return { ...scale, absSharp: scale.ecarts.map(ecart => relToAbsSharp(tonic, ecart)) }
+            })
         return scalesWithAbs
             .filter(scale => {
                 return scale.absSharp.every(note => {
@@ -187,7 +194,7 @@ export const genSongs = (handpans: Handpan[]): any[] => {
                 results.push({
                     name: song.name,
                     notes: transposedNotes,
-                    transpo: i
+                    transpo: i,
                 })
             }
         }

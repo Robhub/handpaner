@@ -1,7 +1,10 @@
 <template>
     <div class="record">
-        <button v-if="!isRecording" @click="startRecord()">rec</button>
-        <button v-if="isRecording" @click="stopRecord()">stop</button>
+        <button class="btn-rec" v-if="!isRecording" @click="startListening()">
+            <template v-if="isListening">…</template>
+            <template v-else>rec</template>
+        </button>
+        <button class="btn-stop" v-if="isRecording" @click="stopRecord()">stop</button>
         <input v-model="inputRecord" />
         <button v-if="!isPlaying" :disabled="!inputRecord" @click="playRecord()">play</button>
         <button v-if="isPlaying" @click="stopPlayback()">stop</button>
@@ -20,13 +23,16 @@ export default Vue.extend({
         }
     },
     computed: {
+        isListening() {
+            return this.$store.state.recorder.isListening
+        },
         isRecording() {
             return this.$store.state.recorder.isRecording
         },
     },
     methods: {
-        startRecord() {
-            this.$store.commit('recorder/newRecord')
+        startListening() {
+            this.$store.commit('recorder/startListening')
         },
         stopRecord() {
             this.$store.commit('recorder/stopRecord')
@@ -39,13 +45,29 @@ export default Vue.extend({
         stopPlayback() {
             this.isPlaying = false
             this.$root.$emit('stopPlayback')
-        }
+        },
     },
 })
 </script>
 
 <style scoped>
 .record {
-    text-align: center;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    margin: 0 -8px;
+}
+.record > * {
+    margin: 0 8px;
+}
+button:not(:disabled) {
+    cursor: pointer;
+}
+.btn-rec {
+    border: 1px solid red;
+    background: #ffcccc;
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
 }
 </style>

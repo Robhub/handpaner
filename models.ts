@@ -36,7 +36,10 @@ export class Handpan {
         if (splitted.length < 2) {
             return
         }
-        const relNotes = splitted[1].trim().split(' ').filter(Boolean)
+        const relNotes = splitted[1]
+            .trim()
+            .split(' ')
+            .filter(Boolean)
         const absNotes = relNotes.map(relNote => {
             const isBottom = relNote[0] === '('
             const relNoteClean = relNote.replace(/\(|\)/g, '')
@@ -46,7 +49,13 @@ export class Handpan {
         })
         const dingWithOctave = dingOctave === 3 ? this.ding : this.ding + dingOctave
         this.absNotationClean = dingWithOctave + '/ ' + absNotes.join(' ')
-        this.absNotationUser = dingWithOctave.replace(/♯/g, '#').replace(/♭/g, 'b') + '/ ' + absNotes.join(' ').replace(/♯/g, '#').replace(/♭/g, 'b')
+        this.absNotationUser =
+            dingWithOctave.replace(/♯/g, '#').replace(/♭/g, 'b') +
+            '/ ' +
+            absNotes
+                .join(' ')
+                .replace(/♯/g, '#')
+                .replace(/♭/g, 'b')
         this.genNotes(this.ding, absNotes as string[], dingOctave)
     }
 
@@ -65,7 +74,10 @@ export class Handpan {
         this.dingOctave = dingNameAndOctaveMatched.octave ? dingNameAndOctaveMatched.octave : 3
         this.absNotationClean = notesAsStringClean
         this.relNotation = absToRel(this.ding, notesAsStringClean)
-        const notes = splitted[1].trim().split(' ').filter(Boolean)
+        const notes = splitted[1]
+            .trim()
+            .split(' ')
+            .filter(Boolean)
         this.genNotes(this.ding, notes, this.dingOctave)
     }
 
@@ -114,7 +126,7 @@ export class Handpan {
         this.panScales = genPanScales([this])
     }
 
-    genScales(): void {
-        this.scales = genScales([this])
-    }
+    // genScales(): void {
+    //     this.scales = genScales([this])
+    // }
 }

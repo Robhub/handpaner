@@ -25,7 +25,9 @@ export default {
     },
     buildModules: ['@nuxt/typescript-build'],
     build: {
-        publicPath: '/nuxt/'
+        publicPath: '/nuxt/',
     },
     target: 'static',
+    plugins: [{ src: '~/plugins/vuex-persist', ssr: false }],
+    css: ['@/assets/css/global.css'],
 }

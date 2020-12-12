@@ -146,7 +146,9 @@ export default Vue.extend({
             this.playClac()
         },
         playClac(): void {
-            this.playSample(clacBuffer)
+            if (this.$store.state.options.enableClac) {
+                this.playSample(clacBuffer)
+            }
         },
         playGuMouse(event: Event): void {
             event.stopPropagation() // prevents clac
@@ -196,7 +198,7 @@ export default Vue.extend({
             const noteBuffer: any = DATA.samplesBanks[chosenSamplesBankIndex].buffer[nameSharp + octave]
             if (noteBuffer) {
                 this.playSample(noteBuffer)
-                this.$store.commit('recorder/playNote', nameSharp + octave)
+                this.$store.dispatch('recorder/playNote', nameSharp + octave)
                 if (note.animated === undefined) {
                     this.handpan.dingAnimated = false
                     setTimeout(() => {
@@ -480,9 +482,6 @@ sub {
     transform: rotate(calc((var(--deg) - 360deg / var(--nbnotes) * 7) * -1));
 }
 
-
-
-
 .note:nth-child(16) {
     transform: rotate(calc(var(--deg) + 360deg / var(--nbnotes) * 8));
 }
@@ -497,8 +496,6 @@ sub {
     transform: rotate(calc((var(--deg) - 360deg / var(--nbnotes) * 8) * -1));
 }
 
-
-
 .note:nth-child(18) {
     transform: rotate(calc(var(--deg) + 360deg / var(--nbnotes) * 9));
 }
@@ -512,5 +509,4 @@ sub {
 .note:nth-child(19) span {
     transform: rotate(calc((var(--deg) - 360deg / var(--nbnotes) * 9) * -1));
 }
-
 </style>

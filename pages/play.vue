@@ -1,9 +1,5 @@
 <template>
     <div>
-        <div class="play-options">
-            <SelectVolume />
-            <SelectSamplesBank />
-        </div>
         <Record />
         <HandpanDiagram v-if="handpan" :handpan="handpan" :selectedChord="selectedChord" :selectedPanScale="null" :selectedScale="null" />
     </div>
@@ -21,8 +17,6 @@ import * as DATA from '../data'
 export default Vue.extend({
     components: {
         HandpanDiagram,
-        SelectVolume,
-        SelectSamplesBank,
         Record,
     },
     layout: 'empty',
@@ -65,13 +59,6 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.play-options {
-    display: flex;
-    justify-content: center;
-}
-.play-options > * {
-    margin: 0 8px;
-}
 /deep/ .handpan-diagram {
     --deg: 90deg;
     width: 100vw;
