@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import * as DATA from './data'
 import SONGS from './data/songs'
 import { Handpan } from './models'
@@ -106,6 +107,12 @@ export const genChords = (uniqueNotes: any): any => {
     })
 }
 
+type PanScale = {
+    ding: string
+    name: string
+    notesAll: any[]
+}
+
 export const genPanScales = (handpans: Handpan[]): any[] => {
     const panScalesAbsolute = handpans.flatMap(handpan =>
         DATA.panScales.map(panScale => {
@@ -118,7 +125,7 @@ export const genPanScales = (handpans: Handpan[]): any[] => {
             }
         }),
     )
-    return panScalesAbsolute.filter(panScale => {
+    return _.uniqBy(panScalesAbsolute, p => p.ding + p.name).filter(panScale => {
         return panScale.notesAll.every(panNote => {
             return handpans
                 .flatMap(handpan => handpan.notesAll)

@@ -18,7 +18,7 @@ export const panScales = [
     { val: '1/ 3m 5 6m 7m 1 2 3m', name: 'Equinox 7+1' },
     { val: '1/ 3m 5 6m 7m 1 2 3m 5', name: 'Equinox 8+1' },
     { val: '1/ (2) (3m) (4) 5 6m 7 1 2 3m 4 5 (7) 1 (2) (3m)', name: 'Harmonic Lora 9+6+1' },
-    { val: '1/ 4 5 6m 7m 1 2m 3 4 5', name: 'Harmonic minor 8+1' },
+    { val: '1/ 4 5 6m 7m 1 2m 3 4', name: 'Harmonic minor 8+1' },
     { val: '1/ 3m 4 5 6m 1 3m 4 5', name: 'High Avalon 8+1' },
     { val: '1/ 5 6m 7 1 2 3m 4 5', name: 'Hijaz 8+1' },
     { val: '1/ 4 T 6 7m 1 2m 3m 4', name: 'Hijaz (Mercury) 8+1' },
