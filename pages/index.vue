@@ -15,28 +15,36 @@
         </div>
         <div class="tab-content">
             <div>
-                <h3>Absolute input</h3>
-                Notes
-                <br />
-                <input v-model="inputAbsNotation" size="40" @keyup="absChanged" placeholder="Ex: C/ D E F G A B C" />
-            </div>
-            <div>
-                <h3>Relative input</h3>
-                Ding
-                <select v-model="inputDing" @change="relChanged">
-                    <option v-for="note in notesAll" v-bind:key="note">{{ note }}</option>
-                </select>
-                <select v-model="inputDingOctave" @change="relChanged">
-                    <option>2</option>
-                    <option>3</option>
-                </select>
-                <br />Relative scale
-                <input v-model="inputRelNotation" size="40" @keyup="relChanged" />
-                <br />Handpan scale
-                <select v-model="inputPanscale" @change="panScaleChanged">
-                    <option v-for="panScale in allPanScalesSorted" v-bind:key="panScale.name" :value="panScale">{{ panScale.name }}</option>
-                </select>
-                <br /><nuxt-link :to="playPath">Play in full page</nuxt-link>
+                <div class="form-line">
+                    <span>Ding</span>
+                    <select v-model="inputDing" @change="relChanged">
+                        <option v-for="note in notesAll" v-bind:key="note">{{ note }}</option>
+                    </select>
+                    <select v-model="inputDingOctave" @change="relChanged">
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </div>
+                <div class="form-line">
+                    <span>Model</span>
+                    <select v-model="inputPanscale" @change="panScaleChanged">
+                        <option v-for="panScale in allPanScalesSorted" v-bind:key="panScale.name" :value="panScale">
+                            {{ panScale.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-line">
+                    <span>Notes</span>
+                    <input v-model="inputAbsNotation" size="30" @keyup="absChanged" placeholder="Ex: C/ D E F G A B C" />
+                </div>
+                <div class="form-line">
+                    <span>Relative</span>
+                    <select v-model="relativeNoteBase">
+                        <option v-for="note in uniqueNotesAllPans" v-bind:key="note">{{ note }}</option>
+                    </select>
+                    <label><input type="checkbox" v-model="showRelative" /> show relative</label>
+                </div>
+                <div class="play-full"><nuxt-link :to="playPath">Play in full page</nuxt-link></div>
             </div>
         </div>
         <div v-if="displayedHandpan">
@@ -143,7 +151,8 @@ import { Chord } from '../models/chord'
 import { Handpan } from '../models'
 import { genSongs, genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScales } from '../music'
 import { default as HandpanDiagrams } from '../components/handpan-diagrams.vue'
-import { Song } from '../data/songs'
+import { Song } from '@/data/songs'
+import { PanScale, allPanScales } from '@/data/panscales'
 
 export default Vue.extend({
     components: {
@@ -156,8 +165,8 @@ export default Vue.extend({
             handpans: <Handpan[]>[],
             inputAbsNotation: '',
             inputDing: '',
-            inputDingOctave: 3,
-            inputPanscale: <any>{},
+            inputDingOctave: '3',
+            inputPanscale: <PanScale | null>{},
             inputRelNotation: '',
             notes: <any[]>[],
             abs: '',
@@ -193,6 +202,22 @@ export default Vue.extend({
         }, 1)
     },
     computed: {
+        showRelative: {
+            get() {
+                return this.$store.state.selection.showRelative
+            },
+            set(value: boolean) {
+                this.$store.commit('selection/setShowRelative', value)
+            },
+        },
+        relativeNoteBase: {
+            get() {
+                return this.$store.state.selection.relativeNoteBase
+            },
+            set(value: string) {
+                this.$store.commit('selection/setRelativeNoteBase', value)
+            },
+        },
         showBebop(): boolean {
             return this.$store.state.options.showBebop
         },
@@ -207,13 +232,16 @@ export default Vue.extend({
             }
         },
         allPanScalesSorted(): any[] {
-            return DATA.panScales.sort((a: any, b: any) => a.name.localeCompare(b.name))
+            return allPanScales.sort((a: any, b: any) => a.name.localeCompare(b.name))
         },
         displayedScalesSorted(): any[] {
             return this.displayedScales.sort((a: any, b: any) => b.totalNotes - a.totalNotes)
         },
         displayedHandpan(): Handpan {
             return this.handpans[this.displayedHandpanIndex]
+        },
+        uniqueNotesAllPans(): string[] {
+            return [...new Set(Array.from(this.handpans.flatMap(handpan => handpan.getUniqueNotes())))]
         },
     },
     watch: {
@@ -256,12 +284,14 @@ export default Vue.extend({
             this.updateHash()
         },
         panScaleChanged(): void {
-            this.inputRelNotation = this.inputPanscale.val
+            if (this.inputPanscale) {
+                this.inputRelNotation = this.inputPanscale.relativeNotation
+            }
             this.relChanged()
         },
         relChanged(): void {
             try {
-                this.displayedHandpan.loadFromRelNotation(this.inputDing, this.inputRelNotation, this.inputDingOctave)
+                this.displayedHandpan.loadFromRelNotation(this.inputDing, this.inputRelNotation, parseInt(this.inputDingOctave, 10))
                 this.panChanged()
                 this.updateHash()
             } catch (err) {
@@ -279,7 +309,10 @@ export default Vue.extend({
         },
         updateHash(): void {
             const currentHash = this.$nuxt.$route.hash
-            const newHash = '#' + this.handpans.map(handpan => handpan.absNotationUser.replace(/ /g, '-')).join('_')
+            let newHash = '#' + this.handpans.map(handpan => handpan.absNotationUser.replace(/ /g, '-')).join('_')
+            if (newHash[newHash.length - 1] !== '-') {
+                newHash = newHash + '-'
+            }
             if (newHash !== currentHash) {
                 this.ignoreNextHashChange = true
                 this.$nuxt.$router.replace(newHash)
@@ -290,10 +323,9 @@ export default Vue.extend({
             this.genScalesAndChordsAllPans()
         },
         genScalesAndChordsAllPans() {
-            const uniqueNotesAllPans = [...new Set(Array.from(this.handpans.flatMap(handpan => handpan.getUniqueNotes())))]
             this.displayedScales = genScales(this.handpans, { showBebop: this.showBebop })
             this.displayedPanScales = genPanScales(this.handpans)
-            this.displayedChords = genChords(uniqueNotesAllPans)
+            this.displayedChords = genChords(this.uniqueNotesAllPans)
             this.displayedSongs = genSongs(this.handpans)
         },
         selectHandpan(index: number): void {
@@ -301,8 +333,8 @@ export default Vue.extend({
             this.displayHandpan()
         },
         displayHandpan(): void {
-            const found = DATA.panScales.find(panScale => {
-                return this.displayedHandpan.relNotation.trim() === panScale.val.trim()
+            const found = allPanScales.find(panScale => {
+                return this.displayedHandpan.relNotation.trim() === panScale.relativeNotation.trim()
             })
             this.inputPanscale = found ? found : null
             this.inputDing = this.displayedHandpan.ding
@@ -435,5 +467,35 @@ export default Vue.extend({
 }
 .play-options > * {
     margin: 0 8px;
+}
+
+.form-line {
+    display: flex;
+    align-items: center;
+    height: 30px;
+}
+.form-line > span {
+    width: 60px;
+    padding-right: 10px;
+    text-align: right;
+}
+.form-line select {
+    min-width: 50px;
+}
+.form-line select,
+.form-line input {
+    height: 100%;
+    box-sizing: border-box;
+}
+.form-line select:not(:first-of-type) {
+    margin-left: 5px;
+}
+.form-line:not(:first-child) {
+    margin-top: 5px;
+}
+
+.play-full {
+    margin-top: 10px;
+    text-align: center;
 }
 </style>

@@ -1,5 +1,5 @@
 import * as DATA from './data'
-import { absToRel, genChords, genPanScales, relToAbsSharp, genScales, relToAbsFlat, splitNoteNameAndOctave } from './music'
+import { absToRelModel, genChords, genPanScales, relToAbsSharp, genScales, relToAbsFlat, splitNoteNameAndOctave } from './music'
 
 export interface NoteDefinition {
     key: number // 0
@@ -73,7 +73,7 @@ export class Handpan {
         this.ding = dingNameAndOctaveMatched.noteName
         this.dingOctave = dingNameAndOctaveMatched.octave ? dingNameAndOctaveMatched.octave : 3
         this.absNotationClean = notesAsStringClean
-        this.relNotation = absToRel(this.ding, notesAsStringClean)
+        this.relNotation = absToRelModel(this.ding, notesAsStringClean)
         const notes = splitted[1]
             .trim()
             .split(' ')

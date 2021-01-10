@@ -6,13 +6,12 @@
                 v-bind:class="{
                     highlight: isHighlighted(handpan.ding, handpan.dingOctave),
                     highlightplus: isRoot(handpan.ding),
+                    highlightless: isNoteInModel(handpan.ding, handpan.dingOctave),
                 }"
                 @mousedown="playNoteMouse($event, { name: handpan.ding, octave: handpan.dingOctave })"
                 @touchstart="playNoteTouch($event, { name: handpan.ding, octave: handpan.dingOctave })"
             >
-                <div class="inside">
-                    {{ handpan.ding }}<sub>{{ handpan.dingOctave }}</sub>
-                </div>
+                <HandpanNoteInside class="inside" :noteName="handpan.ding" :noteOctave="handpan.dingOctave" />
                 <div class="animation" :class="{ animated: handpan.dingAnimated }" @animationend="handpan.dingAnimated = false"></div>
             </div>
             <div class="notes" :style="nbNotesTop">
@@ -27,9 +26,7 @@
                         @mousedown="playNoteMouse($event, note)"
                         @touchstart="playNoteTouch($event, note)"
                     >
-                        <div class="inside">
-                            {{ note.name }}<sub>{{ note.octave }}</sub>
-                        </div>
+                        <HandpanNoteInside class="inside" :noteName="note.name" :noteOctave="note.octave" />
                         <div class="animation" :class="{ animated: note.animated }" @animationend="note.animated = false"></div>
                     </span>
                 </div>
@@ -49,9 +46,7 @@
                         @mousedown="playNoteMouse($event, note)"
                         @touchstart="playNoteTouch($event, note)"
                     >
-                        <div class="inside">
-                            {{ note.name }}<sub>{{ note.octave }}</sub>
-                        </div>
+                        <HandpanNoteInside class="inside" :noteName="note.name" :noteOctave="note.octave" />
                         <div class="animation" :class="{ animated: note.animated }" @animationend="note.animated = false"></div>
                     </span>
                 </div>
@@ -62,6 +57,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { default as HandpanNoteInside } from '../components/handpan-note-inside.vue'
 import * as DATA from '../data'
 import { Chord } from '../models/chord'
 import { Handpan } from '../models'
@@ -95,6 +91,9 @@ if (process.client) {
     loadSample('/clac/clac.flac', (data: any) => (clacBuffer = data))
 }
 export default Vue.extend({
+    components: {
+        HandpanNoteInside,
+    },
     props: {
         handpan: Handpan,
         selectedChord: Object, // TODO typage chords

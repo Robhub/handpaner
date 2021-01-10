@@ -1,7 +1,7 @@
 const title = 'Handpaner : harmony for Hang/Handpan players and makers'
 const description =
     'Handpaner is a tool for Hang/Handpan players and makers to help them finding scales and chords with musical harmony theory'
-const image = 'https://handpaner.com/handpaner.png'
+const image = 'https://handpaner.com/handpaner-meta.png'
 
 export default {
     server: {

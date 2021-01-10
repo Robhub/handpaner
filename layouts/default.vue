@@ -55,12 +55,6 @@ body {
     justify-content: space-between;
 }
 
-.config {
-    position: absolute;
-    right: 0;
-    top: 0;
-    display: none; /* TODO */
-}
 .toggle {
     font-size: 32px;
 }

@@ -37,7 +37,7 @@ export default Vue.extend({
             get() {
                 return this.$store.state.options.showBebop
             },
-            set(value) {
+            set(value: boolean) {
                 this.$store.commit('options/setShowBebop', value)
             },
         },

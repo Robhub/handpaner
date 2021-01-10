@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import * as DATA from './data'
 import SONGS from './data/songs'
+import { allPanScales } from '@/data/panscales'
 import { Handpan } from './models'
 
 // F5 => {noteName:'F', octave:5}
@@ -65,8 +66,17 @@ export function relToAbsSharp(rootName: string, relDiff: any): string {
     return DATA.notesSharp[(rootIndex + ecartIndex + 12) % 12]
 }
 
+// A, A => 1
+// A, C => 3m
+// A, C♯ => 3
+export function absToRel(noteNameBase: string, noteName: string): string {
+    const indexBase = DATA.notesSharp.indexOf(flatToSharp(noteNameBase))
+    const indexNote = DATA.notesSharp.indexOf(flatToSharp(noteName))
+    return DATA.ecarts[(12 + indexNote - indexBase) % 12]
+}
+
 // A, A / B C D => 1 / 2 3m 4
-export function absToRel(ding: string, notesAsStringClean: string): string {
+export function absToRelModel(ding: string, notesAsStringClean: string): string {
     let indexOfDing = DATA.notesSharp.indexOf(ding)
     if (indexOfDing === -1) {
         indexOfDing = DATA.notesFlat.indexOf(ding)
@@ -115,9 +125,9 @@ type PanScale = {
 
 export const genPanScales = (handpans: Handpan[]): any[] => {
     const panScalesAbsolute = handpans.flatMap(handpan =>
-        DATA.panScales.map(panScale => {
+        allPanScales.map(panScale => {
             const pan = new Handpan()
-            pan.loadFromRelNotation(handpan.ding, panScale.val, handpan.dingOctave)
+            pan.loadFromRelNotation(handpan.ding, panScale.relativeNotation, handpan.dingOctave)
             return {
                 ding: handpan.ding,
                 name: panScale.name,

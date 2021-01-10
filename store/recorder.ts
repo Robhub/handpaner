@@ -51,7 +51,6 @@ export const mutations = {
 
 export const actions = {
     playNote({ commit, state }: any, note: string) {
-        console.log('play note', state.isListening, state.isRecording)
         if (state.isListening) {
             commit('newRecord')
         }
