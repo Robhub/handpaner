@@ -35,7 +35,7 @@
                 </div>
                 <div class="form-line">
                     <span>Notes</span>
-                    <input v-model="inputAbsNotation" size="30" @keyup="absChanged" placeholder="Ex: C/ D E F G A B C" />
+                    <input type="text" v-model="inputAbsNotation" size="30" @keyup="absChanged" placeholder="Ex: C/ D E F G A B C" />
                 </div>
                 <div class="form-line">
                     <span>Relative</span>
@@ -483,7 +483,7 @@ export default Vue.extend({
     min-width: 50px;
 }
 .form-line select,
-.form-line input {
+.form-line input[type='text'] {
     height: 100%;
     box-sizing: border-box;
 }
