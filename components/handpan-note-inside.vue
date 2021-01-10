@@ -30,3 +30,10 @@ export default Vue.extend({
     },
 })
 </script>
+
+<style scoped>
+sub {
+    margin-bottom: -10px;
+    font-size: 0.7em;
+}
+</style>

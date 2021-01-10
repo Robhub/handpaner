@@ -329,11 +329,6 @@ export default Vue.extend({
     position: absolute;
 }
 
-sub {
-    margin-bottom: -10px;
-    font-size: 0.7em;
-}
-
 .handpan-shape .highlightless {
     background: #ffff0080 !important;
 }
