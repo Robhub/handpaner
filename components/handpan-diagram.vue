@@ -59,7 +59,6 @@
 import Vue from 'vue'
 import { default as HandpanNoteInside } from '../components/handpan-note-inside.vue'
 import * as DATA from '../data'
-import { Chord } from '../models/chord'
 import { Handpan } from '../models'
 import { flatToSharp, alternateFlatSharp } from '../music'
 let isMobile = false
@@ -67,6 +66,7 @@ let audioctx: any
 let clacBuffer: any
 let guBuffer: any
 let playInterval: any
+let notesTimeouts = <any[]>[]
 
 function loadSample(path: string, fncb: Function): void {
     const request = new XMLHttpRequest()
@@ -119,6 +119,7 @@ export default Vue.extend({
         })
         this.$root.$on('stopPlayback', () => {
             clearTimeout(playInterval)
+            notesTimeouts.forEach(noteTimeout => clearTimeout(noteTimeout))
         })
     },
     destroyed() {
@@ -127,10 +128,13 @@ export default Vue.extend({
     },
     methods: {
         beginPlayback(record: any, endTime: any): void {
+            notesTimeouts = []
             record.forEach((elt: any) => {
-                setTimeout(() => {
-                    this.playNoteByFullname(elt.note)
-                }, elt.time)
+                notesTimeouts.push(
+                    setTimeout(() => {
+                        this.playNoteByFullname(elt.note)
+                    }, elt.time),
+                )
             })
             playInterval = setTimeout(() => {
                 this.beginPlayback(record, endTime)

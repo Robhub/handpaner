@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { stringifyRecord, parseRecord } from '../store/recorder'
+import { stringifyStateRecord, parseRecord } from '../store/recorder'
 
 export default Vue.extend({
     data() {
@@ -36,7 +36,7 @@ export default Vue.extend({
         },
         stopRecord() {
             this.$store.commit('recorder/stopRecord')
-            this.inputRecord = stringifyRecord(this.$store.state.recorder)
+            this.inputRecord = stringifyStateRecord(this.$store.state.recorder)
         },
         playRecord() {
             this.isPlaying = true

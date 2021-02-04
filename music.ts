@@ -3,6 +3,7 @@ import * as DATA from './data'
 import SONGS from './data/songs'
 import { allPanScales } from '@/data/panscales'
 import { Handpan } from './models'
+import { stringifyRecord, parseRecord } from './store/recorder'
 
 // F5 => {noteName:'F', octave:5}
 // F#5 => {noteName:'F#', octave:5}
@@ -208,8 +209,17 @@ export const genSongs = (handpans: Handpan[]): any[] => {
                 return uniqueNotesAllPans.indexOf(note) >= 0
             })
             if (songComplete) {
+                let recording = null
+                if (song.recording) {
+                    const parsedRecording = parseRecord(song.recording)
+                    recording = stringifyRecord(
+                        parsedRecording.record.map((rec: any) => ({ note: transposeNote(rec.note, i), time: rec.time })),
+                        parsedRecording.endTime,
+                    )
+                }
                 results.push({
                     name: song.name,
+                    recording,
                     notes: transposedNotes,
                     transpo: i,
                 })
@@ -222,27 +232,37 @@ export const genSongs = (handpans: Handpan[]): any[] => {
 // A1 B1 C2, 1 => A#1 C2 C#2
 // A1 B1 C2, 2 => B1 C#2 D2
 // A1 B1 C2, 3 => C2 D2 D#2
-export const transpose = (notes: string[], semitones: number) => {
+export const transpose = (notes: string[], semitones: number): string[] => {
     if (semitones === 0) {
         return notes
     }
     return notes.map(note => {
-        const { noteName, octave } = splitNoteNameAndOctave(note)
-        if (!octave) {
-            throw new Error('Octave missing: ' + note)
-        }
-        const noteNameSharp = flatToSharp(noteName)
-        const noteIndex = DATA.notesSharp.indexOf(noteNameSharp)
-        let newNoteIndex = noteIndex + semitones
-        let newOctave = octave
-        while (newNoteIndex < 0) {
-            newNoteIndex += 12
-            newOctave--
-        }
-        while (newNoteIndex >= 12) {
-            newNoteIndex -= 12
-            newOctave++
-        }
-        return DATA.notesSharp[newNoteIndex] + newOctave
+        return transposeNote(note, semitones)
     })
+}
+
+// A1, 1 => A#1
+// A1, 2 => B1
+// A1, 3 => C2
+export const transposeNote = (note: string, semitones: number): string => {
+    if (semitones === 0) {
+        return note
+    }
+    const { noteName, octave } = splitNoteNameAndOctave(note)
+    if (!octave) {
+        throw new Error('Octave missing: ' + note)
+    }
+    const noteNameSharp = flatToSharp(noteName)
+    const noteIndex = DATA.notesSharp.indexOf(noteNameSharp)
+    let newNoteIndex = noteIndex + semitones
+    let newOctave = octave
+    while (newNoteIndex < 0) {
+        newNoteIndex += 12
+        newOctave--
+    }
+    while (newNoteIndex >= 12) {
+        newNoteIndex -= 12
+        newOctave++
+    }
+    return DATA.notesSharp[newNoteIndex] + newOctave
 }

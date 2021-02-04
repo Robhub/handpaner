@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <div class="tabs">
+        <div class="tabs" @click="resetSelection()">
             <div
                 class="tab"
                 v-for="(handpan, index) in handpans"
@@ -13,7 +13,7 @@
             </div>
             <div class="tab" @click="addHandpan()">+</div>
         </div>
-        <div class="tab-content">
+        <div class="tab-content" @click="resetSelection()">
             <div>
                 <div class="form-line">
                     <span>Ding</span>
@@ -48,7 +48,7 @@
             </div>
         </div>
         <div v-if="displayedHandpan">
-            <div class="zone">
+            <div class="zone" @click="resetSelection()">
                 <div class="tabs">
                     <div class="tab" @click="displayMode = 'panScales'" v-bind:class="{ selected: displayMode === 'panScales' }">
                         Models
@@ -63,9 +63,7 @@
                             v-for="panScale in displayedPanScales"
                             v-bind:key="panScale.ding + panScale.name"
                             class="panscale"
-                            @click="selectPanScale(panScale)"
-                            @mouseover="selectPanScale(panScale)"
-                            @mouseout="unselectPanScale()"
+                            @click.stop="selectPanScale(panScale)"
                             v-bind:class="{
                                 highlight: panScale.ding === selectedPanScale.ding && panScale.name === selectedPanScale.name,
                             }"
@@ -83,9 +81,7 @@
                             class="scale"
                             v-for="scale in displayedScalesSorted"
                             v-bind:key="scale.id"
-                            @click="selectScale(scale)"
-                            @mouseover="selectScale(scale)"
-                            @mouseout="unselectScale()"
+                            @click.stop="selectScale(scale)"
                             v-bind:class="{
                                 highlight: scale.id === selectedScale.id,
                             }"
@@ -104,9 +100,7 @@
                             class="chord"
                             v-for="chordd in chord.chords"
                             v-bind:key="chordd.label"
-                            @click="selectChord(chord, chordd)"
-                            @mouseover="selectChord(chord, chordd)"
-                            @mouseout="unselectChord()"
+                            @click.stop="selectChord(chord, chordd)"
                             v-bind:class="{
                                 highlight: chordd.label === selectedChord.label,
                             }"
@@ -120,14 +114,17 @@
                         <div
                             class="selectable"
                             v-for="song in displayedSongs"
-                            v-bind:key="song.name + song.transpo"
-                            @click="selectSong(song)"
-                            @mouseover="selectSong(song)"
-                            @mouseout="unselectSong()"
+                            :key="song.name + song.transpo"
+                            :class="{
+                                highlight: selectedSong && song.name === selectedSong.name && song.transpo === selectedSong.transpo,
+                            }"
+                            @click.stop="selectSong(song)"
                         >
-                            {{ song.name }} ({{ song.transpo }})
+                            <template v-if="song.recording">♫</template>{{ song.name }} ({{ song.transpo }})
                         </div>
                     </div>
+                    <button v-if="isPlaying" @click.stop="stopSong()">Stop</button>
+                    <button v-if="selectedSong && selectedSong.recording && !isPlaying" @click.stop="playSong()">Play</button>
                 </div>
             </div>
             <div class="zone">
@@ -143,16 +140,14 @@
 </template>
 
 <script lang="ts">
-import { mapGetters } from 'vuex'
 import Vue from 'vue'
 import * as DATA from '../data'
-import sortBy from 'lodash'
-import { Chord } from '../models/chord'
 import { Handpan } from '../models'
 import { genSongs, genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScales } from '../music'
 import { default as HandpanDiagrams } from '../components/handpan-diagrams.vue'
 import { Song } from '@/data/songs'
 import { PanScale, allPanScales } from '@/data/panscales'
+import { parseRecord } from '../store/recorder'
 
 export default Vue.extend({
     components: {
@@ -173,9 +168,9 @@ export default Vue.extend({
             scales: DATA.scales,
             notesAll: DATA.notesAll,
             chords: {},
-            selectedPanScale: {},
-            selectedScale: {},
-            selectedChord: {
+            selectedPanScale: <any>{},
+            selectedScale: <any>{},
+            selectedChord: <any>{
                 label: '',
                 root: '',
                 type: '',
@@ -187,6 +182,7 @@ export default Vue.extend({
             displayedPanScales: <any>[],
             displayedSongs: <Song[]>[],
             ignoreNextHashChange: false,
+            isPlaying: false,
         }
     },
     created() {
@@ -216,6 +212,14 @@ export default Vue.extend({
             },
             set(value: string) {
                 this.$store.commit('selection/setRelativeNoteBase', value)
+            },
+        },
+        selectedSong: {
+            get() {
+                return this.$store.state.selection.selectedSong
+            },
+            set(value: string) {
+                this.$store.commit('selection/setSelectedSong', value)
             },
         },
         showBebop(): boolean {
@@ -254,7 +258,16 @@ export default Vue.extend({
             this.loadHandpansFromHash()
         },
     },
+    mounted() {
+        this.$store.commit('selection/setHighlightedNotes', [])
+    },
     methods: {
+        resetSelection(): void {
+            this.unselectPanScale()
+            this.unselectScale()
+            this.unselectChord()
+            this.unselectSong()
+        },
         loadHandpansFromHash(): void {
             const panStrings = this.$nuxt.$route.hash.substr(1).split('_')
             let handpan: Handpan
@@ -342,32 +355,59 @@ export default Vue.extend({
             this.inputAbsNotation = this.displayedHandpan.absNotationUser
         },
         selectPanScale(panScale: any) {
-            this.selectedPanScale = panScale
+            if (panScale.name === this.selectedPanScale.name) {
+                this.unselectPanScale()
+            } else {
+                this.selectedPanScale = panScale
+            }
         },
         unselectPanScale() {
             this.selectedPanScale = {}
         },
         selectScale(scale: any) {
-            this.selectedScale = scale
+            if (scale.id === this.selectedScale.id) {
+                this.unselectScale()
+            } else {
+                this.selectedScale = scale
+            }
         },
-        unselectScale() {
+        unselectScale(): void {
             this.selectedScale = {}
         },
+        stopSong(): void {
+            this.isPlaying = false
+            this.$root.$emit('stopPlayback')
+        },
+        playSong(): void {
+            this.isPlaying = true
+            console.log('play record', this.selectedSong.recording)
+            this.$root.$emit('playRecord', parseRecord(this.selectedSong.recording))
+        },
         selectSong(song: Song) {
-            this.$store.commit('selection/setHighlightedNotes', song.notes)
+            if (this.selectedSong !== null && song === this.selectedSong) {
+                this.unselectSong()
+            } else {
+                this.$store.commit('selection/setHighlightedNotes', song.notes)
+                this.selectedSong = song
+            }
         },
         unselectSong() {
             this.$store.commit('selection/setHighlightedNotes', [])
+            this.selectedSong = null
         },
         selectChord(chordType: any, chord: any) {
-            this.selectedChord = {
-                label: chord.label,
-                root: chord.root,
-                type: chordType.type,
-                noteNames: [
-                    ...chord.notes.map((n: any) => relToAbsSharp(chord.root, n)),
-                    ...chord.notes.map((n: any) => relToAbsFlat(chord.root, n)),
-                ],
+            if (chord.label === this.selectedChord.label) {
+                this.unselectChord()
+            } else {
+                this.selectedChord = {
+                    label: chord.label,
+                    root: chord.root,
+                    type: chordType.type,
+                    noteNames: [
+                        ...chord.notes.map((n: any) => relToAbsSharp(chord.root, n)),
+                        ...chord.notes.map((n: any) => relToAbsFlat(chord.root, n)),
+                    ],
+                }
             }
         },
         unselectChord() {
@@ -413,6 +453,7 @@ export default Vue.extend({
 .scale {
     margin-top: 4px;
 }
+.selectable.highlight,
 .chord.highlight,
 .panscale.highlight,
 .scale.highlight {

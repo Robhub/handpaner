@@ -1,6 +1,11 @@
-export function stringifyRecord(state: any): string {
+export function stringifyStateRecord(state: any): string {
     return state.record.map((evt: any) => evt.note + '@' + evt.time).join(',') + ',end@' + (state.endTime - state.startTime)
 }
+
+export function stringifyRecord(record: any[], endTime: number): string {
+    return record.map((evt: any) => evt.note + '@' + evt.time).join(',') + ',end@' + endTime
+}
+
 export function parseRecord(str: string): any {
     const evts = str.split(',').map(evt => evt.split('@'))
     const record = evts
@@ -40,7 +45,6 @@ export const mutations = {
     stopRecord(state: any) {
         state.isRecording = false
         state.endTime = new Date().getTime()
-        const str = stringifyRecord(state)
     },
     addNote(state: any, note: string) {
         const noteTime = new Date().getTime()
