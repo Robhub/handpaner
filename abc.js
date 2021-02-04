@@ -1,13 +1,14 @@
 const input = `
-e2A2A4|e2A2A3B|c2c2B2c2|d2d2c2d2
-e2A2e2A2|e2A2A3B|c2c2BAG2|A4A4
-A2c2A2c2|B2G2G4|A2c2A2c2|d6cd
-e2e2d2d2|c2c2B4|ABc2B2G2|A4A4
+ABcdef|e2d2c2|dGBdeg|e2d2B2
+ABcdef|e2d2c2|dGBded|c2B2G2
+A3Bc2|A3Bc2|B3cd2|c2B2G2
+A3Bc2|A3Bc2|B3cd2|c2B2G2
 `
 
-const crocheDuration = 140
+//const crocheDuration = 140
+const crocheDuration = 180
 let t = 0
-const matches = [...input.matchAll(/[a-gA-G][,]?[2|3|4|6]?/g)].map(m => {
+const matches = [...input.matchAll(/[a-gA-G][,]?[2|3|4|6|\/]?/g)].map(m => {
     // console.log(m[0])
     let note = m[0][0]
     let octave = 4
@@ -22,6 +23,9 @@ const matches = [...input.matchAll(/[a-gA-G][,]?[2|3|4|6]?/g)].map(m => {
     //     note = 'C♯' // Edor
     // }
     let duration = 1
+    if (m[0][1] === '/' || m[0][2] === '/') {
+        duration = 0.5
+    }
     if (m[0][1] === '2' || m[0][2] === '2') {
         duration = 2
     }
