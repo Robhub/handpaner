@@ -380,7 +380,6 @@ export default Vue.extend({
         },
         playSong(): void {
             this.isPlaying = true
-            console.log('play record', this.selectedSong.recording)
             this.$root.$emit('playRecord', parseRecord(this.selectedSong.recording))
         },
         selectSong(song: Song) {
