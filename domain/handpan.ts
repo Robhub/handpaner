@@ -118,6 +118,7 @@ export const ALL_PANSCALES_DATA = [
     { definition: 'D/ A B C D E F G A', name: 'Dorian' },
     { definition: 'A/ C E F G A B C', name: 'Equinox' },
     { definition: 'A/ C E F G A B C E', name: 'Equinox' },
+    { definition: 'F/ (C#3) (G) G# C C# D# F G G# C', name: 'Equinox bottomised' },
     { definition: 'A/ (B) (C) (D) E F G# A B C D E (G#) A (B) (C)', name: 'Harmonic Lora' },
     { definition: 'E/ A B C D E F G# A', name: 'Harmonic minor' },
     { definition: 'A/ C D E F A C D E', name: 'High Avalon' },
@@ -166,17 +167,19 @@ export const ALL_PANSCALES_DATA = [
     { definition: 'C/ G B C D E F G C', name: 'Ysha Savita' },
 ] as PanScaleData[]
 
-export const ALL_PANSCALES_TRANSPOSED = ALL_PANSCALES_DATA.flatMap(panScale => {
-    console.log('BUILDING', panScale.name)
-    return ALL_DINGS.map(ding => {
-        return definitionTransposedToHandpanObj(panScale.definition, ding, panScale.name)
+function transposeScales(customScales: PanScaleData[]): HandpanModel[] {
+    return customScales.flatMap(customScale => {
+        return ALL_DINGS.map(ding => {
+            return definitionTransposedToHandpanObj(customScale.definition, ding, customScale.name)
+        })
     })
-})
+}
 
-// export const ALL_PANSCALES_C3 = ALL_PANSCALES_TRANSPOSED.filter(handpan => {
-//     const ding = handpan.getDing()
-//     return ding.noteName === 'C' && ding.octave === 3
-// })
+const ALL_PANSCALES_TRANSPOSED = transposeScales(ALL_PANSCALES_DATA)
+
+export function ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM(customScales: any): HandpanModel[] {
+    return [...ALL_PANSCALES_TRANSPOSED, ...transposeScales(customScales)]
+}
 
 export function definitionTransposedToHandpanObj(handpanDefinition: string, dingWanted: string = '', name: string = ''): HandpanModel {
     const [definitionDing, definitionRestNotes] = handpanDefinition.split('/')
@@ -197,7 +200,10 @@ export function definitionTransposedToHandpanObj(handpanDefinition: string, ding
     }
     let previousNoteOctave = dingWantedObj.octave!!
     let previousNoteIndex = NOTES_ALL.indexOf(dingWantedObj.noteName)
-    const definitionNotesArray = definitionRestNotes.trim().split(' ')
+    const definitionNotesArray = definitionRestNotes
+        .trim()
+        .replace(/\s\s+/g, ' ')
+        .split(' ')
     const handpanRestNotes = definitionNotesArray.map(noteOctaveParen => {
         const noteOctave = noteOctaveParen.replace(/\(|\)/g, '')
         const noteObj = splitNoteNameAndOctave(noteOctave)

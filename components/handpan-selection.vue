@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { ALL_PANSCALES_TRANSPOSED, ALL_DINGS, HandpanUser } from '@/domain/handpan'
+import { ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM, ALL_DINGS, HandpanUser, HandpanModel } from '@/domain/handpan'
 
 export default Vue.extend({
     props: {
@@ -66,9 +66,9 @@ export default Vue.extend({
             },
         },
         allGenericNamesSorted(): string[] {
-            const allGenericNames = ALL_PANSCALES_TRANSPOSED.map(handpanModel => handpanModel.genericName)
-            // TODO ajouter les pan custom generic name
-            return [...new Set(allGenericNames)].sort((a: string, b: string) => a.localeCompare(b))
+            const allScales = ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM(this.$store.state.options.customPanScales)
+            const allScalesNames = allScales.map(handpanModel => handpanModel.genericName)
+            return [...new Set(allScalesNames)].sort((a: string, b: string) => a.localeCompare(b))
         },
 
         playPath(): string {
@@ -91,7 +91,6 @@ export default Vue.extend({
         WTF(lol: number): void {},
         dingChanged(): void {
             try {
-                console.log('load', this.inputAbsNotation, this.inputDing)
                 this.displayedHandpan!.loadFromDefinition(this.inputAbsNotation, this.inputDing)
                 this.inputAbsNotation = this.displayedHandpan!.handpanModel.getDefinition()
                 this.selectionChanged()
@@ -103,7 +102,8 @@ export default Vue.extend({
             if (!this.inputPanscale || !this.inputDing) {
                 return
             }
-            const found = ALL_PANSCALES_TRANSPOSED.find(handpanModel => {
+            const allScales = ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM(this.$store.state.options.customPanScales)
+            const found = allScales.find(handpanModel => {
                 return handpanModel.genericName === this.inputPanscale && handpanModel.getDingString() === this.inputDing
             })
             if (found) {
@@ -116,6 +116,7 @@ export default Vue.extend({
             try {
                 this.displayedHandpan!.loadFromDefinition(this.inputAbsNotation)
                 this.inputDing = this.displayedHandpan!.handpanModel.getDingString()
+                this.inputPanscale = this.recognisedPanScaleName()
                 this.selectionChanged()
             } catch (err) {
                 console.log('err', err)
@@ -125,26 +126,25 @@ export default Vue.extend({
             const modelName = prompt('Model name')
             this.$store.commit('options/addCustomPanScale', {
                 name: modelName,
-                absoluteNotation: this.inputAbsNotation,
+                definition: this.inputAbsNotation,
             })
         },
         selectionChanged(): void {
             this.$emit('selectionChanged')
         },
+        recognisedPanScaleName(): string {
+            const allScales = ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM(this.$store.state.options.customPanScales)
+            const found = allScales.find(handpanModel => {
+                return handpanModel.getDefinition() === this.displayedHandpan!.handpanModel.getDefinition()
+            })
+            return found ? found.genericName : ''
+        },
     },
     watch: {
         displayedHandpanId() {
-            console.log('id changed !', this.displayedHandpanId)
             this.inputAbsNotation = this.displayedHandpan!.handpanModel.getDefinition()
             this.inputDing = this.displayedHandpan!.handpanModel.getDingString()
-            const found = ALL_PANSCALES_TRANSPOSED.find(handpanModel => {
-                return handpanModel.getDefinition() === this.displayedHandpan!.handpanModel.getDefinition()
-            })
-            if (found) {
-                this.inputPanscale = found.genericName
-            } else {
-                this.inputPanscale = ''
-            }
+            this.inputPanscale = this.recognisedPanScaleName()
         },
     },
 })

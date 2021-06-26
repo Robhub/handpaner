@@ -2,7 +2,7 @@ import _ from 'lodash'
 import * as DATA from './data'
 import SONGS from './data/songs'
 import { stringifyRecord, parseRecord } from './store/recorder'
-import { ALL_PANSCALES_TRANSPOSED, HandpanUser, HandpanModel } from '@/domain/handpan'
+import { HandpanUser, HandpanModel } from '@/domain/handpan'
 
 // F5 => {noteName:'F', octave:5}
 // F#5 => {noteName:'F#', octave:5}
@@ -129,15 +129,9 @@ export const genChords = (uniqueNotes: any): any => {
     })
 }
 
-type PanScale = {
-    ding: string
-    name: string
-    notesAll: any[]
-}
-
-export const genPanScales = (handpans: HandpanUser[]): HandpanModel[] => {
+export const genPanScales = (allScales: HandpanModel[], handpans: HandpanUser[]): HandpanModel[] => {
     const potentialScales = handpans.flatMap(handpanUser =>
-        ALL_PANSCALES_TRANSPOSED.filter(panScale => {
+        allScales.filter(panScale => {
             return panScale.getDingString() === handpanUser.handpanModel.getDingString()
         }),
     )

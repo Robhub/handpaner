@@ -119,7 +119,7 @@ import { genSongs, genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScal
 import HandpanDiagrams from '@/components/handpan-diagrams.vue'
 import { Song } from '@/data/songs'
 import { parseRecord } from '../store/recorder'
-import { PanScaleData, ALL_PANSCALES_DATA, ALL_PANSCALES_TRANSPOSED, HandpanUser } from '@/domain/handpan'
+import { ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM, HandpanUser } from '@/domain/handpan'
 import HandpanSelection from '../components/handpan-selection.vue'
 
 export default Vue.extend({
@@ -160,7 +160,6 @@ export default Vue.extend({
     created() {
         setTimeout(() => {
             this.isLoaded = true
-            console.log('all scales transpode', ALL_PANSCALES_TRANSPOSED)
             if (this.$nuxt.$route.hash) {
                 this.loadHandpansFromHash()
             } else {
@@ -186,10 +185,10 @@ export default Vue.extend({
             return [...new Set(Array.from(this.displayedSongs.map(song => song.name)))]
         },
 
-        allPanScalesDataWithCustom(): PanScaleData[] {
-            const customScales = this.$store.state.options.customPanScales
-            return [...ALL_PANSCALES_DATA, ...customScales]
-        },
+        // allPanScalesDataWithCustom(): PanScaleData[] {
+        //     const customScales = this.$store.state.options.customPanScales
+        //     return [...ALL_PANSCALES_DATA, ...customScales]
+        // },
         displayedScalesSorted(): any[] {
             return this.displayedScales.sort((a: any, b: any) => b.totalNotes - a.totalNotes)
         },
@@ -260,7 +259,8 @@ export default Vue.extend({
         },
         genScalesAndChordsAllPans() {
             this.displayedScales = genScales(this.handpansUser, { showBebop: this.showBebop })
-            this.displayedPanScales = genPanScales(this.handpansUser)
+            const allScales = ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM(this.$store.state.options.customPanScales)
+            this.displayedPanScales = genPanScales(allScales, this.handpansUser)
             this.displayedChords = genChords(this.uniqueNotesAllPans)
             this.displayedSongs = genSongs(this.handpansUser)
         },
