@@ -3,51 +3,24 @@
         <div class="tabs" @click="resetSelection()">
             <div
                 class="tab"
-                v-for="(handpan, index) in handpans"
+                v-for="(handpan, index) in handpansUser"
                 v-bind:key="handpan.id"
-                @click="selectHandpan(index)"
-                v-bind:class="{ selected: displayedHandpanIndex === index }"
+                @click="selectHandpanId(handpan.id)"
+                v-bind:class="{ selected: handpan.id === displayedHandpanId }"
             >
                 Pan n°{{ index + 1 }}
-                <span class="delete" @click="removeHandpan($event, index)" v-if="handpans.length > 1">×</span>
+                <span class="delete" @click="removeHandpanId($event, handpan.id)" v-if="handpansUser.length > 1">×</span>
             </div>
             <div class="tab" @click="addHandpan()">+</div>
         </div>
         <div class="tab-content" @click="resetSelection()">
-            <div>
-                <div class="form-line">
-                    <span>Ding</span>
-                    <select v-model="inputDing" @change="relChanged">
-                        <option v-for="note in notesAll" v-bind:key="note">{{ note }}</option>
-                    </select>
-                    <select v-model="inputDingOctave" @change="relChanged">
-                        <option>2</option>
-                        <option>3</option>
-                    </select>
-                </div>
-                <div class="form-line">
-                    <span>Model</span>
-                    <select v-model="inputPanscale" @change="panScaleChanged">
-                        <option v-for="panScale in allPanScalesSorted" v-bind:key="panScale.name" :value="panScale">
-                            {{ panScale.name }}
-                        </option>
-                    </select>
-                </div>
-                <div class="form-line">
-                    <span>Notes</span>
-                    <input type="text" v-model="inputAbsNotation" size="30" @keyup="absChanged" placeholder="Ex: C/ D E F G A B C" />
-                </div>
-                <div class="form-line">
-                    <span>Relative</span>
-                    <select v-model="relativeNoteBase">
-                        <option v-for="note in uniqueNotesAllPans" v-bind:key="note">{{ note }}</option>
-                    </select>
-                    <label><input type="checkbox" v-model="showRelative" /> show relative</label>
-                </div>
-                <div class="play-full"><nuxt-link :to="playPath">Play in full page</nuxt-link></div>
-            </div>
+            <HandpanSelection
+                :handpansUser="handpansUser"
+                :displayedHandpanId="displayedHandpanId"
+                @selectionChanged="onSelectionChanged"
+            />
         </div>
-        <div v-if="displayedHandpan">
+        <div v-if="displayedHandpanId">
             <div class="zone" @click="resetSelection()">
                 <div class="tabs">
                     <div class="tab" @click="displayMode = 'panScales'" v-bind:class="{ selected: displayMode === 'panScales' }">
@@ -61,14 +34,14 @@
                     <div class="panscales">
                         <div
                             v-for="panScale in displayedPanScales"
-                            v-bind:key="panScale.ding + panScale.name"
+                            v-bind:key="panScale.name"
                             class="panscale"
                             @click.stop="selectPanScale(panScale)"
                             v-bind:class="{
-                                highlight: panScale.ding === selectedPanScale.ding && panScale.name === selectedPanScale.name,
+                                highlight: selectedPanScale && panScale.name === selectedPanScale.name,
                             }"
                         >
-                            <span v-if="handpans.length > 1">{{ panScale.ding }}</span> {{ panScale.name }}
+                            {{ panScale.name }}
                         </div>
                         <div v-if="!displayedPanScales.length">
                             Nothing…
@@ -129,7 +102,7 @@
             </div>
             <div class="zone">
                 <HandpanDiagrams
-                    :handpans="handpans"
+                    :handpans="handpansUser"
                     :selectedChord="selectedChord"
                     :selectedPanScale="selectedPanScale"
                     :selectedScale="selectedScale"
@@ -142,33 +115,31 @@
 <script lang="ts">
 import Vue from 'vue'
 import * as DATA from '../data'
-import { Handpan } from '../models'
 import { genSongs, genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScales } from '../music'
-import { default as HandpanDiagrams } from '../components/handpan-diagrams.vue'
+import HandpanDiagrams from '@/components/handpan-diagrams.vue'
 import { Song } from '@/data/songs'
-import { PanScale, allPanScales } from '@/data/panscales'
 import { parseRecord } from '../store/recorder'
+import { PanScaleData, ALL_PANSCALES_DATA, ALL_PANSCALES_TRANSPOSED, HandpanUser } from '@/domain/handpan'
+import HandpanSelection from '../components/handpan-selection.vue'
 
 export default Vue.extend({
     components: {
         HandpanDiagrams,
+        HandpanSelection,
     },
     data() {
         return {
             displayMode: 'panScales',
-            displayedHandpanIndex: 0,
-            handpans: <Handpan[]>[],
-            inputAbsNotation: '',
-            inputDing: '',
-            inputDingOctave: '3',
-            inputPanscale: <PanScale | null>{},
-            inputRelNotation: '',
+            displayedHandpanId: '',
+            handpansUser: <HandpanUser[]>[],
+
             notes: <any[]>[],
             abs: '',
+
             scales: DATA.scales,
             notesAll: DATA.notesAll,
             chords: {},
-            selectedPanScale: <any>{},
+            selectedPanScale: <any>null,
             selectedScale: <any>{},
             selectedChord: <any>{
                 label: '',
@@ -183,37 +154,23 @@ export default Vue.extend({
             displayedSongs: <Song[]>[],
             ignoreNextHashChange: false,
             isPlaying: false,
+            isLoaded: false,
         }
     },
     created() {
         setTimeout(() => {
+            this.isLoaded = true
+            console.log('all scales transpode', ALL_PANSCALES_TRANSPOSED)
             if (this.$nuxt.$route.hash) {
                 this.loadHandpansFromHash()
             } else {
-                let handpan = new Handpan()
-                handpan.loadFromAbsNotation('D/ A C D E F G A C')
-                this.handpans.push(handpan)
-                this.panChanged()
+                this.handpansUser.push(new HandpanUser('D/ A C D E F G A C'))
+                this.displayedHandpanId = this.handpansUser[0].id
+                this.genScalesAndChordsAllPans()
             }
         }, 1)
     },
     computed: {
-        showRelative: {
-            get() {
-                return this.$store.state.selection.showRelative
-            },
-            set(value: boolean) {
-                this.$store.commit('selection/setShowRelative', value)
-            },
-        },
-        relativeNoteBase: {
-            get() {
-                return this.$store.state.selection.relativeNoteBase
-            },
-            set(value: string) {
-                this.$store.commit('selection/setRelativeNoteBase', value)
-            },
-        },
         selectedSong: {
             get() {
                 return this.$store.state.selection.selectedSong
@@ -228,24 +185,16 @@ export default Vue.extend({
         uniqueSongs(): string[] {
             return [...new Set(Array.from(this.displayedSongs.map(song => song.name)))]
         },
-        playPath(): string {
-            if (this.displayedHandpan) {
-                return 'play/#' + this.displayedHandpan.absNotationUser.replace(/ /g, '-')
-            } else {
-                return 'play/'
-            }
-        },
-        allPanScalesSorted(): any[] {
-            return allPanScales.sort((a: any, b: any) => a.name.localeCompare(b.name))
+
+        allPanScalesDataWithCustom(): PanScaleData[] {
+            const customScales = this.$store.state.options.customPanScales
+            return [...ALL_PANSCALES_DATA, ...customScales]
         },
         displayedScalesSorted(): any[] {
             return this.displayedScales.sort((a: any, b: any) => b.totalNotes - a.totalNotes)
         },
-        displayedHandpan(): Handpan {
-            return this.handpans[this.displayedHandpanIndex]
-        },
         uniqueNotesAllPans(): string[] {
-            return [...new Set(Array.from(this.handpans.flatMap(handpan => handpan.getUniqueNotes())))]
+            return [...new Set(Array.from(this.handpansUser.flatMap(handpanUser => handpanUser.handpanModel.getUniqueNotesNames())))]
         },
     },
     watch: {
@@ -254,14 +203,21 @@ export default Vue.extend({
                 this.ignoreNextHashChange = false
                 return
             }
-            this.handpans = []
+            this.handpansUser = []
             this.loadHandpansFromHash()
         },
     },
     mounted() {
         this.$store.commit('selection/setHighlightedNotes', [])
     },
+    beforeDestroy() {
+        this.$root.$emit('stopPlayback')
+    },
     methods: {
+        onSelectionChanged(): void {
+            this.genScalesAndChordsAllPans()
+            this.updateHash()
+        },
         resetSelection(): void {
             this.unselectPanScale()
             this.unselectScale()
@@ -270,59 +226,30 @@ export default Vue.extend({
         },
         loadHandpansFromHash(): void {
             const panStrings = this.$nuxt.$route.hash.substr(1).split('_')
-            let handpan: Handpan
+            this.handpansUser = []
             panStrings.forEach(panString => {
-                handpan = new Handpan()
-                handpan.loadFromAbsNotation(panString.replace(/-/g, ' '))
-                this.handpans.push(handpan)
-                this.panChanged()
+                this.handpansUser.push(new HandpanUser(panString.replace(/-/g, ' ')))
             })
+            this.displayedHandpanId = this.handpansUser[0].id
+            this.genScalesAndChordsAllPans()
         },
-        removeHandpan(event: Event, index: number): void {
+        removeHandpanId(event: Event, id: string): void {
             event.stopPropagation() // On ne veut pas clic sur le tab qui va être supprimé
-            this.handpans.splice(index, 1)
-            if (this.displayedHandpanIndex >= this.handpans.length) {
-                this.selectHandpan(this.handpans.length - 1)
+            this.handpansUser = this.handpansUser.filter(handpanUser => handpanUser.id !== id)
+            if (id === this.displayedHandpanId) {
+                this.displayedHandpanId = this.handpansUser[0].id
             }
             this.genScalesAndChordsAllPans()
-            this.displayHandpan()
             this.updateHash()
         },
         addHandpan(): void {
-            const handpan = new Handpan()
-            handpan.loadFromAbsNotation('C/ C')
-            this.handpans.push(handpan)
-            this.selectHandpan(this.handpans.length - 1)
+            this.handpansUser.push(new HandpanUser('C/ C'))
             this.genScalesAndChordsAllPans()
             this.updateHash()
         },
-        panScaleChanged(): void {
-            if (this.inputPanscale) {
-                this.inputRelNotation = this.inputPanscale.relativeNotation
-            }
-            this.relChanged()
-        },
-        relChanged(): void {
-            try {
-                this.displayedHandpan.loadFromRelNotation(this.inputDing, this.inputRelNotation, parseInt(this.inputDingOctave, 10))
-                this.panChanged()
-                this.updateHash()
-            } catch (err) {
-                console.error('Cannot load handpan', err)
-            }
-        },
-        absChanged(): void {
-            try {
-                this.displayedHandpan.loadFromAbsNotation(this.inputAbsNotation)
-                this.panChanged()
-                this.updateHash()
-            } catch (err) {
-                console.error('Cannot load handpan', err)
-            }
-        },
         updateHash(): void {
             const currentHash = this.$nuxt.$route.hash
-            let newHash = '#' + this.handpans.map(handpan => handpan.absNotationUser.replace(/ /g, '-')).join('_')
+            let newHash = '#' + this.handpansUser.map(handpan => handpan.handpanModel.getDefinition().replace(/ /g, '-')).join('_')
             if (newHash[newHash.length - 1] !== '-') {
                 newHash = newHash + '-'
             }
@@ -331,38 +258,24 @@ export default Vue.extend({
                 this.$nuxt.$router.replace(newHash)
             }
         },
-        panChanged(): void {
-            this.displayHandpan()
-            this.genScalesAndChordsAllPans()
-        },
         genScalesAndChordsAllPans() {
-            this.displayedScales = genScales(this.handpans, { showBebop: this.showBebop })
-            this.displayedPanScales = genPanScales(this.handpans)
+            this.displayedScales = genScales(this.handpansUser, { showBebop: this.showBebop })
+            this.displayedPanScales = genPanScales(this.handpansUser)
             this.displayedChords = genChords(this.uniqueNotesAllPans)
-            this.displayedSongs = genSongs(this.handpans)
+            this.displayedSongs = genSongs(this.handpansUser)
         },
-        selectHandpan(index: number): void {
-            this.displayedHandpanIndex = index
-            this.displayHandpan()
-        },
-        displayHandpan(): void {
-            const found = allPanScales.find(panScale => {
-                return this.displayedHandpan.relNotation.trim() === panScale.relativeNotation.trim()
-            })
-            this.inputPanscale = found ? found : null
-            this.inputDing = this.displayedHandpan.ding
-            this.inputRelNotation = this.displayedHandpan.relNotation
-            this.inputAbsNotation = this.displayedHandpan.absNotationUser
+        selectHandpanId(id: string): void {
+            this.displayedHandpanId = id
         },
         selectPanScale(panScale: any) {
-            if (panScale.name === this.selectedPanScale.name) {
+            if (panScale.name === this.selectedPanScale?.name) {
                 this.unselectPanScale()
             } else {
                 this.selectedPanScale = panScale
             }
         },
         unselectPanScale() {
-            this.selectedPanScale = {}
+            this.selectedPanScale = null
         },
         selectScale(scale: any) {
             if (scale.id === this.selectedScale.id) {
@@ -508,32 +421,6 @@ export default Vue.extend({
 .play-options > * {
     margin: 0 8px;
 }
-
-.form-line {
-    display: flex;
-    align-items: center;
-    height: 30px;
-}
-.form-line > span {
-    width: 60px;
-    padding-right: 10px;
-    text-align: right;
-}
-.form-line select {
-    min-width: 50px;
-}
-.form-line select,
-.form-line input[type='text'] {
-    height: 100%;
-    box-sizing: border-box;
-}
-.form-line select:not(:first-of-type) {
-    margin-left: 5px;
-}
-.form-line:not(:first-child) {
-    margin-top: 5px;
-}
-
 .play-full {
     margin-top: 10px;
     text-align: center;

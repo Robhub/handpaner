@@ -10,7 +10,7 @@ c3BA2|G4E2|C3DE2|F3ED2|C#3B,C#2|D6|D6
 const crocheDuration = 180
 let t = 0
 const matches = [...input.matchAll(/([a-gA-G][#]?[,]?)([2|3|4|6|\/])?/g)].map(m => {
-    let note = m[1].replace('#', '♯')
+    let note = m[1]
     let octave = 4
     if (note.toLowerCase() === note) {
         octave = 5
@@ -23,13 +23,13 @@ const matches = [...input.matchAll(/([a-gA-G][#]?[,]?)([2|3|4|6|\/])?/g)].map(m 
     // console.log(m[1], '=>', note, octave)
 
     // if (note === 'F') {
-    //     note = 'F♯' // Edor
+    //     note = 'F#' // Edor
     // }
     // if (note === 'C') {
-    //     note = 'C♯' // Edor
+    //     note = 'C#' // Edor
     // }
     // if (note === 'G') {
-    //     note = 'G♯' // Aminharmo
+    //     note = 'G#' // Aminharmo
     // }
     let duration = 1
     if (m[2] === '/') {

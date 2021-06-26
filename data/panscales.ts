@@ -1,7 +1,7 @@
 export type PanScale = {
-    relativeNotation: string
+    relativeNotation?: string
     name: string
-    // absoluteNotation: string
+    absoluteNotation?: string
 }
 
 // TODO : Générer les versions avec différent nombre de notes automatiquement..
@@ -45,7 +45,8 @@ export const allPanScales = [
     { relativeNotation: '1/ 3m 5 6 7m 1 2 3m 5', name: 'La Sirena 8+1' },
     { relativeNotation: '1/ 3m 5 6m 1 2 3m 5', name: 'Low Mystic 7+1' },
     { relativeNotation: '1/ 2 3m 5 7m 1 2 3m 5', name: 'Low Pygmy 8+1' },
-    // { absoluteNotation: 'F2/ F3 G G# C D# F G G#', name: 'Low Pygmy Octave 8+1' }, // TODO
+    { relativeNotation: '1/ 1 2 3m 5 7m 1 2 3m', name: 'Low Pygmy Octave RELATIVE 8+1' }, // TODO
+    { absoluteNotation: 'F2/ F3 G G# C D# F G G#', name: 'Low Pygmy Octave 8+1' }, // TODO
     { relativeNotation: '1/ 5 7 1 2 3 T 5 7', name: 'Lydian 8+1' },
     { relativeNotation: '1/ 3m 5 7m 1 2 3m 5', name: 'Magic Voyage 7+1' },
     { relativeNotation: '1/ 3m 5 7m 1 2 3m 5 7m', name: 'Magic Voyage 8+1' },

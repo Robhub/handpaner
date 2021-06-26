@@ -3,7 +3,7 @@
         <HandpanDiagram
             v-for="handpan in handpans"
             v-bind:key="handpan.id"
-            :handpan="handpan"
+            :handpan="handpan.handpanModel"
             :selectedChord="selectedChord"
             :selectedPanScale="selectedPanScale"
             :selectedScale="selectedScale"
@@ -14,7 +14,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { default as HandpanDiagram } from '../components/handpan-diagram.vue'
-import { Handpan } from '../models'
+
 export default Vue.extend({
     components: {
         HandpanDiagram,
@@ -77,5 +77,4 @@ export default Vue.extend({
     height: 32px;
     border-radius: 32px;
 }
-
 </style>

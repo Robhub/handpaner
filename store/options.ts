@@ -7,6 +7,7 @@ export const state = () => ({
     chosenSamplesBankIndex: 0,
     samplesBanks: DATA.samplesBanks,
     showBebop: false,
+    customPanScales: [],
 })
 
 export const getters = {
@@ -15,6 +16,12 @@ export const getters = {
 }
 
 export const mutations = {
+    addCustomPanScale(st: any, customPanScale: any) {
+        st.customPanScales.push(customPanScale)
+    },
+    removeCustomPanScale(st: any, customPanScaleName: string) {
+        st.customPanScales = st.customPanScales.filter((customPanScale: any) => customPanScale.name !== customPanScaleName)
+    },
     setVolume(st: any, volume: number) {
         st.volume = volume
     },

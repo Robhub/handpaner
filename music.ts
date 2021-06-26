@@ -1,15 +1,14 @@
 import _ from 'lodash'
 import * as DATA from './data'
 import SONGS from './data/songs'
-import { allPanScales } from '@/data/panscales'
-import { Handpan } from './models'
 import { stringifyRecord, parseRecord } from './store/recorder'
+import { ALL_PANSCALES_TRANSPOSED, HandpanUser, HandpanModel } from '@/domain/handpan'
 
 // F5 => {noteName:'F', octave:5}
 // F#5 => {noteName:'F#', octave:5}
 // G# => {noteName:'G#'}
-export function splitNoteNameAndOctave(noteNameAndOctave: string) {
-    const noteNameAndOctaveMatched = /([A-G][♯♭]?)([0-9]?)/.exec(noteNameAndOctave)
+export function splitNoteNameAndOctave(noteNameAndOctave: string, defaultOctave: number = 0) {
+    const noteNameAndOctaveMatched = /([A-G][#b]?)([0-9]?)/.exec(noteNameAndOctave)
     if (noteNameAndOctaveMatched === null) {
         throw new Error('Cannot read note: ' + noteNameAndOctaveMatched)
     }
@@ -17,6 +16,8 @@ export function splitNoteNameAndOctave(noteNameAndOctave: string) {
     const octave = noteNameAndOctaveMatched[2]
     if (octave) {
         return { noteName, octave: parseInt(octave, 10) }
+    } else if (defaultOctave) {
+        return { noteName, octave: defaultOctave }
     } else {
         return { noteName }
     }
@@ -54,7 +55,7 @@ export function relToAbsFlat(rootName: string, relDiff: any): string {
 }
 
 // A, 3m => C
-// A, 3 => C♯
+// A, 3 => C#
 export function relToAbsSharp(rootName: string, relDiff: any): string {
     const rootIndex = DATA.notesSharp.indexOf(rootName) !== -1 ? DATA.notesSharp.indexOf(rootName) : DATA.notesFlat.indexOf(rootName)
     if (rootIndex === -1) {
@@ -67,9 +68,19 @@ export function relToAbsSharp(rootName: string, relDiff: any): string {
     return DATA.notesSharp[(rootIndex + ecartIndex + 12) % 12]
 }
 
+// A2, B2 => 2
+// A2, A3 => 12
+// A2, B3 => 14
+// B2, C3 => 1
+export function semitonesDifference(noteNameA: string, octaveA: number, noteNameB: string, octaveB: number): number {
+    const indexA = DATA.notesSharp.indexOf(flatToSharp(noteNameA))
+    const indexB = DATA.notesSharp.indexOf(flatToSharp(noteNameB))
+    return octaveB * 12 + indexB - (octaveA * 12 + indexA)
+}
+
 // A, A => 1
 // A, C => 3m
-// A, C♯ => 3
+// A, C# => 3
 export function absToRel(noteNameBase: string, noteName: string): string {
     const indexBase = DATA.notesSharp.indexOf(flatToSharp(noteNameBase))
     const indexNote = DATA.notesSharp.indexOf(flatToSharp(noteName))
@@ -77,7 +88,7 @@ export function absToRel(noteNameBase: string, noteName: string): string {
 }
 
 // A, A / B C D => 1 / 2 3m 4
-export function absToRelModel(ding: string, notesAsStringClean: string): string {
+export function absToRelModel(ding: string, notesAsString: string): string {
     let indexOfDing = DATA.notesSharp.indexOf(ding)
     if (indexOfDing === -1) {
         indexOfDing = DATA.notesFlat.indexOf(ding)
@@ -86,10 +97,10 @@ export function absToRelModel(ding: string, notesAsStringClean: string): string 
     for (let i = 0; i < 12; i++) {
         relatives.push(DATA.ecarts[(12 - indexOfDing + i) % 12])
     }
-    let relStr = notesAsStringClean + ' '
+    let relStr = notesAsString + ' '
     for (let i = 0; i < 12; i++) {
-        relStr = relStr.replace(new RegExp(DATA.notesSharp[i] + '[0-9]?([^♯♭])', 'g'), relatives[i] + '$1')
-        relStr = relStr.replace(new RegExp(DATA.notesFlat[i] + '[0-9]?([^♯♭])', 'g'), relatives[i] + '$1')
+        relStr = relStr.replace(new RegExp(DATA.notesSharp[i] + '[0-9]?([^#b])', 'g'), relatives[i] + '$1')
+        relStr = relStr.replace(new RegExp(DATA.notesFlat[i] + '[0-9]?([^#b])', 'g'), relatives[i] + '$1')
     }
     return relStr.trim()
 }
@@ -124,34 +135,26 @@ type PanScale = {
     notesAll: any[]
 }
 
-export const genPanScales = (handpans: Handpan[]): any[] => {
-    const panScalesAbsolute = handpans.flatMap(handpan =>
-        allPanScales.map(panScale => {
-            const pan = new Handpan()
-            pan.loadFromRelNotation(handpan.ding, panScale.relativeNotation, handpan.dingOctave)
-            return {
-                ding: handpan.ding,
-                name: panScale.name,
-                notesAll: pan.notesAll,
-            }
+export const genPanScales = (handpans: HandpanUser[]): HandpanModel[] => {
+    const potentialScales = handpans.flatMap(handpanUser =>
+        ALL_PANSCALES_TRANSPOSED.filter(panScale => {
+            return panScale.getDingString() === handpanUser.handpanModel.getDingString()
         }),
     )
-    return _.uniqBy(panScalesAbsolute, p => p.ding + p.name).filter(panScale => {
-        return panScale.notesAll.every(panNote => {
-            return handpans
-                .flatMap(handpan => handpan.notesAll)
-                .some(handpanNote => {
-                    // Car la génération de relatif => absolu ne génère que des # pour l'instant
-                    const flatIndex = DATA.notesFlat.indexOf(handpanNote.name)
-                    const sharpedNoteName = flatIndex !== -1 ? DATA.notesSharp[flatIndex] : handpanNote.name
-                    return panNote.octave === handpanNote.octave && panNote.name === sharpedNoteName
-                })
+    const containedScales = potentialScales.filter(potentialScale => {
+        return potentialScale.notes.every(potentialScaleNote => {
+            return handpans.find(handpan =>
+                handpan.handpanModel.notes.find(
+                    note => note.noteName === potentialScaleNote.noteName && note.octave === potentialScaleNote.octave,
+                ),
+            )
         })
     })
+    return _.uniqBy(containedScales, s => s.name)
 }
 
-export const genScales = (handpans: Handpan[], options: any): any[] => {
-    const notesAllPans = handpans.flatMap(handpan => [handpan.ding, ...handpan.notesAll.map(note => note.name)]) // En attendant le ding dans notesAll
+export const genScales = (handpans: HandpanUser[], options: any): any[] => {
+    const notesAllPans = handpans.flatMap(handpan => handpan.handpanModel.notes.map(note => note.noteName))
     const uniqueNotesAllPans = [...new Set(notesAllPans)]
     return uniqueNotesAllPans.flatMap(tonic => {
         const scalesWithAbs = DATA.scales
@@ -166,12 +169,14 @@ export const genScales = (handpans: Handpan[], options: any): any[] => {
             })
         return scalesWithAbs
             .filter(scale => {
+                // Pour chaque note de la gamme, je dois trouver dans uniqueNotesAllPans cette note ou la note inversée #b
                 return scale.absSharp.every(note => {
                     const otherNote = alternateFlatSharp(note)
                     return uniqueNotesAllPans.indexOf(note) !== -1 || uniqueNotesAllPans.indexOf(otherNote) !== -1
                 })
             })
             .filter(scale => {
+                // Je dois avoir deux fois la tonic (règle à optioniser ping Anton Stanton)
                 const otherTonic = alternateFlatSharp(tonic)
                 return notesAllPans.filter(n => n === tonic || n === otherTonic).length >= 2
             })
@@ -181,9 +186,8 @@ export const genScales = (handpans: Handpan[], options: any): any[] => {
                 noteNames: scale.absSharp,
                 name: scale.name,
                 totalNotes: handpans
-                    .flatMap(handpan => [handpan.ding, ...handpan.notesAll.map(note => note.name)])
+                    .flatMap(handpan => handpan.handpanModel.notes.map(note => note.noteName))
                     .filter(note => {
-                        // En attendant le ding dans notesAll
                         const otherNote = alternateFlatSharp(note)
                         return scale.absSharp.indexOf(note) !== -1 || scale.absSharp.indexOf(otherNote) !== -1
                     }).length,
@@ -192,12 +196,8 @@ export const genScales = (handpans: Handpan[], options: any): any[] => {
     })
 }
 
-export const genSongs = (handpans: Handpan[]): any[] => {
-    const notesAllPans = handpans.flatMap(handpan => [
-        handpan.ding + handpan.dingOctave,
-        ...handpan.notesAll.map(note => note.name + note.octave),
-    ]) // En attendant le ding dans notesAll
-    const uniqueNotesAllPans = [...new Set(notesAllPans)]
+export const genSongs = (handpans: HandpanUser[]): any[] => {
+    const uniqueNotesStringAllPans = handpans.flatMap(handpan => handpan.handpanModel.getUniqueNotesString())
     return SONGS.flatMap(song => {
         if (!song.notes) {
             return []
@@ -206,7 +206,7 @@ export const genSongs = (handpans: Handpan[]): any[] => {
         for (let i = -30; i < 20; i++) {
             const transposedNotes = transpose(song.notes, i)
             const songComplete = transposedNotes.every(note => {
-                return uniqueNotesAllPans.indexOf(note) >= 0
+                return uniqueNotesStringAllPans.indexOf(note) >= 0
             })
             if (songComplete) {
                 let recording = null
@@ -252,6 +252,18 @@ export const transposeNote = (note: string, semitones: number): string => {
     if (!octave) {
         throw new Error('Octave missing: ' + note)
     }
+    const result = transposeNoteObj({ noteName, octave }, semitones)
+    return result.noteName + result.octave
+}
+
+// {A,1},1 => {A#,1}
+// {A,1},2 => {B,1}
+// {A,1},3 => {C,2}
+export function transposeNoteObj(note: any, semitones: number): any {
+    if (semitones === 0) {
+        return note
+    }
+    const { noteName, octave } = note
     const noteNameSharp = flatToSharp(noteName)
     const noteIndex = DATA.notesSharp.indexOf(noteNameSharp)
     let newNoteIndex = noteIndex + semitones
@@ -264,5 +276,5 @@ export const transposeNote = (note: string, semitones: number): string => {
         newNoteIndex -= 12
         newOctave++
     }
-    return DATA.notesSharp[newNoteIndex] + newOctave
+    return { noteName: DATA.notesSharp[newNoteIndex], octave: newOctave }
 }

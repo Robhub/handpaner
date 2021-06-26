@@ -4,7 +4,7 @@
             {{ relative }}
         </template>
         <template v-else>
-            {{ noteName }}<sub>{{ noteOctave }}</sub>
+            {{ note.noteName.replace('#', '♯').replace('b', '♭') }}<sub>{{ note.octave }}</sub>
         </template>
     </div>
 </template>
@@ -12,10 +12,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { absToRel } from '@/music'
+
 export default Vue.extend({
     props: {
-        noteName: String,
-        noteOctave: Number,
+        note: Object,
     },
     computed: {
         showRelative(): boolean {
@@ -25,7 +25,7 @@ export default Vue.extend({
             return this.$store.state.selection.relativeNoteBase
         },
         relative(): string {
-            return absToRel(this.relativeNoteBase, this.noteName)
+            return absToRel(this.relativeNoteBase, this.note.noteName)
         },
     },
 })

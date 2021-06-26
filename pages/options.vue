@@ -3,6 +3,14 @@
         <h1>Options</h1>
         <SelectVolume />
         <SelectSamplesBank />
+        Sound models:
+        <select v-model="selectedCustomPanScale">
+            <option v-for="customPanScale in customPanScales" v-bind:key="customPanScale.name" :value="customPanScale">
+                {{ customPanScale.name }}
+            </option>
+        </select>
+        <button v-if="selectedCustomPanScale" @click="removeCustomPanScale(selectedCustomPanScale.name)">Delete</button>
+
         <div class="checks">
             <div>
                 <label><input type="checkbox" v-model="enableClac" /> Enable clac</label>
@@ -24,7 +32,15 @@ export default Vue.extend({
         SelectVolume,
         SelectSamplesBank,
     },
+    data() {
+        return {
+            selectedCustomPanScale: null,
+        }
+    },
     computed: {
+        customPanScales() {
+            return this.$store.state.options.customPanScales
+        },
         enableClac: {
             get() {
                 return this.$store.state.options.enableClac
@@ -40,6 +56,11 @@ export default Vue.extend({
             set(value: boolean) {
                 this.$store.commit('options/setShowBebop', value)
             },
+        },
+    },
+    methods: {
+        removeCustomPanScale(customPanScaleName: string): void {
+            this.$store.commit('options/removeCustomPanScale', customPanScaleName)
         },
     },
 })

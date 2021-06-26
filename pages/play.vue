@@ -8,11 +8,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import HandpanDiagram from '../components/handpan-diagram.vue'
-import SelectVolume from '../components/select-volume.vue'
-import SelectSamplesBank from '../components/select-samplesbank.vue'
 import Record from '../components/record.vue'
-import { Handpan } from '../models'
-import * as DATA from '../data'
 
 export default Vue.extend({
     components: {
@@ -47,13 +43,14 @@ export default Vue.extend({
         },
     },
     mounted() {
-        this.handpan = new Handpan()
-        if (this.$nuxt.$route.hash) {
-            const panString = this.$nuxt.$route.hash.substr(1)
-            this.handpan.loadFromAbsNotation(panString.replace(/-/g, ' '))
-        } else {
-            this.handpan.loadFromAbsNotation('D/ G A C D E F G A C D')
-        }
+        // TODO adapter nouveau systeme
+        // this.handpan = new Handpan()
+        // if (this.$nuxt.$route.hash) {
+        //     const panString = this.$nuxt.$route.hash.substr(1)
+        //     this.handpan.loadFromAbsNotation(panString.replace(/-/g, ' '))
+        // } else {
+        //     this.handpan.loadFromAbsNotation('D/ G A C D E F G A C D')
+        // }
     },
 })
 </script>
