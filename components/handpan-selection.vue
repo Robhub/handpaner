@@ -124,10 +124,12 @@ export default Vue.extend({
         },
         saveModel(): void {
             const modelName = prompt('Model name')
-            this.$store.commit('options/addCustomPanScale', {
-                name: modelName,
-                definition: this.inputAbsNotation,
-            })
+            if (modelName) {
+                this.$store.commit('options/addCustomPanScale', {
+                    name: modelName,
+                    definition: this.inputAbsNotation,
+                })
+            }
         },
         selectionChanged(): void {
             this.$emit('selectionChanged')

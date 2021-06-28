@@ -184,11 +184,6 @@ export default Vue.extend({
         uniqueSongs(): string[] {
             return [...new Set(Array.from(this.displayedSongs.map(song => song.name)))]
         },
-
-        // allPanScalesDataWithCustom(): PanScaleData[] {
-        //     const customScales = this.$store.state.options.customPanScales
-        //     return [...ALL_PANSCALES_DATA, ...customScales]
-        // },
         displayedScalesSorted(): any[] {
             return this.displayedScales.sort((a: any, b: any) => b.totalNotes - a.totalNotes)
         },

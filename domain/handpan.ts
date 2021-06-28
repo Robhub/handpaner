@@ -100,7 +100,7 @@ export const ALL_DINGS = [
     'B3',
 ]
 
-export const ALL_PANSCALES_DATA = [
+const ALL_PANSCALES_DATA = [
     { definition: 'F/ A C E F A B C E', name: 'Aegean' },
     { definition: 'E/ A B C D E F G A', name: 'Aeolian' },
     { definition: 'E/ A B C E F A B C', name: 'Akebono' },
