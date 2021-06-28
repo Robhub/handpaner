@@ -41,6 +41,7 @@ export default Vue.extend({
     },
     data() {
         return {
+            isLoaded: false,
             ignoreNextHashChange: false,
             ALL_DINGS: ALL_DINGS,
             inputAbsNotation: '',
@@ -66,17 +67,17 @@ export default Vue.extend({
             },
         },
         allGenericNamesSorted(): string[] {
-            const allScales = ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM(this.$store.state.options.customPanScales)
+            const allScales = this.isLoaded ? ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM(this.$store.state.options.customPanScales) : []
             const allScalesNames = allScales.map(handpanModel => handpanModel.genericName)
             return [...new Set(allScalesNames)].sort((a: string, b: string) => a.localeCompare(b))
         },
 
         playPath(): string {
-            // if (this.displayedHandpan) {
-            // return 'play/#' + this.displayedHandpan.absNotationUser.replace(/ /g, '-')
-            // } else {
-            return 'play/'
-            // }
+            if (this.displayedHandpan) {
+                return 'play/#' + this.displayedHandpan.handpanModel.getDefinition().replace(/ /g, '-')
+            } else {
+                return 'play/'
+            }
         },
         uniqueNotesAllPans(): string[] {
             return [
@@ -86,6 +87,11 @@ export default Vue.extend({
         displayedHandpan(): HandpanUser | undefined {
             return (this.handpansUser as HandpanUser[]).find(handpanUser => handpanUser.id === this.displayedHandpanId)
         },
+    },
+    created() {
+        setTimeout(() => {
+            this.isLoaded = true
+        }, 1)
     },
     methods: {
         WTF(lol: number): void {},

@@ -1,7 +1,13 @@
 <template>
     <div>
         <Record />
-        <HandpanDiagram v-if="handpan" :handpan="handpan" :selectedChord="selectedChord" :selectedPanScale="null" :selectedScale="null" />
+        <HandpanDiagram
+            v-if="handpanUser"
+            :handpan="handpanUser.handpanModel"
+            :selectedChord="selectedChord"
+            :selectedPanScale="null"
+            :selectedScale="null"
+        />
     </div>
 </template>
 
@@ -9,6 +15,7 @@
 import Vue from 'vue'
 import HandpanDiagram from '../components/handpan-diagram.vue'
 import Record from '../components/record.vue'
+import { HandpanUser } from '@/domain/handpan'
 
 export default Vue.extend({
     components: {
@@ -23,7 +30,7 @@ export default Vue.extend({
     },
     data() {
         return {
-            handpan: null as any,
+            handpanUser: null as any,
             selectedChord: {
                 label: '',
                 root: '',
@@ -43,14 +50,12 @@ export default Vue.extend({
         },
     },
     mounted() {
-        // TODO adapter nouveau systeme
-        // this.handpan = new Handpan()
-        // if (this.$nuxt.$route.hash) {
-        //     const panString = this.$nuxt.$route.hash.substr(1)
-        //     this.handpan.loadFromAbsNotation(panString.replace(/-/g, ' '))
-        // } else {
-        //     this.handpan.loadFromAbsNotation('D/ G A C D E F G A C D')
-        // }
+        if (this.$nuxt.$route.hash) {
+            const panString = this.$nuxt.$route.hash.substr(1)
+            this.handpanUser = new HandpanUser(panString.replace(/-/g, ' '))
+        } else {
+            this.handpanUser = new HandpanUser('D/ G A C D E F G A C D')
+        }
     },
 })
 </script>

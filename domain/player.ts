@@ -16,7 +16,6 @@ function loadSample(path: string, fncb: Function): void {
 }
 
 if (process.client) {
-    console.log('NEW AUDIOCONTEXT !!!')
     audioctx = new AudioContext()
     for (let samplesBank of DATA.samplesBanks) {
         const samplesDispo = samplesBank.samplesDispo
