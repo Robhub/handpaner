@@ -58,39 +58,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import { default as HandpanNoteInside } from '../components/handpan-note-inside.vue'
-import * as DATA from '../data'
 import { HandpanNote, HandpanModel } from '@/domain/handpan'
 import { flatToSharp, alternateFlatSharp } from '../music'
+import { playSample, playGu, playClac } from '@/domain/player'
+import * as DATA from '../data'
 
 let isMobile = false
-let audioctx: any
-let clacBuffer: any
-let guBuffer: any
-let playInterval: any
-let notesTimeouts = <any[]>[]
 
-function loadSample(path: string, fncb: Function): void {
-    const request = new XMLHttpRequest()
-    request.open('GET', path)
-    request.responseType = 'arraybuffer'
-    request.onload = function() {
-        let undecodedAudio = request.response
-        audioctx.decodeAudioData(undecodedAudio, fncb)
-    }
-    request.send()
-}
-if (process.client) {
-    audioctx = new AudioContext()
-    for (let samplesBank of DATA.samplesBanks) {
-        const samplesDispo = samplesBank.samplesDispo
-        for (let sampleDispo of samplesDispo) {
-            const path = '/' + samplesBank.folder + '/' + sampleDispo.replace('#', 's') + '.flac'
-            loadSample(path, (data: any) => (samplesBank.buffer[sampleDispo] = data))
-        }
-    }
-    loadSample('/gu/D2.flac', (data: any) => (guBuffer = data))
-    loadSample('/clac/clac.flac', (data: any) => (clacBuffer = data))
-}
 export default Vue.extend({
     components: {
         HandpanNoteInside,
@@ -100,6 +74,12 @@ export default Vue.extend({
         selectedChord: Object, // TODO typage chords
         selectedPanScale: Object,
         selectedScale: Object,
+    },
+    data() {
+        return {
+            playInterval: null as any,
+            notesTimeouts: [] as any[],
+        }
     },
     computed: {
         nbNotesTop(): number {
@@ -118,32 +98,36 @@ export default Vue.extend({
                 '--nbnotes': this.nbNotesBottom,
             }
         },
+        recordPlaying: {
+            get() {
+                return this.$store.getters['player/getRecordPlaying']
+            },
+            set(value: any) {
+                this.$store.commit('player/setRecordPlaying', value)
+            },
+        },
     },
-    mounted() {
-        this.$root.$on('playRecord', (xx: any) => {
-            const { record, endTime } = xx
-            this.beginPlayback(record, endTime)
-        })
-        this.$root.$on('stopPlayback', () => {
-            clearTimeout(playInterval)
-            notesTimeouts.forEach(noteTimeout => clearTimeout(noteTimeout))
-        })
-    },
-    destroyed() {
-        this.$root.$off('playRecord')
-        this.$root.$off('stopPlayback')
+    watch: {
+        recordPlaying(recordPlaying) {
+            if (recordPlaying !== null) {
+                this.beginPlayback(recordPlaying.record, recordPlaying.endTime)
+            } else {
+                clearTimeout(this.playInterval)
+                this.notesTimeouts.forEach(noteTimeout => clearTimeout(noteTimeout))
+            }
+        },
     },
     methods: {
         beginPlayback(record: any, endTime: any): void {
-            notesTimeouts = []
+            this.notesTimeouts = []
             record.forEach((elt: any) => {
-                notesTimeouts.push(
+                this.notesTimeouts.push(
                     setTimeout(() => {
                         this.playNoteByFullname(elt.note)
                     }, elt.time),
                 )
             })
-            playInterval = setTimeout(() => {
+            this.playInterval = setTimeout(() => {
                 this.beginPlayback(record, endTime)
             }, endTime)
         },
@@ -157,7 +141,8 @@ export default Vue.extend({
         },
         playClac(): void {
             if (this.$store.state.options.enableClac) {
-                this.playSample(clacBuffer)
+                const volume = this.$store.getters['options/getVolume']
+                playClac(volume)
             }
         },
         playGuMouse(event: Event): void {
@@ -171,7 +156,8 @@ export default Vue.extend({
             this.playGu()
         },
         playGu(): void {
-            this.playSample(guBuffer)
+            const volume = this.$store.getters['options/getVolume']
+            playGu(volume)
         },
         playNoteTouch(event: Event, note: HandpanNote): void {
             event.stopPropagation() // prevents clac
@@ -185,20 +171,14 @@ export default Vue.extend({
             }
         },
         playNoteByFullname(noteFullname: string): void {
-            // let noteFound = null
-            // if (this.handpan.ding + this.handpan.dingOctave === noteFullname) {
-            //     // TODO : Déplacer le DING dans notesAll
-            //     noteFound = { name: this.handpan.ding, octave: this.handpan.dingOctave }
-            // } else {
-            //     noteFound = this.handpan.notesAll.find(note => {
-            //         return note.name + note.octave === noteFullname
-            //     })
-            // }
-            // if (noteFound) {
-            //     this.playNote(noteFound)
-            // } else {
-            //     console.log('note not found in the pan', noteFullname)
-            // }
+            const noteFound = this.handpan.notes.find(note => {
+                return note.noteName + note.octave === noteFullname
+            })
+            if (noteFound) {
+                this.playNote(noteFound)
+            } else {
+                console.log('note not found in the pan', noteFullname)
+            }
         },
         playNote(note: HandpanNote): void {
             const name = note.noteName
@@ -223,13 +203,8 @@ export default Vue.extend({
             }
         },
         playSample(sampleBuffer: any): void {
-            const gainNode = audioctx.createGain()
-            gainNode.gain.value = this.$store.getters['options/getVolume']
-            const source = audioctx.createBufferSource()
-            source.buffer = sampleBuffer
-            gainNode.connect(audioctx.destination)
-            source.connect(gainNode)
-            source.start(0)
+            const volume = this.$store.getters['options/getVolume']
+            playSample(sampleBuffer, volume)
         },
         isSpecial(note: HandpanNote): boolean {
             const otherNote = alternateFlatSharp(note.noteName)

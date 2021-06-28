@@ -205,7 +205,7 @@ export default Vue.extend({
         this.$store.commit('selection/setHighlightedNotes', [])
     },
     beforeDestroy() {
-        this.$root.$emit('stopPlayback')
+        this.$nuxt.$emit('stopPlayback')
     },
     methods: {
         onSelectionChanged(): void {
@@ -284,11 +284,13 @@ export default Vue.extend({
         },
         stopSong(): void {
             this.isPlaying = false
-            this.$root.$emit('stopPlayback')
+            // this.$nuxt.$emit('stopPlayback')
+            this.$store.commit('player/setRecordPlaying', null)
         },
         playSong(): void {
             this.isPlaying = true
-            this.$root.$emit('playRecord', parseRecord(this.selectedSong.recording))
+            // this.$nuxt.$emit('playRecord', parseRecord(this.selectedSong.recording))
+            this.$store.commit('player/setRecordPlaying', parseRecord(this.selectedSong.recording))
         },
         selectSong(song: Song) {
             if (this.selectedSong !== null && song === this.selectedSong) {
