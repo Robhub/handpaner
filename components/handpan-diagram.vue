@@ -12,7 +12,7 @@
                 @touchstart="playNoteTouch($event, handpan.getDing())"
             >
                 <HandpanNoteInside class="inside" :note="handpan.getDing()" />
-                <!-- <div class="animation" :class="{ animated: handpan.dingAnimated }" @animationend="handpan.dingAnimated = false"></div> -->
+                <div class="animation" :class="{ animated: isAnim(handpan.getDing()) }"></div>
             </div>
             <div class="notes" :style="cssNbNotesTop">
                 <div class="note" v-for="note in handpan.getRestNotesTop()" v-bind:key="note.key">
@@ -27,7 +27,7 @@
                         @touchstart="playNoteTouch($event, note)"
                     >
                         <HandpanNoteInside class="inside" :note="note" />
-                        <div class="animation" :class="{ animated: note.animated }" @animationend="note.animated = false"></div>
+                        <div class="animation" :class="{ animated: isAnim(note) }"></div>
                     </span>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                         @touchstart="playNoteTouch($event, note)"
                     >
                         <HandpanNoteInside class="inside" :note="note" />
-                        <!-- <div class="animation" :class="{ animated: note.animated }" @animationend="note.animated = false"></div> -->
+                        <div class="animation" :class="{ animated: isAnim(note) }"></div>
                     </span>
                 </div>
             </div>
@@ -79,6 +79,8 @@ export default Vue.extend({
         return {
             playInterval: null as any,
             notesTimeouts: [] as any[],
+            animatedNote: null as any,
+            animatedNotes: [] as any[],
         }
     },
     computed: {
@@ -118,6 +120,9 @@ export default Vue.extend({
         },
     },
     methods: {
+        isAnim(note: HandpanNote): boolean {
+            return this.animatedNotes.indexOf(note) !== -1
+        },
         beginPlayback(record: any, endTime: any): void {
             this.notesTimeouts = []
             record.forEach((elt: any) => {
@@ -177,7 +182,7 @@ export default Vue.extend({
             if (noteFound) {
                 this.playNote(noteFound)
             } else {
-                console.log('note not found in the pan', noteFullname)
+                console.log('note not found in the pan', noteFullname) // todo gestion globale + handpan principal
             }
         },
         playNote(note: HandpanNote): void {
@@ -189,17 +194,10 @@ export default Vue.extend({
             if (noteBuffer) {
                 this.playSample(noteBuffer)
                 this.$store.dispatch('recorder/playNote', nameSharp + octave)
-                // if (note.animated === undefined) {
-                //     this.handpan.dingAnimated = false
-                //     setTimeout(() => {
-                //         this.handpan.dingAnimated = true
-                //     }, 0)
-                // } else {
-                //     note.animated = false
-                //     setTimeout(() => {
-                //         note.animated = true
-                //     }, 0)
-                // }
+                this.animatedNotes = this.animatedNotes.filter(n => n !== note)
+                setTimeout(() => {
+                    this.animatedNotes.push(note)
+                }, 0)
             }
         },
         playSample(sampleBuffer: any): void {

@@ -131,7 +131,7 @@ export default Vue.extend({
         return {
             displayMode: 'panScales',
             displayedHandpanId: '',
-            handpansUser: <HandpanUser[]>[],
+            // handpansUser: <HandpanUser[]>[],
 
             notes: <any[]>[],
             abs: '',
@@ -158,18 +158,31 @@ export default Vue.extend({
         }
     },
     created() {
+        this.handpansUser = []
         setTimeout(() => {
             this.isLoaded = true
+            const handpansDefinition = this.$store.state.selection.handpansDefinition
             if (this.$nuxt.$route.hash) {
                 this.loadHandpansFromHash()
+            } else if (handpansDefinition && handpansDefinition.length) {
+                this.loadHandpansFromDefinitions(handpansDefinition)
+                this.updateHash()
             } else {
-                this.handpansUser.push(new HandpanUser('D/ A C D E F G A C'))
+                this.handpansUser = [...this.handpansUser, new HandpanUser('D/ A C D E F G A C')]
                 this.displayedHandpanId = this.handpansUser[0].id
                 this.genScalesAndChordsAllPans()
             }
         }, 1)
     },
     computed: {
+        handpansUser: {
+            get(): HandpanUser[] {
+                return this.$store.state.selection.handpansUser
+            },
+            set(value: HandpanUser[]) {
+                this.$store.commit('selection/setHandpansUser', value)
+            },
+        },
         selectedSong: {
             get() {
                 return this.$store.state.selection.selectedSong
@@ -205,7 +218,7 @@ export default Vue.extend({
         this.$store.commit('selection/setHighlightedNotes', [])
     },
     beforeDestroy() {
-        this.$nuxt.$emit('stopPlayback')
+        this.$store.commit('player/setRecordPlaying', null)
     },
     methods: {
         onSelectionChanged(): void {
@@ -220,9 +233,12 @@ export default Vue.extend({
         },
         loadHandpansFromHash(): void {
             const panStrings = this.$nuxt.$route.hash.substr(1).split('_')
+            this.loadHandpansFromDefinitions(panStrings.map(str => str.replace(/-/g, ' ')))
+        },
+        loadHandpansFromDefinitions(definitions: string[]): void {
             this.handpansUser = []
-            panStrings.forEach(panString => {
-                this.handpansUser.push(new HandpanUser(panString.replace(/-/g, ' ')))
+            definitions.forEach(definition => {
+                this.handpansUser = [...this.handpansUser, new HandpanUser(definition)]
             })
             this.displayedHandpanId = this.handpansUser[0].id
             this.genScalesAndChordsAllPans()
@@ -237,7 +253,9 @@ export default Vue.extend({
             this.updateHash()
         },
         addHandpan(): void {
-            this.handpansUser.push(new HandpanUser('C/ C'))
+            const newHandpan = new HandpanUser('C/ C')
+            this.handpansUser = [...this.handpansUser, newHandpan]
+            this.displayedHandpanId = newHandpan.id
             this.genScalesAndChordsAllPans()
             this.updateHash()
         },
@@ -284,12 +302,10 @@ export default Vue.extend({
         },
         stopSong(): void {
             this.isPlaying = false
-            // this.$nuxt.$emit('stopPlayback')
             this.$store.commit('player/setRecordPlaying', null)
         },
         playSong(): void {
             this.isPlaying = true
-            // this.$nuxt.$emit('playRecord', parseRecord(this.selectedSong.recording))
             this.$store.commit('player/setRecordPlaying', parseRecord(this.selectedSong.recording))
         },
         selectSong(song: Song) {

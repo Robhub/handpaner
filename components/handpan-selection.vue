@@ -97,7 +97,12 @@ export default Vue.extend({
         WTF(lol: number): void {},
         dingChanged(): void {
             try {
-                this.displayedHandpan!.loadFromDefinition(this.inputAbsNotation, this.inputDing)
+                // this.displayedHandpan!.loadFromDefinition(this.inputAbsNotation, this.inputDing)
+                this.$store.commit('selection/loadFromDefinition', {
+                    id: this.displayedHandpan!.id,
+                    definition: this.inputAbsNotation,
+                    dingWanted: this.inputDing,
+                })
                 this.inputAbsNotation = this.displayedHandpan!.handpanModel.getDefinition()
                 this.selectionChanged()
             } catch (err) {
@@ -114,13 +119,21 @@ export default Vue.extend({
             })
             if (found) {
                 this.inputAbsNotation = found.getDefinition()
-                this.displayedHandpan!.loadFromDefinition(this.inputAbsNotation)
+                // this.displayedHandpan!.loadFromDefinition(this.inputAbsNotation)
+                this.$store.commit('selection/loadFromDefinition', {
+                    id: this.displayedHandpan!.id,
+                    definition: this.inputAbsNotation,
+                })
                 this.selectionChanged()
             }
         },
         absChanged(): void {
             try {
-                this.displayedHandpan!.loadFromDefinition(this.inputAbsNotation)
+                // this.displayedHandpan!.loadFromDefinition(this.inputAbsNotation)
+                this.$store.commit('selection/loadFromDefinition', {
+                    id: this.displayedHandpan!.id,
+                    definition: this.inputAbsNotation,
+                })
                 this.inputDing = this.displayedHandpan!.handpanModel.getDingString()
                 this.inputPanscale = this.recognisedPanScaleName()
                 this.selectionChanged()
