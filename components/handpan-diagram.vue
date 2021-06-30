@@ -12,7 +12,7 @@
                 @touchstart="playNoteTouch($event, handpan.getDing())"
             >
                 <HandpanNoteInside class="inside" :note="handpan.getDing()" />
-                <div class="animation" :class="{ animated: isAnim(handpan.getDing()) }"></div>
+                <div class="animation" :class="{ animated: isAnim(handpan.getDing()) }" @animationend="endAnim(note)"></div>
             </div>
             <div class="notes" :style="cssNbNotesTop">
                 <div class="note" v-for="note in handpan.getRestNotesTop()" v-bind:key="note.key">
@@ -27,7 +27,7 @@
                         @touchstart="playNoteTouch($event, note)"
                     >
                         <HandpanNoteInside class="inside" :note="note" />
-                        <div class="animation" :class="{ animated: isAnim(note) }"></div>
+                        <div class="animation" :class="{ animated: isAnim(note) }" @animationend="endAnim(note)"></div>
                     </span>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                         @touchstart="playNoteTouch($event, note)"
                     >
                         <HandpanNoteInside class="inside" :note="note" />
-                        <div class="animation" :class="{ animated: isAnim(note) }"></div>
+                        <div class="animation" :class="{ animated: isAnim(note) }" @animationend="endAnim(note)"></div>
                     </span>
                 </div>
             </div>
@@ -120,21 +120,25 @@ export default Vue.extend({
         },
     },
     methods: {
+        endAnim(note: HandpanNote): void {
+            this.animatedNotes = this.animatedNotes.filter(n => n !== note)
+        },
         isAnim(note: HandpanNote): boolean {
             return this.animatedNotes.indexOf(note) !== -1
         },
         beginPlayback(record: any, endTime: any): void {
+            const speedRatio = 1
             this.notesTimeouts = []
             record.forEach((elt: any) => {
                 this.notesTimeouts.push(
                     setTimeout(() => {
                         this.playNoteByFullname(elt.note)
-                    }, elt.time),
+                    }, elt.time * speedRatio),
                 )
             })
             this.playInterval = setTimeout(() => {
                 this.beginPlayback(record, endTime)
-            }, endTime)
+            }, endTime * speedRatio)
         },
         playClacMouse(): void {
             if (!isMobile) {
@@ -197,7 +201,7 @@ export default Vue.extend({
                 this.animatedNotes = this.animatedNotes.filter(n => n !== note)
                 setTimeout(() => {
                     this.animatedNotes.push(note)
-                }, 0)
+                }, 1)
             }
         },
         playSample(sampleBuffer: any): void {
@@ -338,28 +342,28 @@ export default Vue.extend({
 
 @keyframes noteanim {
     0% {
-        background: #ffffff00;
-        width: 0px;
-        height: 0px;
+        width: 50px;
+        height: 50px;
     }
-    10% {
-        background: #ffffffa0;
+    50% {
         width: 60px;
         height: 60px;
     }
     100% {
-        background: #ffffff00;
+        width: 50px;
+        height: 50px;
     }
 }
 
 .animation {
+    background: white;
     position: absolute;
     border-radius: 100px;
     display: block;
 }
 
 .animated {
-    animation: noteanim 0.2s;
+    animation: noteanim 0.1s;
 }
 
 .note:nth-child(1) {

@@ -222,6 +222,8 @@ export default Vue.extend({
     },
     methods: {
         onSelectionChanged(): void {
+            this.isPlaying = false
+            this.$store.commit('player/setRecordPlaying', null)
             this.genScalesAndChordsAllPans()
             this.updateHash()
         },
