@@ -1,22 +1,39 @@
-const input = `
-Bd|b2b2a2|e4ce|c'2c'2d'2|c'2b2 df|d'2d'2e'2|g4eg|c'2c'2^a2|b2z2
+let input = `
+ABcdef|e2d2c2|dGBdeg|e2d2B2
+ABcdef|e2d2c2|dGBded|c2B2G2
+A3Bc2|A3Bc2|B3cd2|c2B2G2
+A3Bc2|A3Bc2|B3cd2|c2B2G2
+A2cAcA|A2cAcA|G2BGBG|G2BGBG
+A2cAcA|A2cAcA|G2BGBG|G2BGBG
+ecAecA|fcAfcA|dBGdBG|eBGeBG
+ecAecA|fcAfcA|dBGdBG|eBGeBG
+A3Bc2|A3Bc2|B3cd2|c2B2G2
+A3Bc2|A3Bc2|B3cd2|c2B2G2
 `
 
+// const key = 'Edor' // (bbb)
 // const key = 'Gmin' // Bbmaj (bb)
 // const key = 'Dmin' // Fmaj Gdor (b)
-// const key = 'Amin' // Cmaj Ddor ()
+const key = 'Amin' // Cmaj Ddor ()
 // const key = 'Emin' // Gmaj Ador (#)
-const key = 'Bmin' // Dmaj Edor (##)
+// const key = 'Bmin' // Dmaj Edor (##)
 
-//const crocheDuration = 140
-const crocheDuration = 280
+// const crocheDuration = 140
+// const crocheDuration = 160
+const crocheDuration = 180
+// const crocheDuration = 200
+// const crocheDuration = 280
 let t = 0
 let wait = 0
-const matches = [...input.matchAll(/([\^=])?([a-gA-Gz][,']?)([123468\/])?/g)].map(m => {
+let chordDuration = null
+input = input.replace(/"[^"]+"/g, '') // remove chords labels
+const matches = [...input.matchAll(/(\[)?([\^=])?([a-gA-Gz](?:[,']{1,2})?)([1234678\/])?(\])?/g)].flatMap(matchedGroups => {
     wait = 0
-    let accidental = m[1]
-    let note = m[2]
-    let duration = m[3]
+    let isChordStart = matchedGroups[1]
+    let accidental = matchedGroups[2]
+    let noteAndOctave = matchedGroups[3]
+    let duration = matchedGroups[4]
+    let isChordEnd = matchedGroups[5]
 
     let duree = 1
     if (duration === '/') {
@@ -37,27 +54,33 @@ const matches = [...input.matchAll(/([\^=])?([a-gA-Gz][,']?)([123468\/])?/g)].ma
     if (duration === '6') {
         duree = 6
     }
+    if (duration === '7') {
+        duree = 7
+    }
     if (duration === '8') {
         duree = 8
     }
-    if (note === 'z') {
+    if (noteAndOctave === 'z') {
         wait = duree
-        return ''
+        return null
     }
+    const noteLetter = noteAndOctave[0]
+    const octaveModifier = noteAndOctave.slice(1)
 
     let octave = 4
-    if (note.toLowerCase() === note) {
+    if (noteLetter.toLowerCase() === noteLetter) {
         octave = 5
     }
-    if (note[note.length - 1] === ',') {
+    if (octaveModifier === ',,') {
+        octave = 2
+    }
+    if (octaveModifier === ',') {
         octave = 3
-        note = note.slice(0, -1)
     }
-    if (note[note.length - 1] === "'") {
+    if (octaveModifier === "'") {
         octave = 6
-        note = note.slice(0, -1)
     }
-    note = note.toUpperCase()
+    let note = noteLetter.toUpperCase()
 
     if (accidental === '^') {
         note = note + '#'
@@ -68,6 +91,9 @@ const matches = [...input.matchAll(/([\^=])?([a-gA-Gz][,']?)([123468\/])?/g)].ma
     if ((note === 'B' || note === 'E') && key === 'Gmin') {
         note = note + 'b'
     }
+    if ((note === 'B' || note === 'E' || note === 'A') && key === 'Cmin') {
+        note = note + 'b'
+    }
     if (note === 'F' && (key === 'Emin' || key === 'Ador')) {
         note = note + '#'
     }
@@ -76,12 +102,26 @@ const matches = [...input.matchAll(/([\^=])?([a-gA-Gz][,']?)([123468\/])?/g)].ma
     }
 
     const ret = note + octave + '@' + t
-    t += crocheDuration * (duree + wait)
+    const noteDuration = crocheDuration * (duree + wait)
+    if (isChordStart) {
+        chordDuration = noteDuration
+    } else if (!chordDuration) {
+        t += noteDuration
+    }
+    if (isChordEnd) {
+        t += chordDuration
+        chordDuration = null
+    }
 
     // console.log('m', m[1], '_', m[2], '_', m[3], '=>', ret)
+    // if (octave === 2 || octave === 3) return // IGNORED
     return ret
 })
 
 console.log(matches.filter(Boolean).join(',') + ',end@' + t)
+
+const allNotes = matches.filter(Boolean).map(x => x.split('@')[0])
+const allUniqueNotes = [...new Set(allNotes)]
+console.log(allUniqueNotes.map(n => `'${n}'`).join(','))
 
 // B4@722,end@2256

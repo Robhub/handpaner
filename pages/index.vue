@@ -218,6 +218,7 @@ export default Vue.extend({
         this.$store.commit('selection/setHighlightedNotes', [])
     },
     beforeDestroy() {
+        this.isPlaying = false
         this.$store.commit('player/setRecordPlaying', null)
     },
     methods: {

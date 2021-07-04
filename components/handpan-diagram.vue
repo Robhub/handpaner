@@ -12,7 +12,7 @@
                 @touchstart="playNoteTouch($event, handpan.getDing())"
             >
                 <HandpanNoteInside class="inside" :note="handpan.getDing()" />
-                <div class="animation" :class="{ animated: isAnim(handpan.getDing()) }" @animationend="endAnim(note)"></div>
+                <div class="animation" :class="{ animated: isAnim(handpan.getDing()) }" @animationend="endAnim(handpan.getDing())"></div>
             </div>
             <div class="notes" :style="cssNbNotesTop">
                 <div class="note" v-for="note in handpan.getRestNotesTop()" v-bind:key="note.key">
@@ -269,6 +269,7 @@ export default Vue.extend({
 }
 .handpan-shape.is-bottom {
     background: #666;
+    --deg: 80deg; /* décalage car souvent double bottoms graves ? */
 }
 
 .ding,

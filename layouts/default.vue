@@ -4,7 +4,7 @@
             <nuxt-link to="/"><img src="../static/handpaner.png"/></nuxt-link>
             <div class="menu" :class="{ 'is-open': menuOpened }">
                 <nuxt-link to="/">Home</nuxt-link>
-                <!-- <nuxt-link to="infos">Infos</nuxt-link> -->
+                <nuxt-link to="help">Help</nuxt-link>
                 <nuxt-link to="options">Options</nuxt-link>
                 <nuxt-link to="about">About</nuxt-link>
             </div>
