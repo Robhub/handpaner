@@ -18,6 +18,9 @@
             <div>
                 <label><input type="checkbox" v-model="showBebop" /> Show bebop scales</label>
             </div>
+            <div>
+                <label><input type="checkbox" v-model="hideFooter" /> Hide footer</label>
+            </div>
         </div>
     </div>
 </template>
@@ -55,6 +58,14 @@ export default Vue.extend({
             },
             set(value: boolean) {
                 this.$store.commit('options/setShowBebop', value)
+            },
+        },
+        hideFooter: {
+            get() {
+                return this.$store.state.options.hideFooter
+            },
+            set(value: boolean) {
+                this.$store.commit('options/setHideFooter', value)
             },
         },
     },

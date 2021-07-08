@@ -96,8 +96,11 @@
                             <template v-if="song.recording">♫</template>{{ song.name }} ({{ song.transpo }})
                         </div>
                     </div>
-                    <button v-if="isPlaying" @click.stop="stopSong()">Stop</button>
-                    <button v-if="selectedSong && selectedSong.recording && !isPlaying" @click.stop="playSong()">Play</button>
+                    <div class="song-actions">
+                        <button v-if="isPlaying" @click.stop="stopSong()">Stop</button>
+                        <button v-if="selectedSong && selectedSong.recording && !isPlaying" @click.stop="playSong()">Play</button>
+                        <SelectPlaybackSpeed v-if="isPlaying" />
+                    </div>
                 </div>
             </div>
             <div class="zone">
@@ -117,6 +120,7 @@ import Vue from 'vue'
 import * as DATA from '../data'
 import { genSongs, genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScales } from '../music'
 import HandpanDiagrams from '@/components/handpan-diagrams.vue'
+import SelectPlaybackSpeed from '@/components/select-playbackspeed.vue'
 import { Song } from '@/data/songs'
 import { parseRecord } from '../store/recorder'
 import { ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM, HandpanUser } from '@/domain/handpan'
@@ -126,6 +130,7 @@ export default Vue.extend({
     components: {
         HandpanDiagrams,
         HandpanSelection,
+        SelectPlaybackSpeed,
     },
     data() {
         return {
@@ -440,5 +445,11 @@ export default Vue.extend({
 .play-full {
     margin-top: 10px;
     text-align: center;
+}
+.song-actions {
+    display: flex;
+}
+.song-actions * {
+    margin: 2px 5px;
 }
 </style>

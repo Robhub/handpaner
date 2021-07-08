@@ -40,11 +40,11 @@ export default Vue.extend({
         },
         playRecord() {
             this.isPlaying = true
-            this.$nuxt.$emit('playRecord', parseRecord(this.inputRecord))
+            this.$store.commit('player/setRecordPlaying', parseRecord(this.inputRecord))
         },
         stopPlayback() {
             this.isPlaying = false
-            this.$nuxt.$emit('stopPlayback')
+            this.$store.commit('player/setRecordPlaying', null)
         },
     },
 })

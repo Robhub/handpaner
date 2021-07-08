@@ -12,22 +12,36 @@
         </div>
         <nuxt />
         <div class="overlay" v-if="menuOpened"></div>
+        <div class="footer" v-if="isWeb && !hideFooter">
+            <a href="https://play.google.com/store/apps/details?id=com.handpaner.pro" target="_blank"
+                ><img src="~/assets/google-play-sm.png"
+            /></a>
+            <a href="https://www.facebook.com/Handpaner/" target="_blank"><img src="~/assets/facebook-sm.png" /><span>Handpaner</span></a>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
+import { Capacitor } from '@capacitor/core'
 import Vue from 'vue'
 export default Vue.extend({
     data() {
         return {
             menuOpened: false,
+            isWeb: false,
         }
     },
     mounted() {
+        this.isWeb = Capacitor.getPlatform() === 'web'
         document.addEventListener('click', this.onClickDocument)
     },
     beforeDestroy() {
         document.removeEventListener('click', this.onClickDocument)
+    },
+    computed: {
+        hideFooter(): boolean {
+            return this.$store.state.options.hideFooter
+        },
     },
     methods: {
         toggleMenu() {
@@ -127,5 +141,20 @@ h3 {
     bottom: 0;
     background: rgba(0, 0, 0, 0.25);
     z-index: 0;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+.footer a {
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+}
+.footer span {
+    margin-left: 5px;
 }
 </style>

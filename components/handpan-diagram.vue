@@ -127,18 +127,18 @@ export default Vue.extend({
             return this.animatedNotes.indexOf(note) !== -1
         },
         beginPlayback(record: any, endTime: any): void {
-            const speedRatio = 1
+            const speedRatio = this.$store.state.options.playbackSpeed
             this.notesTimeouts = []
             record.forEach((elt: any) => {
                 this.notesTimeouts.push(
                     setTimeout(() => {
                         this.playNoteByFullname(elt.note)
-                    }, elt.time * speedRatio),
+                    }, elt.time / speedRatio),
                 )
             })
             this.playInterval = setTimeout(() => {
                 this.beginPlayback(record, endTime)
-            }, endTime * speedRatio)
+            }, endTime / speedRatio)
         },
         playClacMouse(): void {
             if (!isMobile) {

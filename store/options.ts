@@ -8,6 +8,8 @@ export const state = () => ({
     samplesBanks: DATA.samplesBanks,
     showBebop: false,
     customPanScales: [],
+    hideFooter: false,
+    playbackSpeed: 1.0,
 })
 
 export const getters = {
@@ -33,5 +35,11 @@ export const mutations = {
     },
     setShowBebop(st: any, showBebop: boolean) {
         st.showBebop = showBebop
+    },
+    setHideFooter(st: any, hideFooter: boolean) {
+        st.hideFooter = hideFooter
+    },
+    setPlaybackSpeed(st: any, playbackSpeed: number) {
+        st.playbackSpeed = playbackSpeed
     },
 }
