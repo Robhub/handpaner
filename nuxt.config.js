@@ -22,6 +22,7 @@ export default {
             { name: 'twitter:title', content: title },
         ],
         link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }],
+        script: [{ hid: 'stripe', src: '/iframeResizer.contentWindow.min.js', defer: true }],
     },
     buildModules: ['@nuxt/typescript-build'],
     build: {
