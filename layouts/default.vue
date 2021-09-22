@@ -13,6 +13,7 @@
         <nuxt />
         <div class="overlay" v-if="menuOpened"></div>
         <div class="footer" v-if="isWeb && !hideFooter">
+            <script type="text/javascript" src="/iframeResizer.contentWindow.min.js" defer></script>
             <a href="https://play.google.com/store/apps/details?id=com.handpaner.pro" target="_blank"
                 ><img src="~/assets/google-play-sm.png"
             /></a>
