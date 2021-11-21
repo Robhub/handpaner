@@ -82,25 +82,7 @@
                     </div>
                 </div>
                 <div class="tab-content" v-if="displayMode === 'songs'">
-                    {{ uniqueSongs.length }} different songs.
-                    <div class="selectables">
-                        <div
-                            class="selectable"
-                            v-for="song in displayedSongs"
-                            :key="song.name + song.transpo"
-                            :class="{
-                                highlight: selectedSong && song.name === selectedSong.name && song.transpo === selectedSong.transpo,
-                            }"
-                            @click.stop="selectSong(song)"
-                        >
-                            <template v-if="song.recording">♫</template>{{ song.name }} ({{ song.transpo }})
-                        </div>
-                    </div>
-                    <div class="song-actions">
-                        <button v-if="isPlaying" @click.stop="stopSong()">Stop</button>
-                        <button v-if="selectedSong && selectedSong.recording && !isPlaying" @click.stop="playSong()">Play</button>
-                        <SelectPlaybackSpeed v-if="isPlaying" />
-                    </div>
+                    <Songs :displayedSongs="displayedSongs" />
                 </div>
             </div>
             <div class="zone">
@@ -120,9 +102,8 @@ import Vue from 'vue'
 import * as DATA from '../data'
 import { genSongs, genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScales } from '../music'
 import HandpanDiagrams from '@/components/handpan-diagrams.vue'
-import SelectPlaybackSpeed from '@/components/select-playbackspeed.vue'
+import Songs from '@/components/songs.vue'
 import { Song } from '@/data/songs'
-import { parseRecord } from '../store/recorder'
 import { ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM, HandpanUser } from '@/domain/handpan'
 import HandpanSelection from '../components/handpan-selection.vue'
 
@@ -130,14 +111,12 @@ export default Vue.extend({
     components: {
         HandpanDiagrams,
         HandpanSelection,
-        SelectPlaybackSpeed,
+        Songs,
     },
     data() {
         return {
             displayMode: 'panScales',
             displayedHandpanId: '',
-            // handpansUser: <HandpanUser[]>[],
-
             notes: <any[]>[],
             abs: '',
 
@@ -158,7 +137,7 @@ export default Vue.extend({
             displayedPanScales: <any>[],
             displayedSongs: <Song[]>[],
             ignoreNextHashChange: false,
-            isPlaying: false,
+
             isLoaded: false,
         }
     },
@@ -188,20 +167,11 @@ export default Vue.extend({
                 this.$store.commit('selection/setHandpansUser', value)
             },
         },
-        selectedSong: {
-            get() {
-                return this.$store.state.selection.selectedSong
-            },
-            set(value: string) {
-                this.$store.commit('selection/setSelectedSong', value)
-            },
-        },
+
         showBebop(): boolean {
             return this.$store.state.options.showBebop
         },
-        uniqueSongs(): string[] {
-            return [...new Set(Array.from(this.displayedSongs.map(song => song.name)))]
-        },
+
         displayedScalesSorted(): any[] {
             return this.displayedScales.sort((a: any, b: any) => b.totalNotes - a.totalNotes)
         },
@@ -222,13 +192,8 @@ export default Vue.extend({
     mounted() {
         this.$store.commit('selection/setHighlightedNotes', [])
     },
-    beforeDestroy() {
-        this.isPlaying = false
-        this.$store.commit('player/setRecordPlaying', null)
-    },
     methods: {
         onSelectionChanged(): void {
-            this.isPlaying = false
             this.$store.commit('player/setRecordPlaying', null)
             this.genScalesAndChordsAllPans()
             this.updateHash()
@@ -238,6 +203,10 @@ export default Vue.extend({
             this.unselectScale()
             this.unselectChord()
             this.unselectSong()
+        },
+        unselectSong() {
+            this.$store.commit('selection/setHighlightedNotes', [])
+            this.$store.commit('selection/setSelectedSong', null)
         },
         loadHandpansFromHash(): void {
             const panStrings = this.$nuxt.$route.hash.substr(1).split('_')
@@ -252,7 +221,7 @@ export default Vue.extend({
             this.genScalesAndChordsAllPans()
         },
         removeHandpanId(event: Event, id: string): void {
-            event.stopPropagation() // On ne veut pas clic sur le tab qui va être supprimé
+            event.stopPropagation()
             this.handpansUser = this.handpansUser.filter(handpanUser => handpanUser.id !== id)
             if (id === this.displayedHandpanId) {
                 this.displayedHandpanId = this.handpansUser[0].id
@@ -308,26 +277,7 @@ export default Vue.extend({
         unselectScale(): void {
             this.selectedScale = {}
         },
-        stopSong(): void {
-            this.isPlaying = false
-            this.$store.commit('player/setRecordPlaying', null)
-        },
-        playSong(): void {
-            this.isPlaying = true
-            this.$store.commit('player/setRecordPlaying', parseRecord(this.selectedSong.recording))
-        },
-        selectSong(song: Song) {
-            if (this.selectedSong !== null && song === this.selectedSong) {
-                this.unselectSong()
-            } else {
-                this.$store.commit('selection/setHighlightedNotes', song.notes)
-                this.selectedSong = song
-            }
-        },
-        unselectSong() {
-            this.$store.commit('selection/setHighlightedNotes', [])
-            this.selectedSong = null
-        },
+
         selectChord(chordType: any, chord: any) {
             if (chord.label === this.selectedChord.label) {
                 this.unselectChord()
@@ -356,7 +306,7 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.selectables,
+/deep/ .selectables,
 .chord-type,
 .panscales,
 .scales {
@@ -370,7 +320,7 @@ export default Vue.extend({
     padding-right: 8px;
     text-align: right;
 }
-.selectable,
+/deep/ .selectable,
 .chord,
 .panscale,
 .scale {
@@ -386,7 +336,7 @@ export default Vue.extend({
 .scale {
     margin-top: 4px;
 }
-.selectable.highlight,
+/deep/ .selectable.highlight,
 .chord.highlight,
 .panscale.highlight,
 .scale.highlight {
