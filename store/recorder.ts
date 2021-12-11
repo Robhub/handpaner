@@ -1,3 +1,5 @@
+import { RecordParsed } from '@/data/songs'
+
 export function stringifyStateRecord(state: any): string {
     return state.record.map((evt: any) => evt.note + '@' + evt.time).join(',') + ',end@' + (state.endTime - state.startTime)
 }
@@ -6,17 +8,17 @@ export function stringifyRecord(record: any[], endTime: number): string {
     return record.map((evt: any) => evt.note + '@' + evt.time).join(',') + ',end@' + endTime
 }
 
-export function parseRecord(str: string): any {
-    const evts = str.split(',').map(evt => evt.split('@'))
+export function parseRecord(str: string): RecordParsed {
+    const evts = str.split(',').map((evt) => evt.split('@'))
     const record = evts
-        .filter(evt => evt[0] !== 'end')
-        .map(evt => {
+        .filter((evt) => evt[0] !== 'end')
+        .map((evt) => {
             return {
                 note: evt[0],
                 time: parseInt(evt[1], 10),
             }
         })
-    const endTime = parseInt(evts.filter(evt => evt[0] === 'end')[0][1], 10)
+    const endTime = parseInt(evts.filter((evt) => evt[0] === 'end')[0][1], 10)
     return {
         record,
         endTime,

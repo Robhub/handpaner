@@ -33,7 +33,7 @@ export class HandpanModel {
         this.notes = notes
     }
     getDing(): HandpanNote {
-        const handpanDings = this.notes.filter(handpanNote => handpanNote.isDing === true)
+        const handpanDings = this.notes.filter((handpanNote) => handpanNote.isDing === true)
         if (handpanDings.length !== 1) {
             throw new Error('need only 1 ding')
         }
@@ -44,20 +44,20 @@ export class HandpanModel {
         return ding.noteName + ding.octave
     }
     getRestNotes(): HandpanNote[] {
-        return this.notes.filter(handpanNote => handpanNote.isDing === false)
+        return this.notes.filter((handpanNote) => handpanNote.isDing === false)
     }
     getRestNotesTop(): HandpanNote[] {
-        return this.notes.filter(handpanNote => handpanNote.isDing === false && !handpanNote.isBottom)
+        return this.notes.filter((handpanNote) => handpanNote.isDing === false && !handpanNote.isBottom)
     }
     getRestNotesBottom(): HandpanNote[] {
-        return this.notes.filter(handpanNote => handpanNote.isDing === false && handpanNote.isBottom)
+        return this.notes.filter((handpanNote) => handpanNote.isDing === false && handpanNote.isBottom)
     }
     getDefinition(): string {
         const handpanDing = this.getDing()
         let currentNoteIndex = NOTES_ALL.indexOf(handpanDing.noteName)
         let impliedOctave = handpanDing.octave
         const ding = handpanDing.noteName + (handpanDing.octave !== 3 ? handpanDing.octave : '')
-        const absNotes = this.getRestNotes().map(note => {
+        const absNotes = this.getRestNotes().map((note) => {
             const noteIndex = NOTES_ALL.indexOf(note.noteName)
             if (noteIndex <= currentNoteIndex) {
                 impliedOctave++
@@ -70,10 +70,10 @@ export class HandpanModel {
         return ding + '/ ' + absNotes.join(' ')
     }
     getUniqueNotesNames(): string[] {
-        return [...new Set(this.notes.map(note => note.noteName))]
+        return [...new Set(this.notes.map((note) => note.noteName))]
     }
     getUniqueNotesString(): string[] {
-        return [...new Set(this.notes.map(note => note.noteName + note.octave))]
+        return [...new Set(this.notes.map((note) => note.noteName + note.octave))]
     }
 }
 
@@ -117,11 +117,13 @@ const ALL_PANSCALES_DATA = [
     { definition: 'A/ D F G G# A C D F', name: 'Blues' },
     { definition: 'A/ C D G A C D E G', name: 'Chao Guo' },
     { definition: 'A/ C E G A B C D E', name: 'Deep Shello' },
+    { definition: 'E/ A B C D E F A B C', name: 'DaNaYo' },
     { definition: 'D/ A B C D E F G A', name: 'Dorian' },
     { definition: 'A/ C E F G A B C', name: 'Equinox' },
     { definition: 'A/ C E F G A B C E', name: 'Equinox' },
     { definition: 'F/ (C#3) (G) G# C C# D# F G G# C', name: 'Equinox bottomised' },
     { definition: 'A/ (B) (C) E F (F#) G A B C (D) E', name: 'Equinox lowpygkurdorian mini' },
+    { definition: 'C/ E G A B C D F# G', name: 'Golden Gate' },
     { definition: 'A/ (B) (C) (D) E F G# A B C D E (G#) A (B) (C)', name: 'Harmonic Lora' },
     { definition: 'E/ A B C D E F G# A', name: 'Harmonic minor' },
     { definition: 'A/ C D E F A C D E', name: 'High Avalon' },
@@ -129,6 +131,7 @@ const ALL_PANSCALES_DATA = [
     { definition: 'A/ E F G# A B C D E', name: 'Hijaz' },
     { definition: 'B/ E F G# A B C D D#', name: 'Hijaz Kar (Mercury)' },
     { definition: 'E/ B C D E F G# A B', name: 'Hijaz Major' },
+    { definition: 'D/ A A# C D D# F# G A C D', name: 'Hijaz Tarznauyn' },
     { definition: 'A/ E F A B C D E', name: 'Insen' },
     { definition: 'A/ E F A B C D E F', name: 'Insen' },
     { definition: 'A/ E F G A B C E G', name: 'Integral (Mercury)' },
@@ -174,8 +177,8 @@ const ALL_PANSCALES_DATA = [
 ] as PanScaleData[]
 
 function transposeScales(customScales: PanScaleData[]): HandpanModel[] {
-    return customScales.flatMap(customScale => {
-        return ALL_DINGS.map(ding => {
+    return customScales.flatMap((customScale) => {
+        return ALL_DINGS.map((ding) => {
             return definitionTransposedToHandpanObj(customScale.definition, ding, customScale.name)
         })
     })
@@ -206,11 +209,8 @@ export function definitionTransposedToHandpanObj(handpanDefinition: string, ding
     }
     let previousNoteOctave = dingWantedObj.octave!!
     let previousNoteIndex = NOTES_ALL.indexOf(dingWantedObj.noteName)
-    const definitionNotesArray = definitionRestNotes
-        .trim()
-        .replace(/\s\s+/g, ' ')
-        .split(' ')
-    const handpanRestNotes = definitionNotesArray.map(noteOctaveParen => {
+    const definitionNotesArray = definitionRestNotes.trim().replace(/\s\s+/g, ' ').split(' ')
+    const handpanRestNotes = definitionNotesArray.map((noteOctaveParen) => {
         const noteOctave = noteOctaveParen.replace(/\(|\)/g, '')
         const noteObj = splitNoteNameAndOctave(noteOctave)
         const noteObjTransposed = transposeNoteObj(noteObj, transposeBy)
@@ -229,8 +229,8 @@ export function definitionTransposedToHandpanObj(handpanDefinition: string, ding
     const handpanNotes = [handpanDing, ...handpanRestNotes]
     const generatedHandpanModel = new HandpanModel(handpanNotes)
     if (name) {
-        const nbTop = handpanRestNotes.filter(n => !n.isBottom).length
-        const nbBot = handpanRestNotes.filter(n => n.isBottom).length
+        const nbTop = handpanRestNotes.filter((n) => !n.isBottom).length
+        const nbBot = handpanRestNotes.filter((n) => n.isBottom).length
         const nbRecap = nbTop + (nbBot ? '+' + nbBot : '') + '+1'
         const genericName = name + ' ' + nbRecap
         const handpanFullName = handpanDing.noteName + (handpanDing.octave !== 3 ? handpanDing.octave : '') + ' ' + genericName

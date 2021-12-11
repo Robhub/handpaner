@@ -43,9 +43,7 @@
                         >
                             {{ panScale.name }}
                         </div>
-                        <div v-if="!displayedPanScales.length">
-                            Nothing…
-                        </div>
+                        <div v-if="!displayedPanScales.length">Nothing…</div>
                     </div>
                 </div>
                 <div class="tab-content" v-if="displayMode === 'scales'">
@@ -61,9 +59,7 @@
                         >
                             {{ scale.tonic }} {{ scale.name }}
                         </div>
-                        <div v-if="!displayedScales.length">
-                            Nothing…
-                        </div>
+                        <div v-if="!displayedScales.length">Nothing…</div>
                     </div>
                 </div>
                 <div class="tab-content" v-if="displayMode === 'chords'">
@@ -176,7 +172,7 @@ export default Vue.extend({
             return this.displayedScales.sort((a: any, b: any) => b.totalNotes - a.totalNotes)
         },
         uniqueNotesAllPans(): string[] {
-            return [...new Set(Array.from(this.handpansUser.flatMap(handpanUser => handpanUser.handpanModel.getUniqueNotesNames())))]
+            return [...new Set(Array.from(this.handpansUser.flatMap((handpanUser) => handpanUser.handpanModel.getUniqueNotesNames())))]
         },
     },
     watch: {
@@ -202,7 +198,7 @@ export default Vue.extend({
             this.unselectPanScale()
             this.unselectScale()
             this.unselectChord()
-            this.unselectSong()
+            // this.unselectSong()
         },
         unselectSong() {
             this.$store.commit('selection/setHighlightedNotes', [])
@@ -210,11 +206,11 @@ export default Vue.extend({
         },
         loadHandpansFromHash(): void {
             const panStrings = this.$nuxt.$route.hash.substr(1).split('_')
-            this.loadHandpansFromDefinitions(panStrings.map(str => str.replace(/-/g, ' ')))
+            this.loadHandpansFromDefinitions(panStrings.map((str) => str.replace(/-/g, ' ')))
         },
         loadHandpansFromDefinitions(definitions: string[]): void {
             this.handpansUser = []
-            definitions.forEach(definition => {
+            definitions.forEach((definition) => {
                 this.handpansUser = [...this.handpansUser, new HandpanUser(definition)]
             })
             this.displayedHandpanId = this.handpansUser[0].id
@@ -222,7 +218,7 @@ export default Vue.extend({
         },
         removeHandpanId(event: Event, id: string): void {
             event.stopPropagation()
-            this.handpansUser = this.handpansUser.filter(handpanUser => handpanUser.id !== id)
+            this.handpansUser = this.handpansUser.filter((handpanUser) => handpanUser.id !== id)
             if (id === this.displayedHandpanId) {
                 this.displayedHandpanId = this.handpansUser[0].id
             }
@@ -238,7 +234,7 @@ export default Vue.extend({
         },
         updateHash(): void {
             const currentHash = this.$nuxt.$route.hash
-            let newHash = '#' + this.handpansUser.map(handpan => handpan.handpanModel.getDefinition().replace(/ /g, '-')).join('_')
+            let newHash = '#' + this.handpansUser.map((handpan) => handpan.handpanModel.getDefinition().replace(/ /g, '-')).join('_')
             if (newHash[newHash.length - 1] !== '-') {
                 newHash = newHash + '-'
             }
@@ -395,11 +391,5 @@ export default Vue.extend({
 .play-full {
     margin-top: 10px;
     text-align: center;
-}
-.song-actions {
-    display: flex;
-}
-.song-actions * {
-    margin: 2px 5px;
 }
 </style>

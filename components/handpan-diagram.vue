@@ -62,6 +62,7 @@ import { HandpanNote, HandpanModel } from '@/domain/handpan'
 import { flatToSharp, alternateFlatSharp } from '../music'
 import { playSample, playGu, playClac } from '@/domain/player'
 import * as DATA from '../data'
+import { RecordParsed } from '@/data/songs'
 
 let isMobile = false
 
@@ -71,7 +72,7 @@ export default Vue.extend({
     },
     props: {
         handpan: HandpanModel,
-        selectedChord: Object, // TODO typage chords
+        selectedChord: Object,
         selectedPanScale: Object,
         selectedScale: Object,
     },
@@ -112,33 +113,42 @@ export default Vue.extend({
     watch: {
         recordPlaying(recordPlaying) {
             if (recordPlaying !== null) {
-                this.beginPlayback(recordPlaying.record, recordPlaying.endTime)
+                this.beginPlayback(recordPlaying)
             } else {
                 clearTimeout(this.playInterval)
-                this.notesTimeouts.forEach(noteTimeout => clearTimeout(noteTimeout))
+                this.notesTimeouts.forEach((noteTimeout) => clearTimeout(noteTimeout))
             }
         },
     },
     methods: {
         endAnim(note: HandpanNote): void {
-            this.animatedNotes = this.animatedNotes.filter(n => n !== note)
+            this.animatedNotes = this.animatedNotes.filter((n) => n !== note)
         },
         isAnim(note: HandpanNote): boolean {
             return this.animatedNotes.indexOf(note) !== -1
         },
-        beginPlayback(record: any, endTime: any): void {
+        beginPlayback(recordParsed: RecordParsed): void {
             const speedRatio = this.$store.state.options.playbackSpeed
+            const playbackStart = recordParsed.record[this.$store.state.selection.playbackStart].time
+            // const playbackEnd = recordParsed.endTime
+            const endIndex = this.$store.state.selection.playbackEnd + 1
+            const playbackEnd = endIndex < recordParsed.record.length ? recordParsed.record[endIndex].time : recordParsed.endTime
+            const playbackDuration = playbackEnd - playbackStart
             this.notesTimeouts = []
-            record.forEach((elt: any) => {
+            recordParsed.record.forEach((elt: any, i: number) => {
+                const noteTimeout = (elt.time - playbackStart) / speedRatio
+                if (noteTimeout < 0 || noteTimeout >= playbackDuration / speedRatio) {
+                    return
+                }
                 this.notesTimeouts.push(
                     setTimeout(() => {
                         this.playNoteByFullname(elt.note)
-                    }, elt.time / speedRatio),
+                    }, noteTimeout),
                 )
             })
             this.playInterval = setTimeout(() => {
-                this.beginPlayback(record, endTime)
-            }, endTime / speedRatio)
+                this.beginPlayback(recordParsed)
+            }, playbackDuration / speedRatio)
         },
         playClacMouse(): void {
             if (!isMobile) {
@@ -155,13 +165,13 @@ export default Vue.extend({
             }
         },
         playGuMouse(event: Event): void {
-            event.stopPropagation() // prevents clac
+            event.stopPropagation()
             if (!isMobile) {
                 this.playGu()
             }
         },
         playGuTouch(event: Event): void {
-            event.stopPropagation() // prevents clac
+            event.stopPropagation()
             this.playGu()
         },
         playGu(): void {
@@ -169,24 +179,24 @@ export default Vue.extend({
             playGu(volume)
         },
         playNoteTouch(event: Event, note: HandpanNote): void {
-            event.stopPropagation() // prevents clac
+            event.stopPropagation()
             isMobile = true
             this.playNote(note)
         },
         playNoteMouse(event: Event, note: HandpanNote): void {
-            event.stopPropagation() // prevents clac
+            event.stopPropagation()
             if (!isMobile) {
                 this.playNote(note)
             }
         },
         playNoteByFullname(noteFullname: string): void {
-            const noteFound = this.handpan.notes.find(note => {
+            const noteFound = this.handpan.notes.find((note) => {
                 return note.noteName + note.octave === noteFullname
             })
             if (noteFound) {
                 this.playNote(noteFound)
             } else {
-                console.log('note not found in the pan', noteFullname) // todo gestion globale + handpan principal
+                console.log('note not found in the pan', noteFullname)
             }
         },
         playNote(note: HandpanNote): void {
@@ -198,7 +208,7 @@ export default Vue.extend({
             if (noteBuffer) {
                 this.playSample(noteBuffer)
                 this.$store.dispatch('recorder/playNote', nameSharp + octave)
-                this.animatedNotes = this.animatedNotes.filter(n => n !== note)
+                this.animatedNotes = this.animatedNotes.filter((n) => n !== note)
                 setTimeout(() => {
                     this.animatedNotes.push(note)
                 }, 1)

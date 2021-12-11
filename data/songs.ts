@@ -13,6 +13,16 @@ export type Song = {
     transpo?: number
 }
 
+export type RecordAction = {
+    note: string
+    time: number
+}
+
+export type RecordParsed = {
+    record: RecordAction[]
+    endTime: number
+}
+
 /*
  * Pour les transpositions, la note la plus haute de début des songs semble être G4 (pour l'instant)
  * la note de pan la plus basse est E2 donc faut potentiellement faire -27 semitons ?

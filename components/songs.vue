@@ -7,8 +7,8 @@
                 v-for="song in displayedSongs"
                 :key="song.name + song.transpo"
                 :class="{
-                                highlight: selectedSong && song.name === selectedSong.name && song.transpo === selectedSong.transpo,
-                            }"
+                    highlight: selectedSong && song.name === selectedSong.name && song.transpo === selectedSong.transpo,
+                }"
                 @click.stop="selectSong(song)"
             >
                 <template v-if="song.recording">♫</template>{{ song.name }} ({{ song.transpo }})
@@ -17,7 +17,11 @@
         <div class="song-actions">
             <button v-if="isPlaying" @click.stop="stopSong()">Stop</button>
             <button v-if="selectedSong && selectedSong.recording && !isPlaying" @click.stop="playSong()">Play</button>
-            <SelectPlaybackSpeed v-if="isPlaying" />
+            <template v-if="selectedSong">
+                <SelectPlaybackSpeed />
+                <SelectPlaybackLoop />
+                <PlaybackProgress />
+            </template>
         </div>
     </div>
 </template>
@@ -26,11 +30,14 @@
 import Vue from 'vue'
 
 import SelectPlaybackSpeed from '@/components/select-playbackspeed.vue'
-import { parseRecord } from '../store/recorder'
+import SelectPlaybackLoop from '@/components/select-playbackloop.vue'
+import PlaybackProgress from '@/components/playback-progress.vue'
 import { Song } from '@/data/songs'
 export default Vue.extend({
     components: {
         SelectPlaybackSpeed,
+        SelectPlaybackLoop,
+        PlaybackProgress,
     },
     props: {
         displayedSongs: Array,
@@ -46,13 +53,19 @@ export default Vue.extend({
             return this.$store.state.player.recordPlaying !== null
         },
         uniqueSongs(): string[] {
-            return [...new Set(Array.from((this.displayedSongs as Song[]).map(song => song.name)))]
+            return [...new Set(Array.from((this.displayedSongs as Song[]).map((song) => song.name)))]
         },
         selectedSong(): Song {
             return this.$store.state.selection.selectedSong
         },
+        progress() {
+            return new Date().getTime()
+        },
     },
     methods: {
+        progressm() {
+            return new Date().getTime()
+        },
         selectSong(song: Song) {
             if (this.selectedSong !== null && song === this.selectedSong) {
                 this.unselectSong()
@@ -69,10 +82,17 @@ export default Vue.extend({
             this.$store.commit('player/setRecordPlaying', null)
         },
         playSong(): void {
-            this.$store.commit('player/setRecordPlaying', parseRecord(this.selectedSong.recording!))
+            this.$store.commit('player/setRecordPlaying', this.$store.state.selection.selectedSongParsed)
         },
     },
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.song-actions {
+    display: flex;
+}
+.song-actions * {
+    margin: 2px 5px;
+}
+</style>
