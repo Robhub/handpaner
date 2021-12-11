@@ -91,6 +91,7 @@ export default Vue.extend({
 <style scoped>
 .song-actions {
     display: flex;
+    flex-wrap: wrap;
 }
 .song-actions * {
     margin: 2px 5px;
