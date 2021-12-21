@@ -28,8 +28,10 @@ export default Vue.extend({
         },
         playbackPositions() {
             const positions = []
-            for (let i = 0; i < this.selectedSongParsed.record.length; i++) {
-                positions.push({ value: i, label: '' + (i + 1) })
+            if (this.selectedSongParsed) {
+                for (let i = 0; i < this.selectedSongParsed.record.length; i++) {
+                    positions.push({ value: i, label: '' + (i + 1) })
+                }
             }
             return positions
         },
@@ -39,6 +41,7 @@ export default Vue.extend({
             },
             set(value) {
                 this.$store.commit('selection/setPlaybackStart', value)
+                this.$store.dispatch('player/restartRecordPlaying')
             },
         },
         playbackEnd: {
@@ -47,6 +50,7 @@ export default Vue.extend({
             },
             set(value) {
                 this.$store.commit('selection/setPlaybackEnd', value)
+                this.$store.dispatch('player/restartRecordPlaying')
             },
         },
     },

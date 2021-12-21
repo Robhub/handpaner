@@ -198,7 +198,7 @@ export default Vue.extend({
             this.unselectPanScale()
             this.unselectScale()
             this.unselectChord()
-            // this.unselectSong()
+            this.unselectSong()
         },
         unselectSong() {
             this.$store.commit('selection/setHighlightedNotes', [])

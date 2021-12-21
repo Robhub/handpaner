@@ -4,7 +4,7 @@
         <div class="selectables">
             <div
                 class="selectable"
-                v-for="song in displayedSongs"
+                v-for="song in displayedSongsSorted"
                 :key="song.name + song.transpo"
                 :class="{
                     highlight: selectedSong && song.name === selectedSong.name && song.transpo === selectedSong.transpo,
@@ -49,6 +49,9 @@ export default Vue.extend({
         this.$store.commit('player/setRecordPlaying', null)
     },
     computed: {
+        displayedSongsSorted(): Song[] {
+            return (this.displayedSongs as Song[]).sort((a: Song, b: Song) => a.name.localeCompare(b.name))
+        },
         isPlaying(): boolean {
             return this.$store.state.player.recordPlaying !== null
         },
@@ -67,6 +70,7 @@ export default Vue.extend({
             return new Date().getTime()
         },
         selectSong(song: Song) {
+            this.$store.commit('player/setRecordPlaying', null)
             if (this.selectedSong !== null && song === this.selectedSong) {
                 this.unselectSong()
             } else {

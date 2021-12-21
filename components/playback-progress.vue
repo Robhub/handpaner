@@ -1,8 +1,10 @@
 <template>
     <div>
         <div class="progressbar">
-            <div class="loop loop-start" :style="{ left: loopStart + 'px' }"></div>
-            <div class="loop loop-end" :style="{ left: loopEnd + 'px' }"></div>
+            <template v-if="parsedSong">
+                <div class="loop loop-start" :style="{ left: loopStart + 'px' }"></div>
+                <div class="loop loop-end" :style="{ left: loopEnd + 'px' }"></div>
+            </template>
             <div class="progress" :style="{ left: progress + 'px' }"></div>
         </div>
     </div>
@@ -45,10 +47,12 @@ export default Vue.extend({
             return Math.round((time / this.parsedSong.endTime) * 300)
         },
         processElapsed(elapsed: number): void {
-            const speedRatio = this.$store.state.options.playbackSpeed
-            const loopStart = this.getNoteTime(this.$store.state.selection.playbackStart)
-            const loopLength = this.getNoteTime(this.$store.state.selection.playbackEnd + 1) - loopStart
-            this.progress = this.timeToPercentSong(loopStart + ((elapsed * speedRatio) % loopLength))
+            if (this.parsedSong) {
+                const speedRatio = this.$store.state.options.playbackSpeed
+                const loopStart = this.getNoteTime(this.$store.state.selection.playbackStart)
+                const loopLength = this.getNoteTime(this.$store.state.selection.playbackEnd + 1) - loopStart
+                this.progress = this.timeToPercentSong(loopStart + ((elapsed * speedRatio) % loopLength))
+            }
         },
     },
     watch: {

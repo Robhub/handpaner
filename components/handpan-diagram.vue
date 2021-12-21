@@ -103,7 +103,7 @@ export default Vue.extend({
         },
         recordPlaying: {
             get() {
-                return this.$store.getters['player/getRecordPlaying']
+                return this.$store.state.player.recordPlaying
             },
             set(value: any) {
                 this.$store.commit('player/setRecordPlaying', value)

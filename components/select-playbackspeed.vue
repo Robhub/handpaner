@@ -36,11 +36,7 @@ export default Vue.extend({
             },
             set(value) {
                 this.$store.commit('options/setPlaybackSpeed', value)
-                const temp = this.$store.state.player.recordPlaying
-                this.$store.commit('player/setRecordPlaying', null)
-                setTimeout(() => {
-                    this.$store.commit('player/setRecordPlaying', temp)
-                }, 1)
+                this.$store.dispatch('player/restartRecordPlaying')
             },
         },
     },
