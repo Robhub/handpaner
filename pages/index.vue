@@ -21,8 +21,8 @@
             />
         </div>
         <div v-if="displayedHandpanId">
-            <div class="zone" @click="resetSelection()">
-                <div class="tabs">
+            <div class="zone">
+                <div class="tabs" @click="resetSelection()">
                     <div class="tab" @click="displayMode = 'panScales'" v-bind:class="{ selected: displayMode === 'panScales' }">
                         Models
                     </div>
