@@ -1,13 +1,6 @@
 let input = `
-!mp! d>!<(!e fg | a2- ab/c'/ | ba g>a | fe dc!<)! |!f! d>!>(!e fg | a2- ab/c'/ | ba a^g!>)! | %7
-!mp! a2- a3/2 z/ |!mf! d>!<(!e fg | a2- ab/c'/ | ba g>a | fe dc!<)! |!ff! f>!>(!f g/f/e/d/ | %13
- ca e>g | fe ee!>)! |!mf! d2- d3/2 z/ |!f! d'2 ad' | c'>b ag | af/g/ ab | c'2 c'3/2 z/ | d'2 ad' | %21
- c'>b ag | fa ed/^c/ | d2 d3/2 z/ |!fff! d'2 ad' | c'>b ag | af/g/ ab | c'2 c'3/2 z/ | d'2 ad' | %29
- c'>b ag | fa ed/^c/ | d2- d z |!mp! d>!<(!e fg | a2- ab/c'/ | ba g>a | fe dc!<)! |!f! d>!>(!e fg | %37
- a2- ab/c'/ | ba a^g!>)! |!mp! a2- a3/2 z/ |!mf! d>!<(!e fg | a2- ab/c'/ | ba g>a | fe dc!<)! | %44
-!ff! f>!>(!f g/f/e/d/ | ca e>g | fe ee!>)! |!mf! d2- d3/2 z/ |!f! d'2 ad' | c'>b ag | af/g/ ab | %51
- c'2 c'3/2 z/ | d'2 ad' | c'>b ag | fa ed/^c/ | d2 d3/2 z/ |!fff! d'2 ad' | c'>b ag | af/g/ ab | %59
- c'2 c'3/2 z/ | d'2 ad' | c'>b ag | fa ed/^c/ | d2- d z | %64
+cB|A3A ce|d2d2cB|A3A ce|d4cB|A3A ce|d2d2cB|A3A ce|d4
+cd|e3e dc|d4cB|A2AB cB|G4cd|e3e dc|d4cB|A2AB AG|A4
 `
 
 // const key = 'Cmin' // Ebmaj (bbb)
