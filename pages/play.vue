@@ -62,7 +62,7 @@ export default Vue.extend({
 
 <style scoped>
 /deep/ .handpan-diagram {
-    --deg: 90deg;
+    --deg: 174deg;
     width: 100vw;
     height: calc(100vh - 90px); /* Prevoir 60px pour la barre de nav sur mobile */
     display: flex;
@@ -104,13 +104,23 @@ export default Vue.extend({
 /deep/ .note span {
     width: calc(var(--size) * 0.23);
     height: calc(var(--size) * 0.23);
-    margin-left: calc(var(--size) * (-0.1));
-    margin-top: calc(var(--size) * (-0.1));
+    /* margin-left: calc(var(--size) * (-0.1)); */
+    /* margin-top: calc(var(--size) * (-0.1)); */
     font-size: calc(var(--size) * 0.05);
 }
 /deep/ .note {
-    top: calc(var(--size) * 0.432);
-    padding-left: calc(var(--size) * 0.432 * 2);
+    height: 100%;
+    /* top: calc(var(--size) * 0.432); */
+    /* padding-left: calc(var(--size) * 0.432 * 2); */
+}
+
+/deep/ .notes-mutant .note span {
+    width: calc(var(--size) * 0.15);
+    height: calc(var(--size) * 0.15);
+}
+
+/deep/ .notes-mutant .note {
+    height: 53%;
 }
 
 /deep/ .inside {
@@ -129,5 +139,12 @@ export default Vue.extend({
     height: calc(var(--size) * 0.34);
     margin-left: calc(var(--size) * (-0.17));
     margin-top: calc(var(--size) * (-0.17));
+}
+
+/deep/ .handpan-diagram.hasMutant .ding {
+    width: calc(var(--size) * 0.28);
+    height: calc(var(--size) * 0.28);
+    margin-left: calc(var(--size) * (-0.14));
+    margin-top: calc(var(--size) * (-0.06));
 }
 </style>

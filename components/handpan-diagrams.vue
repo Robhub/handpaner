@@ -50,6 +50,12 @@ export default Vue.extend({
     margin-left: -38px;
     margin-top: -38px;
 }
+/deep/ .handpan-diagram.hasMutant .ding {
+    width: 64px;
+    height: 64px;
+    margin-left: -32px;
+    margin-top: -12px;
+}
 
 /deep/ .gu {
     width: 40px;
@@ -61,6 +67,10 @@ export default Vue.extend({
 /deep/ .note span {
     width: 40px;
     height: 40px;
+}
+/deep/ .notes-mutant .note span {
+    width: 30px;
+    height: 30px;
 }
 /deep/ .note {
     height: 100%;

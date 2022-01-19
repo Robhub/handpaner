@@ -1,5 +1,8 @@
 <template>
-    <div class="handpan-diagram" v-bind:class="{ bad: selectedChord.type === 'bad', hasBottom: nbNotesBottom > 0, flipHorizontal }">
+    <div
+        class="handpan-diagram"
+        v-bind:class="{ bad: selectedChord.type === 'bad', hasBottom: nbNotesBottom > 0, hasMutant: nbNotesMutant > 0, flipHorizontal }"
+    >
         <div class="handpan-shape is-top" @mousedown="playClacMouse()" @touchstart="playClacTouch()">
             <div
                 class="ding"
@@ -16,6 +19,23 @@
             </div>
             <div class="notes" :style="cssNbNotesTop">
                 <div class="note" v-for="note in handpan.getRestNotesTop()" v-bind:key="note.key">
+                    <span
+                        v-bind:class="{
+                            highlight: isHighlighted(note),
+                            special: isSpecial(note),
+                            highlightplus: isRoot(note),
+                            highlightless: isNoteInModel(note),
+                        }"
+                        @mousedown="playNoteMouse($event, note)"
+                        @touchstart="playNoteTouch($event, note)"
+                    >
+                        <HandpanNoteInside class="inside" :note="note" />
+                        <div class="animation" :class="{ animated: isAnim(note) }" @animationend="endAnim(note)"></div>
+                    </span>
+                </div>
+            </div>
+            <div class="notes notes-mutant" :style="cssNbNotesTopMutant">
+                <div class="note" v-for="note in handpan.getRestNotesTopMutant()" v-bind:key="note.key">
                     <span
                         v-bind:class="{
                             highlight: isHighlighted(note),
@@ -91,9 +111,17 @@ export default Vue.extend({
         nbNotesBottom(): number {
             return this.handpan.getRestNotesBottom().length
         },
+        nbNotesMutant(): number {
+            return this.handpan.getRestNotesTopMutant().length
+        },
         cssNbNotesTop(): any {
             return {
                 '--nbnotes': this.nbNotesTop,
+            }
+        },
+        cssNbNotesTopMutant(): any {
+            return {
+                '--nbnotes': 7,
             }
         },
         cssNbNotesBottom(): any {
@@ -298,6 +326,15 @@ export default Vue.extend({
     display: flex;
     justify-content: center;
     align-items: center;
+    position: absolute;
+    left: 50%;
+}
+
+.notes-mutant {
+    --deg: 0deg;
+}
+.notes-mutant .note {
+    height: 55%;
 }
 
 .handpan-shape.is-bottom {

@@ -11,6 +11,7 @@ export type HandpanNote = {
     octave: number
     isDing: boolean
     isBottom: boolean
+    isMutant: boolean
 }
 
 export class HandpanUser {
@@ -47,7 +48,10 @@ export class HandpanModel {
         return this.notes.filter((handpanNote) => handpanNote.isDing === false)
     }
     getRestNotesTop(): HandpanNote[] {
-        return this.notes.filter((handpanNote) => handpanNote.isDing === false && !handpanNote.isBottom)
+        return this.notes.filter((handpanNote) => handpanNote.isDing === false && !handpanNote.isBottom && !handpanNote.isMutant)
+    }
+    getRestNotesTopMutant(): HandpanNote[] {
+        return this.notes.filter((handpanNote) => handpanNote.isDing === false && !handpanNote.isBottom && handpanNote.isMutant)
     }
     getRestNotesBottom(): HandpanNote[] {
         return this.notes.filter((handpanNote) => handpanNote.isDing === false && handpanNote.isBottom)
@@ -65,7 +69,9 @@ export class HandpanModel {
             currentNoteIndex = noteIndex
 
             const noteSimplified = note.octave !== impliedOctave ? note.noteName + note.octave : note.noteName
-            return note.isBottom ? '(' + noteSimplified + ')' : noteSimplified
+            let noteDefinition = note.isBottom ? '(' + noteSimplified + ')' : noteSimplified
+            noteDefinition = note.isMutant ? '[' + noteSimplified + ']' : noteSimplified
+            return noteDefinition
         })
         return ding + '/ ' + absNotes.join(' ')
     }
@@ -206,12 +212,13 @@ export function definitionTransposedToHandpanObj(handpanDefinition: string, ding
         octave: dingWantedObj.octave!!,
         isDing: true,
         isBottom: false,
+        isMutant: false,
     }
     let previousNoteOctave = dingWantedObj.octave!!
     let previousNoteIndex = NOTES_ALL.indexOf(dingWantedObj.noteName)
     const definitionNotesArray = definitionRestNotes.trim().replace(/\s\s+/g, ' ').split(' ')
     const handpanRestNotes = definitionNotesArray.map((noteOctaveParen) => {
-        const noteOctave = noteOctaveParen.replace(/\(|\)/g, '')
+        const noteOctave = noteOctaveParen.replace(/[()\[\]]/g, '')
         const noteObj = splitNoteNameAndOctave(noteOctave)
         const noteObjTransposed = transposeNoteObj(noteObj, transposeBy)
         const noteIndex = NOTES_ALL.indexOf(noteObjTransposed.noteName)
@@ -224,6 +231,7 @@ export function definitionTransposedToHandpanObj(handpanDefinition: string, ding
             octave,
             isDing: false,
             isBottom: noteOctaveParen[0] === '(',
+            isMutant: noteOctaveParen[0] === '[',
         }
     })
     const handpanNotes = [handpanDing, ...handpanRestNotes]
