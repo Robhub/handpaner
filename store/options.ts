@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import * as DATA from '../data'
 
 export const state = () => ({
@@ -10,6 +11,7 @@ export const state = () => ({
     customPanScales: [],
     hideFooter: false,
     playbackSpeed: 1.0,
+    flipHorizontal: false,
 })
 
 export const getters = {
@@ -25,21 +27,24 @@ export const mutations = {
         st.customPanScales = st.customPanScales.filter((customPanScale: any) => customPanScale.name !== customPanScaleName)
     },
     setVolume(st: any, volume: number) {
-        st.volume = volume
+        Vue.set(st, 'volume', volume)
     },
     setChosenSamplesBankIndex(st: any, samplesBankIndex: any) {
-        st.chosenSamplesBankIndex = samplesBankIndex
+        Vue.set(st, 'chosenSamplesBankIndex', samplesBankIndex)
     },
     enableClac(st: any, enableClac: boolean) {
-        st.enableClac = enableClac
+        Vue.set(st, 'enableClac', enableClac)
     },
     setShowBebop(st: any, showBebop: boolean) {
-        st.showBebop = showBebop
+        Vue.set(st, 'showBebop', showBebop)
     },
     setHideFooter(st: any, hideFooter: boolean) {
-        st.hideFooter = hideFooter
+        Vue.set(st, 'hideFooter', hideFooter)
     },
     setPlaybackSpeed(st: any, playbackSpeed: number) {
-        st.playbackSpeed = playbackSpeed
+        Vue.set(st, 'playbackSpeed', playbackSpeed)
+    },
+    setFlipHorizontal(st: any, flipHorizontal: boolean) {
+        Vue.set(st, 'flipHorizontal', flipHorizontal)
     },
 }

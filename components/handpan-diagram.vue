@@ -1,5 +1,5 @@
 <template>
-    <div class="handpan-diagram" v-bind:class="{ bad: selectedChord.type === 'bad', hasBottom: nbNotesBottom > 0 }">
+    <div class="handpan-diagram" v-bind:class="{ bad: selectedChord.type === 'bad', hasBottom: nbNotesBottom > 0, flipHorizontal }">
         <div class="handpan-shape is-top" @mousedown="playClacMouse()" @touchstart="playClacTouch()">
             <div
                 class="ding"
@@ -108,6 +108,9 @@ export default Vue.extend({
             set(value: any) {
                 this.$store.commit('player/setRecordPlaying', value)
             },
+        },
+        flipHorizontal(): boolean {
+            return this.$store.state.options.flipHorizontal
         },
     },
     watch: {
@@ -273,13 +276,33 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.handpan-diagram.flipHorizontal {
+    transform: scale(-1, 1);
+}
+
+.handpan-diagram.flipHorizontal /deep/ .inside {
+    transform: scale(-1, 1);
+}
+
 .handpan-shape {
     position: relative;
     background: radial-gradient(#fdfdfd, #606060);
 }
+
+.handpan-diagram.flipHorizontal .handpan-shape {
+    background: radial-gradient(#606060, #fdfdfd);
+}
+
+.notes {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .handpan-shape.is-bottom {
     background: #666;
-    --deg: 80deg; /* décalage car souvent double bottoms graves ? */
+    --deg: 150deg; /* décalage car souvent double bottoms graves ? */
 }
 
 .ding,
@@ -319,6 +342,10 @@ export default Vue.extend({
 
 .ding {
     background: #e6e6e6;
+}
+
+.handpan-diagram.flipHorizontal .ding {
+    background: #606060;
 }
 
 .note span {

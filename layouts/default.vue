@@ -1,7 +1,7 @@
 <template>
     <div class="layout-default">
         <div class="header">
-            <nuxt-link to="/"><img src="../static/handpaner.png"/></nuxt-link>
+            <nuxt-link to="/"><img src="../static/handpaner.png" /></nuxt-link>
             <div class="menu" :class="{ 'is-open': menuOpened }">
                 <nuxt-link to="/">Home</nuxt-link>
                 <nuxt-link to="help">Help</nuxt-link>
@@ -83,7 +83,7 @@ h3 {
     margin: auto;
     border-radius: 3px;
     padding: 8px;
-    --deg: 90deg;
+    --deg: 174deg;
     --nbnotes: 6;
 }
 .burger {

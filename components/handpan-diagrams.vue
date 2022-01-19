@@ -51,20 +51,22 @@ export default Vue.extend({
     margin-top: -38px;
 }
 
-/deep/ .gu,
-/deep/ .note span {
+/deep/ .gu {
     width: 40px;
     height: 40px;
     margin-left: -20px;
     margin-top: -20px;
 }
+
+/deep/ .note span {
+    width: 40px;
+    height: 40px;
+}
 /deep/ .note {
-    top: 90px;
-    padding-left: 175px;
+    height: 100%;
 }
 /deep/ .is-bottom .note {
-    top: 65px;
-    padding-left: 125px;
+    height: 100%;
 }
 /deep/ .inside {
     width: 24px;

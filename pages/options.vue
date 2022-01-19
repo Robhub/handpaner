@@ -19,6 +19,9 @@
                 <label><input type="checkbox" v-model="showBebop" /> Show bebop scales</label>
             </div>
             <div>
+                <label><input type="checkbox" v-model="flipHorizontal" /> Flip horizontally</label>
+            </div>
+            <div>
                 <label><input type="checkbox" v-model="hideFooter" /> Hide footer</label>
             </div>
         </div>
@@ -66,6 +69,14 @@ export default Vue.extend({
             },
             set(value: boolean) {
                 this.$store.commit('options/setHideFooter', value)
+            },
+        },
+        flipHorizontal: {
+            get() {
+                return this.$store.state.options.flipHorizontal
+            },
+            set(value: boolean) {
+                this.$store.commit('options/setFlipHorizontal', value)
             },
         },
     },
