@@ -4,6 +4,7 @@ import { splitNoteNameAndOctave, semitonesDifference, transposeNoteObj } from '@
 export type PanScaleData = {
     name: string
     definition: string
+    videos: string[]
 }
 
 export type HandpanNote = {
@@ -144,6 +145,7 @@ const ALL_PANSCALES_DATA = [
     { definition: 'A/ E F G A B C E F', name: 'Integral (Sam)' },
     { definition: 'D/ G A B C D E F G', name: 'Jibuk' },
     { definition: 'A/ (B) (C) D E F (G) G# A B C D E (F) A', name: 'Kamaji' },
+    { definition: 'E/ B E F G# A B C E', name: 'Klezmara' },
     { definition: 'A/ E F G A B C D', name: 'Kurd' },
     { definition: 'A/ E F G A B C D E', name: 'Kurd' },
     { definition: 'A/ (C) (D) E F G A B C D E F G (A) (B) (C) (D)', name: 'Kurd extended' },
@@ -167,6 +169,16 @@ const ALL_PANSCALES_DATA = [
     { definition: 'G/ D E G A B C D E', name: 'Mixolydian (-7m)' },
     { definition: 'A/ E F A B C E G', name: 'Mystic (Hagane)' },
     { definition: 'A/ E F A B C D E G', name: 'Mystic (Sam)' },
+    {
+        definition: 'B2/ (C) (E) F# (G) (A) B C D# E F# G A B (C) (D#) (E)',
+        name: 'Nazar',
+        videos: ['https://www.youtube.com/watch?v=kbIVvL1-jE8'],
+    },
+    {
+        definition: 'B2/ (E) F# (G) (A) B C (D) D# E F# G A B (C) (E)',
+        name: 'Nazar',
+        videos: ['https://www.youtube.com/watch?v=lG1eBRqaB9w'],
+    },
     { definition: 'A/ E F A C# D E F A', name: 'Onoleo' },
     { definition: 'C/ E F G A C E F G', name: 'Oxalis' },
     { definition: 'C/ E G B C D E G', name: 'Paradise (v1)' },
