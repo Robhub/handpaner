@@ -54,7 +54,7 @@ export default Vue.extend({
             const panString = this.$nuxt.$route.hash.substr(1)
             this.handpanUser = new HandpanUser(panString.replace(/-/g, ' '))
         } else {
-            this.handpanUser = new HandpanUser('D/ G A C D E F G A C D')
+            this.handpanUser = new HandpanUser('D/ A C D E F G A C')
         }
     },
 })

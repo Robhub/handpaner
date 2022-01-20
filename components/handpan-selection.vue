@@ -68,7 +68,7 @@ export default Vue.extend({
         },
         allGenericNamesSorted(): string[] {
             const allScales = this.isLoaded ? ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM(this.$store.state.options.customPanScales) : []
-            const allScalesNames = allScales.map(handpanModel => handpanModel.genericName)
+            const allScalesNames = allScales.map((handpanModel) => handpanModel.genericName)
             return [...new Set(allScalesNames)].sort((a: string, b: string) => a.localeCompare(b))
         },
 
@@ -81,17 +81,24 @@ export default Vue.extend({
         },
         uniqueNotesAllPans(): string[] {
             return [
-                ...new Set(Array.from((this.handpansUser as HandpanUser[]).flatMap(handpan => handpan.handpanModel.getUniqueNotesNames()))),
+                ...new Set(
+                    Array.from((this.handpansUser as HandpanUser[]).flatMap((handpan) => handpan.handpanModel.getUniqueNotesNames())),
+                ),
             ]
         },
         displayedHandpan(): HandpanUser | undefined {
-            return (this.handpansUser as HandpanUser[]).find(handpanUser => handpanUser.id === this.displayedHandpanId)
+            return (this.handpansUser as HandpanUser[]).find((handpanUser) => handpanUser.id === this.displayedHandpanId)
         },
     },
     created() {
         setTimeout(() => {
             this.isLoaded = true
         }, 1)
+    },
+    mounted() {
+        if (this.displayedHandpan) {
+            this.relativeNoteBase = this.displayedHandpan!.handpanModel.getDing().noteName
+        }
     },
     methods: {
         WTF(lol: number): void {},
@@ -105,6 +112,7 @@ export default Vue.extend({
                 })
                 this.inputAbsNotation = this.displayedHandpan!.handpanModel.getDefinition()
                 this.selectionChanged()
+                this.relativeNoteBase = this.displayedHandpan!.handpanModel.getDing().noteName
             } catch (err) {
                 console.log('err', err)
             }
@@ -114,7 +122,7 @@ export default Vue.extend({
                 return
             }
             const allScales = ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM(this.$store.state.options.customPanScales)
-            const found = allScales.find(handpanModel => {
+            const found = allScales.find((handpanModel) => {
                 return handpanModel.genericName === this.inputPanscale && handpanModel.getDingString() === this.inputDing
             })
             if (found) {
@@ -155,7 +163,7 @@ export default Vue.extend({
         },
         recognisedPanScaleName(): string {
             const allScales = ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM(this.$store.state.options.customPanScales)
-            const found = allScales.find(handpanModel => {
+            const found = allScales.find((handpanModel) => {
                 return handpanModel.getDefinition() === this.displayedHandpan!.handpanModel.getDefinition()
             })
             return found ? found.genericName : ''

@@ -11,7 +11,7 @@
                 Pan n°{{ index + 1 }}
                 <span class="delete" @click="removeHandpanId($event, handpan.id)" v-if="handpansUser.length > 1">×</span>
             </div>
-            <div class="tab" @click="addHandpan()">+</div>
+            <div class="tab" @click="addHandpan()">+ add pan</div>
         </div>
         <div class="tab-content" @click="resetSelection()">
             <HandpanSelection
@@ -205,14 +205,18 @@ export default Vue.extend({
             this.$store.commit('selection/setSelectedSong', null)
         },
         loadHandpansFromHash(): void {
-            const panStrings = this.$nuxt.$route.hash.substr(1).split('_')
+            const panStrings = this.$nuxt.$route.hash.substr(1).split('_').filter(Boolean)
             this.loadHandpansFromDefinitions(panStrings.map((str) => str.replace(/-/g, ' ')))
         },
         loadHandpansFromDefinitions(definitions: string[]): void {
             this.handpansUser = []
-            definitions.forEach((definition) => {
-                this.handpansUser = [...this.handpansUser, new HandpanUser(definition)]
-            })
+            if (definitions.length > 0) {
+                definitions.forEach((definition) => {
+                    this.handpansUser = [...this.handpansUser, new HandpanUser(definition)]
+                })
+            } else {
+                this.handpansUser = [new HandpanUser('D/ A C D E F G A C')]
+            }
             this.displayedHandpanId = this.handpansUser[0].id
             this.genScalesAndChordsAllPans()
         },
@@ -235,8 +239,8 @@ export default Vue.extend({
         updateHash(): void {
             const currentHash = this.$nuxt.$route.hash
             let newHash = '#' + this.handpansUser.map((handpan) => handpan.handpanModel.getDefinition().replace(/ /g, '-')).join('_')
-            if (newHash[newHash.length - 1] !== '-') {
-                newHash = newHash + '-'
+            if (newHash[newHash.length - 1] !== '_') {
+                newHash = newHash + '_'
             }
             if (newHash !== currentHash) {
                 this.ignoreNextHashChange = true
