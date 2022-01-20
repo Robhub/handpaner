@@ -70,7 +70,7 @@ export class HandpanModel {
 
             const noteSimplified = note.octave !== impliedOctave ? note.noteName + note.octave : note.noteName
             let noteDefinition = note.isBottom ? '(' + noteSimplified + ')' : noteSimplified
-            noteDefinition = note.isMutant ? '[' + noteSimplified + ']' : noteSimplified
+            noteDefinition = note.isMutant ? '[' + noteDefinition + ']' : noteDefinition
             return noteDefinition
         })
         return ding + '/ ' + absNotes.join(' ')
