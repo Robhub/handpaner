@@ -37,7 +37,7 @@
                     <Scales :displayedScales="displayedScales" />
                 </div>
                 <div class="tab-content" v-if="displayMode === 'chords'">
-                    <Chords :displayedChords="displayedChords" />
+                    <Chords :displayedChords="displayedChords" :handpansUser="handpansUser" />
                 </div>
                 <div class="tab-content" v-if="displayMode === 'songs'">
                     <Songs :displayedSongs="displayedSongs" />

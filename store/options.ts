@@ -12,6 +12,7 @@ export const state = () => ({
     hideFooter: false,
     playbackSpeed: 1.0,
     flipHorizontal: false,
+    arpeggioMode: 'up',
 })
 
 export const getters = {
@@ -46,5 +47,8 @@ export const mutations = {
     },
     setFlipHorizontal(st: any, flipHorizontal: boolean) {
         Vue.set(st, 'flipHorizontal', flipHorizontal)
+    },
+    setArpeggioMode(st: any, mode: string) {
+        Vue.set(st, 'arpeggioMode', mode)
     },
 }

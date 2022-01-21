@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM, ALL_DINGS, HandpanUser, HandpanModel } from '@/domain/handpan'
+import { ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM, ALL_DINGS, HandpanUser } from '@/domain/handpan'
 
 export default Vue.extend({
     props: {
