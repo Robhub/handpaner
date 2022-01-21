@@ -31,63 +31,20 @@
                     <div class="tab" @click="displayMode = 'songs'" v-bind:class="{ selected: displayMode === 'songs' }">Songs</div>
                 </div>
                 <div class="tab-content" v-if="displayMode === 'panScales'">
-                    <div class="panscales">
-                        <div
-                            v-for="panScale in displayedPanScales"
-                            v-bind:key="panScale.name"
-                            class="panscale"
-                            @click.stop="selectPanScale(panScale)"
-                            v-bind:class="{
-                                highlight: selectedPanScale && panScale.name === selectedPanScale.name,
-                            }"
-                        >
-                            {{ panScale.name }}
-                        </div>
-                        <div v-if="!displayedPanScales.length">Nothing…</div>
-                    </div>
+                    <PanScales :displayedPanScales="displayedPanScales" />
                 </div>
                 <div class="tab-content" v-if="displayMode === 'scales'">
-                    <div class="scales">
-                        <div
-                            class="scale"
-                            v-for="scale in displayedScalesSorted"
-                            v-bind:key="scale.id"
-                            @click.stop="selectScale(scale)"
-                            v-bind:class="{
-                                highlight: scale.id === selectedScale.id,
-                            }"
-                        >
-                            {{ scale.tonic }} {{ scale.name }}
-                        </div>
-                        <div v-if="!displayedScales.length">Nothing…</div>
-                    </div>
+                    <Scales :displayedScales="displayedScales" />
                 </div>
                 <div class="tab-content" v-if="displayMode === 'chords'">
-                    <div v-for="chord in displayedChords" class="chord-type" v-bind:key="chord.type">
-                        <div class="chord-type-name">{{ chord.type }}</div>
-                        <div
-                            class="chord"
-                            v-for="chordd in chord.chords"
-                            v-bind:key="chordd.label"
-                            @click.stop="selectChord(chord, chordd)"
-                            v-bind:class="{
-                                highlight: chordd.label === selectedChord.label,
-                            }"
-                            v-html="chordd.label"
-                        ></div>
-                    </div>
+                    <Chords :displayedChords="displayedChords" />
                 </div>
                 <div class="tab-content" v-if="displayMode === 'songs'">
                     <Songs :displayedSongs="displayedSongs" />
                 </div>
             </div>
             <div class="zone">
-                <HandpanDiagrams
-                    :handpans="handpansUser"
-                    :selectedChord="selectedChord"
-                    :selectedPanScale="selectedPanScale"
-                    :selectedScale="selectedScale"
-                />
+                <HandpanDiagrams :handpans="handpansUser" />
             </div>
         </div>
     </div>
@@ -96,9 +53,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import * as DATA from '../data'
-import { genSongs, genChords, relToAbsSharp, relToAbsFlat, genScales, genPanScales } from '../music'
+import { genSongs, genChords, genScales, genPanScales } from '../music'
 import HandpanDiagrams from '@/components/handpan-diagrams.vue'
 import Songs from '@/components/songs.vue'
+import Chords from '@/components/chords.vue'
+import PanScales from '@/components/panscales.vue'
+import Scales from '@/components/scales.vue'
 import { Song } from '@/data/songs'
 import { ALL_PANSCALES_TRANSPOSED_WITH_CUSTOM, HandpanUser } from '@/domain/handpan'
 import HandpanSelection from '../components/handpan-selection.vue'
@@ -108,6 +68,9 @@ export default Vue.extend({
         HandpanDiagrams,
         HandpanSelection,
         Songs,
+        Chords,
+        Scales,
+        PanScales,
     },
     data() {
         return {
@@ -119,15 +82,8 @@ export default Vue.extend({
             scales: DATA.scales,
             notesAll: DATA.notesAll,
             chords: {},
-            selectedPanScale: <any>null,
-            selectedScale: <any>{},
-            selectedChord: <any>{
-                label: '',
-                root: '',
-                type: '',
-                noteNames: <any[]>[],
-            },
-            selectedChordNoteNames: [],
+            // selectedPanScale: <any>null,
+            // selectedScale: <any>{},
             displayedScales: <any>[],
             displayedChords: <any>[],
             displayedPanScales: <any>[],
@@ -163,13 +119,8 @@ export default Vue.extend({
                 this.$store.commit('selection/setHandpansUser', value)
             },
         },
-
         showBebop(): boolean {
             return this.$store.state.options.showBebop
-        },
-
-        displayedScalesSorted(): any[] {
-            return this.displayedScales.sort((a: any, b: any) => b.totalNotes - a.totalNotes)
         },
         uniqueNotesAllPans(): string[] {
             return [...new Set(Array.from(this.handpansUser.flatMap((handpanUser) => handpanUser.handpanModel.getUniqueNotesNames())))]
@@ -199,6 +150,15 @@ export default Vue.extend({
             this.unselectScale()
             this.unselectChord()
             this.unselectSong()
+        },
+        unselectPanScale() {
+            this.$store.commit('selection/setSelectedPanScale', null)
+        },
+        unselectScale() {
+            this.$store.commit('selection/setSelectedScale', {})
+        },
+        unselectChord() {
+            this.$store.commit('selection/setSelectedChord', {})
         },
         unselectSong() {
             this.$store.commit('selection/setHighlightedNotes', [])
@@ -257,73 +217,24 @@ export default Vue.extend({
         selectHandpanId(id: string): void {
             this.displayedHandpanId = id
         },
-        selectPanScale(panScale: any) {
-            if (panScale.name === this.selectedPanScale?.name) {
-                this.unselectPanScale()
-            } else {
-                this.selectedPanScale = panScale
-            }
-        },
-        unselectPanScale() {
-            this.selectedPanScale = null
-        },
-        selectScale(scale: any) {
-            if (scale.id === this.selectedScale.id) {
-                this.unselectScale()
-            } else {
-                this.selectedScale = scale
-            }
-        },
-        unselectScale(): void {
-            this.selectedScale = {}
-        },
-
-        selectChord(chordType: any, chord: any) {
-            if (chord.label === this.selectedChord.label) {
-                this.unselectChord()
-            } else {
-                this.selectedChord = {
-                    label: chord.label,
-                    root: chord.root,
-                    type: chordType.type,
-                    noteNames: [
-                        ...chord.notes.map((n: any) => relToAbsSharp(chord.root, n)),
-                        ...chord.notes.map((n: any) => relToAbsFlat(chord.root, n)),
-                    ],
-                }
-            }
-        },
-        unselectChord() {
-            this.selectedChord = {
-                label: '',
-                type: '',
-                root: '',
-                noteNames: [],
-            }
-        },
     },
 })
 </script>
 
 <style scoped>
 /deep/ .selectables,
-.chord-type,
-.panscales,
-.scales {
+/deep/ .chord-type,
+/deep/ .panscales,
+/deep/ .scales {
     display: flex;
     flex-wrap: wrap;
     margin-top: 4px;
 }
 
-.chord-type-name {
-    min-width: 28px;
-    padding-right: 8px;
-    text-align: right;
-}
 /deep/ .selectable,
-.chord,
-.panscale,
-.scale {
+/deep/ .chord,
+/deep/ .panscale,
+/deep/.scale {
     border: 1px solid #333;
     border-radius: 3px;
     padding: 0 5px;
@@ -332,14 +243,14 @@ export default Vue.extend({
     text-align: center;
     margin-left: 4px;
 }
-.panscale,
-.scale {
+/deep/ .panscale,
+/deep/ .scale {
     margin-top: 4px;
 }
 /deep/ .selectable.highlight,
-.chord.highlight,
-.panscale.highlight,
-.scale.highlight {
+/deep/ .chord.highlight,
+/deep/ .panscale.highlight,
+/deep/ .scale.highlight {
     background: #00ffcc80 !important;
 }
 

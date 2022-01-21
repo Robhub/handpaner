@@ -133,6 +133,11 @@ const ALL_PANSCALES_DATA = [
     { definition: 'C/ E G A B C D F# G', name: 'Golden Gate' },
     { definition: 'A/ (B) (C) (D) E F G# A B C D E (G#) A (B) (C)', name: 'Harmonic Lora' },
     { definition: 'E/ A B C D E F G# A', name: 'Harmonic minor' },
+    {
+        definition: 'A2/ (B) (C) (D) E (F) G# A B C D E F G# [A] (B) (C) (D)',
+        name: 'Harmonic minor',
+        videos: ['https://www.youtube.com/watch?v=vNrd4rs2uTM'],
+    },
     { definition: 'A/ C D E F A C D E', name: 'High Avalon' },
     { definition: 'B/ E F G# A B C D E', name: 'Hijaz (Mercury)' },
     { definition: 'A/ E F G# A B C D E', name: 'Hijaz' },

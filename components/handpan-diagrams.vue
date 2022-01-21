@@ -1,13 +1,6 @@
 <template>
     <div class="handpans">
-        <HandpanDiagram
-            v-for="handpan in handpans"
-            v-bind:key="handpan.id"
-            :handpan="handpan.handpanModel"
-            :selectedChord="selectedChord"
-            :selectedPanScale="selectedPanScale"
-            :selectedScale="selectedScale"
-        />
+        <HandpanDiagram v-for="handpan in handpans" v-bind:key="handpan.id" :handpan="handpan.handpanModel" />
     </div>
 </template>
 
@@ -21,9 +14,6 @@ export default Vue.extend({
     },
     props: {
         handpans: Array,
-        selectedChord: Object, // TODO typage chords
-        selectedPanScale: Object,
-        selectedScale: Object,
     },
 })
 </script>

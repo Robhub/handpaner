@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { HandpanUser } from '@/domain/handpan'
 import { Song } from '@/data/songs'
+import { Chord } from '@/data/chords'
 import { parseRecord } from '@/store/recorder'
 
 export const state = () => ({
@@ -9,6 +10,9 @@ export const state = () => ({
     highlightedNotes: [],
     relativeNoteBase: '',
     showRelative: false,
+    selectedPanScale: null as any,
+    selectedScale: {} as any,
+    selectedChord: {} as Chord,
     selectedSong: null as Song | null,
     selectedSongParsed: null,
     playbackStart: 0,
@@ -30,6 +34,15 @@ export const mutations = {
     },
     setHighlightedNotes(st: any, notes: string[]) {
         st.highlightedNotes = notes
+    },
+    setSelectedPanScale(st: any, chord: any) {
+        Vue.set(st, 'selectedPanScale', chord)
+    },
+    setSelectedScale(st: any, scale: any) {
+        Vue.set(st, 'selectedScale', scale)
+    },
+    setSelectedChord(st: any, chord: Chord) {
+        Vue.set(st, 'selectedChord', chord)
     },
     setSelectedSong(st: any, song: Song | null) {
         st.selectedSong = song

@@ -1,7 +1,12 @@
 <template>
     <div
         class="handpan-diagram"
-        v-bind:class="{ bad: selectedChord.type === 'bad', hasBottom: nbNotesBottom > 0, hasMutant: nbNotesMutant > 0, flipHorizontal }"
+        v-bind:class="{
+            bad: selectedChord && selectedChord.type === 'bad',
+            hasBottom: nbNotesBottom > 0,
+            hasMutant: nbNotesMutant > 0,
+            flipHorizontal,
+        }"
     >
         <div class="handpan-shape is-top" @mousedown="playClacMouse()" @touchstart="playClacTouch()">
             <div
@@ -92,9 +97,6 @@ export default Vue.extend({
     },
     props: {
         handpan: HandpanModel,
-        selectedChord: Object,
-        selectedPanScale: Object,
-        selectedScale: Object,
     },
     data() {
         return {
@@ -105,6 +107,15 @@ export default Vue.extend({
         }
     },
     computed: {
+        selectedPanScale(): any {
+            return this.$store.state.selection.selectedPanScale
+        },
+        selectedScale(): any {
+            return this.$store.state.selection.selectedScale
+        },
+        selectedChord(): any {
+            return this.$store.state.selection.selectedChord
+        },
         nbNotesTop(): number {
             return this.handpan.getRestNotesTop().length
         },
@@ -286,7 +297,7 @@ export default Vue.extend({
             let isInScale = false
             let isInPanScale = false
             let isInChord = false
-            if (this.selectedChord) {
+            if (this.selectedChord && this.selectedChord.noteNames) {
                 isInChord = this.selectedChord.noteNames.indexOf(noteName) !== -1 || this.selectedChord.noteNames.indexOf(otherNote) !== -1
             }
             if (this.selectedScale && this.selectedScale.noteNames) {
