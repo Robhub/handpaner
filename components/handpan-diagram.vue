@@ -170,11 +170,16 @@ export default Vue.extend({
             return this.animatedNotes.indexOf(note) !== -1
         },
         beginPlayback(recordParsed: RecordParsed): void {
-            const speedRatio = this.$store.state.options.playbackSpeed
-            const playbackStart = recordParsed.record[this.$store.state.selection.playbackStart].time
-            // const playbackEnd = recordParsed.endTime
-            const endIndex = this.$store.state.selection.playbackEnd + 1
-            const playbackEnd = endIndex < recordParsed.record.length ? recordParsed.record[endIndex].time : recordParsed.endTime
+            const selectedSong = this.$store.state.selection.selectedSong
+            let speedRatio = 1
+            let playbackStart = 0
+            let playbackEnd = recordParsed.endTime
+            if (selectedSong) {
+                speedRatio = this.$store.state.options.playbackSpeed
+                playbackStart = recordParsed.record[this.$store.state.selection.playbackStart].time
+                const endIndex = this.$store.state.selection.playbackEnd + 1
+                playbackEnd = endIndex < recordParsed.record.length ? recordParsed.record[endIndex].time : recordParsed.endTime
+            }
             const playbackDuration = playbackEnd - playbackStart
             this.notesTimeouts = []
             recordParsed.record.forEach((elt: any, i: number) => {
