@@ -1,3 +1,9 @@
+declare global {
+    interface Window {
+        webkitAudioContext: any
+    }
+}
+
 import * as DATA from '../data'
 
 let audioctx: any
@@ -8,7 +14,7 @@ function loadSample(path: string, fncb: Function): void {
     const request = new XMLHttpRequest()
     request.open('GET', path)
     request.responseType = 'arraybuffer'
-    request.onload = function() {
+    request.onload = function () {
         let undecodedAudio = request.response
         audioctx.decodeAudioData(undecodedAudio, fncb)
     }
@@ -16,6 +22,7 @@ function loadSample(path: string, fncb: Function): void {
 }
 
 if (process.client) {
+    var AudioContext = window.AudioContext || window.webkitAudioContext
     audioctx = new AudioContext()
     for (let samplesBank of DATA.samplesBanks) {
         const samplesDispo = samplesBank.samplesDispo
