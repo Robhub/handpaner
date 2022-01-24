@@ -3,8 +3,11 @@
         Arpeggio mode:&nbsp;
         <select v-model="volume">
             <option value="up">Up</option>
+            <option value="upstairs">Up stairs</option>
             <option value="down">Down</option>
+            <option value="downstairs">Down stairs</option>
             <option value="updown">Up &amp; down</option>
+            <option value="updownstairs">Up &amp; down stairs</option>
         </select>
     </div>
 </template>

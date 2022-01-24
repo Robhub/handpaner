@@ -25,6 +25,7 @@ import Vue from 'vue'
 import Arpegiator from '@/components/arpegiator.vue'
 import { HandpanUser } from '@/domain/handpan'
 import { sortHandpanNotes, uniqueHandpanNotesAsString } from '@/music'
+import { indexOf } from 'lodash'
 export default Vue.extend({
     props: {
         displayedScales: Array,
@@ -49,7 +50,9 @@ export default Vue.extend({
             const notesInScale = (this.handpansUser as HandpanUser[]).flatMap((handpan) =>
                 handpan.handpanModel.notes.filter((note) => this.selectedScale.noteNames.indexOf(note.noteName) !== -1),
             )
-            return uniqueHandpanNotesAsString(sortHandpanNotes(notesInScale))
+            const notesSorted = sortHandpanNotes(notesInScale)
+            const indexOfTonic = notesSorted.findIndex((note) => note.noteName === this.selectedScale.tonic)
+            return uniqueHandpanNotesAsString(notesSorted.splice(indexOfTonic))
         },
     },
     beforeDestroy() {
