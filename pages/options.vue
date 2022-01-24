@@ -19,7 +19,7 @@
                 <label><input type="checkbox" v-model="showBebop" /> Show bebop scales</label>
             </div>
             <div>
-                <label><input type="checkbox" v-model="flipHorizontal" /> Flip horizontally</label>
+                <label><input type="checkbox" v-model="flipHorizontal" /> Flip horizontally (left handed, maker view)</label>
             </div>
             <div>
                 <label><input type="checkbox" v-model="hideFooter" /> Hide footer</label>

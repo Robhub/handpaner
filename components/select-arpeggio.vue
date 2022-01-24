@@ -3,6 +3,7 @@
         Arpeggio mode:&nbsp;
         <select v-model="volume">
             <option value="up">Up</option>
+            <option value="down">Down</option>
             <option value="updown">Up &amp; down</option>
         </select>
     </div>

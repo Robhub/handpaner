@@ -14,9 +14,7 @@
             ></div>
         </div>
         <div class="actions">
-            <SelectArpeggio />
-            <button v-if="isPlaying" @click.stop="stopChord()">Stop</button>
-            <button v-if="selectedChord && !isPlaying" @click.stop="playChord()">Play</button>
+            <Arpegiator v-if="selectedChord.noteNames" :arpegiatedNotes="notesMatchingChord" />
         </div>
     </div>
 </template>
@@ -24,9 +22,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { HandpanUser } from '@/domain/handpan'
-import { relToAbsSharp, relToAbsFlat } from '@/music'
-import SelectArpeggio from '@/components/select-arpeggio.vue'
-import { ArpeggioMode } from '@/domain/arpeggio'
+import { relToAbsSharp, relToAbsFlat, sortHandpanNotes, uniqueHandpanNotesAsString } from '@/music'
+import Arpegiator from '@/components/arpegiator.vue'
 import { Chord } from '@/data/chords'
 export default Vue.extend({
     props: {
@@ -34,7 +31,7 @@ export default Vue.extend({
         handpansUser: Array,
     },
     components: {
-        SelectArpeggio,
+        Arpegiator,
     },
     computed: {
         isPlaying(): boolean {
@@ -48,13 +45,11 @@ export default Vue.extend({
                 this.$store.commit('selection/setSelectedChord', chord)
             },
         },
-        arpeggioMode(): string {
-            return this.$store.state.options.arpeggioMode
-        },
-    },
-    watch: {
-        arpeggioMode() {
-            this.restartChord()
+        notesMatchingChord(): string[] {
+            const notesInChord = (this.handpansUser as HandpanUser[]).flatMap((handpan) =>
+                handpan.handpanModel.notes.filter((note) => this.selectedChord.noteNames.indexOf(note.noteName) !== -1),
+            )
+            return uniqueHandpanNotesAsString(sortHandpanNotes(notesInChord))
         },
     },
     beforeDestroy() {
@@ -75,15 +70,9 @@ export default Vue.extend({
                     ],
                 }
                 if (this.isPlaying) {
-                    this.restartChord()
+                    // this.restartChord() // TODO
                 }
             }
-        },
-        restartChord() {
-            this.$store.commit('player/setRecordPlaying', null)
-            setTimeout(() => {
-                this.playChord()
-            }, 1)
         },
         unselectChord() {
             this.$store.commit('player/setRecordPlaying', null)
@@ -94,46 +83,6 @@ export default Vue.extend({
                 noteNames: [],
             }
         },
-        notesMatchingChord(chord: Chord): string[] {
-            return [
-                ...new Set(
-                    Array.from(
-                        (this.handpansUser as HandpanUser[]).flatMap((handpan) =>
-                            handpan.handpanModel.notes
-                                .filter((note) => chord.noteNames.indexOf(note.noteName) !== -1)
-                                .map((note) => note.noteName + note.octave),
-                        ),
-                    ),
-                ),
-            ]
-        },
-        playChord() {
-            const notesMatchingChord = this.notesMatchingChord(this.selectedChord)
-            const duration = notesMatchingChord.length * 200
-            const arpegiatedUp = notesMatchingChord.map((note, i) => ({ time: i * 200, note }))
-            let record = {}
-            if (this.arpeggioMode === ArpeggioMode.UP) {
-                record = {
-                    endTime: duration,
-                    record: arpegiatedUp,
-                }
-            } else if (this.arpeggioMode === ArpeggioMode.UPDOWN) {
-                const arpegiatedDown = notesMatchingChord
-                    .slice(1, -1)
-                    .reverse()
-                    .map((note, i) => ({ time: duration + i * 200, note }))
-                record = {
-                    endTime: duration * 2 - 400,
-                    record: [...arpegiatedUp, ...arpegiatedDown],
-                }
-            } else {
-                console.error('Unknown arpeggio mode', this.arpeggioMode)
-            }
-            this.$store.commit('player/setRecordPlaying', record)
-        },
-        stopChord() {
-            this.$store.commit('player/setRecordPlaying', null)
-        },
     },
 })
 </script>
@@ -143,13 +92,5 @@ export default Vue.extend({
     min-width: 28px;
     padding-right: 8px;
     text-align: right;
-}
-
-.actions {
-    display: flex;
-    flex-wrap: wrap;
-}
-.actions * {
-    margin: 2px 5px;
 }
 </style>

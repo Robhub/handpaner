@@ -80,7 +80,7 @@ export const chords = [
         chords: [{ val: '1 4 5', name: 'Suspended 4', abbr: '<sup>sus4</sup>' }],
     },
     {
-        type: 'bad',
+        type: 'diss',
         chords: [
             { val: '1 2m', name: 'second minor', abbr: 'm²' },
             { val: '1 T', name: 'tritone', abbr: '<sub>tt</sub>' },

@@ -148,16 +148,24 @@ export default Vue.extend({
                 this.$store.commit('player/setRecordPlaying', value)
             },
         },
+        recordQueued: {
+            get() {
+                return this.$store.state.player.recordQueued
+            },
+            set(value: any) {
+                this.$store.commit('player/setRecordQueued', value)
+            },
+        },
         flipHorizontal(): boolean {
             return this.$store.state.options.flipHorizontal
         },
     },
     watch: {
         recordPlaying(recordPlaying) {
+            clearTimeout(this.playInterval)
             if (recordPlaying !== null) {
                 this.beginPlayback(recordPlaying)
             } else {
-                clearTimeout(this.playInterval)
                 this.notesTimeouts.forEach((noteTimeout) => clearTimeout(noteTimeout))
             }
         },
@@ -194,7 +202,12 @@ export default Vue.extend({
                 )
             })
             this.playInterval = setTimeout(() => {
-                this.beginPlayback(recordParsed)
+                if (this.recordQueued) {
+                    this.recordPlaying = this.recordQueued
+                    this.recordQueued = null
+                } else {
+                    this.beginPlayback(recordParsed)
+                }
             }, playbackDuration / speedRatio)
         },
         playClacMouse(): void {

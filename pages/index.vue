@@ -34,7 +34,7 @@
                     <PanScales :displayedPanScales="displayedPanScales" />
                 </div>
                 <div class="tab-content" v-if="displayMode === 'scales'">
-                    <Scales :displayedScales="displayedScales" />
+                    <Scales :displayedScales="displayedScales" :handpansUser="handpansUser" />
                 </div>
                 <div class="tab-content" v-if="displayMode === 'chords'">
                     <Chords :displayedChords="displayedChords" :handpansUser="handpansUser" />
@@ -52,7 +52,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import * as DATA from '../data'
 import { genSongs, genChords, genScales, genPanScales } from '../music'
 import HandpanDiagrams from '@/components/handpan-diagrams.vue'
 import Songs from '@/components/songs.vue'
@@ -76,20 +75,11 @@ export default Vue.extend({
         return {
             displayMode: 'panScales',
             displayedHandpanId: '',
-            notes: <any[]>[],
-            abs: '',
-
-            scales: DATA.scales,
-            notesAll: DATA.notesAll,
-            chords: {},
-            // selectedPanScale: <any>null,
-            // selectedScale: <any>{},
             displayedScales: <any>[],
             displayedChords: <any>[],
             displayedPanScales: <any>[],
             displayedSongs: <Song[]>[],
             ignoreNextHashChange: false,
-
             isLoaded: false,
         }
     },
