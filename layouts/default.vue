@@ -32,6 +32,9 @@ export default Vue.extend({
         }
     },
     mounted() {
+        // TODO : ces data ne devraient pas être enregistrées dans le localstorage...
+        this.$store.commit('selection/setSelectedPanScale', null)
+        this.$store.commit('player/setRecordPlaying', null)
         this.isWeb = Capacitor.getPlatform() === 'web'
         document.addEventListener('click', this.onClickDocument)
     },

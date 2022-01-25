@@ -25,7 +25,6 @@ import Vue from 'vue'
 import Arpegiator from '@/components/arpegiator.vue'
 import { HandpanUser } from '@/domain/handpan'
 import { sortHandpanNotes, uniqueHandpanNotesAsString } from '@/music'
-import { indexOf } from 'lodash'
 export default Vue.extend({
     props: {
         displayedScales: Array,
@@ -57,6 +56,7 @@ export default Vue.extend({
     },
     beforeDestroy() {
         this.$store.commit('player/setRecordPlaying', null)
+        this.unselectScale()
     },
     methods: {
         selectScale(scale: any) {

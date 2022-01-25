@@ -287,7 +287,7 @@ export default Vue.extend({
             const isRoot = note.noteName === this.selectedChord?.root || otherNote === this.selectedChord?.root
             const isTonic = note.noteName === this.selectedScale?.tonic || otherNote === this.selectedScale?.tonic
             let isDing = false
-            if (this.selectedPanScale) {
+            if (this.selectedPanScale && typeof this.selectedPanScale.getDing === 'function') {
                 isDing =
                     note.noteName === this.selectedPanScale.getDing().noteName || otherNote === this.selectedPanScale.getDing().noteName
             }
@@ -434,7 +434,7 @@ export default Vue.extend({
 .handpan-shape .highlight {
     background: #00ff0080 !important;
 }
-.handpan-shape .highlightplus {
+.handpan-shape .highlight.highlightplus {
     background: #00ffcc80 !important;
 }
 .handpan-shape .special {
