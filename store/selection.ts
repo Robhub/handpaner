@@ -15,6 +15,7 @@ export const state = () => ({
     selectedChord: {} as Chord,
     selectedSong: null as Song | null,
     selectedSongParsed: null,
+    selectedSongCategory: null,
     playbackStart: 0,
     playbackEnd: 0,
 })
@@ -33,7 +34,7 @@ export const mutations = {
         st.relativeNoteBase = relativeNoteBase
     },
     setHighlightedNotes(st: any, notes: string[]) {
-        st.highlightedNotes = notes
+        Vue.set(st, 'highlightedNotes', notes)
     },
     setSelectedPanScale(st: any, chord: any) {
         Vue.set(st, 'selectedPanScale', chord)
@@ -43,6 +44,9 @@ export const mutations = {
     },
     setSelectedChord(st: any, chord: Chord) {
         Vue.set(st, 'selectedChord', chord)
+    },
+    setSelectedSongCategory(st: any, songCategory: Chord) {
+        Vue.set(st, 'selectedSongCategory', songCategory)
     },
     setSelectedSong(st: any, song: Song | null) {
         st.selectedSong = song

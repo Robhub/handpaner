@@ -228,6 +228,7 @@ export const genSongs = (handpans: HandpanUser[]): any[] => {
                     )
                 }
                 results.push({
+                    category: song.category,
                     name: song.name,
                     recording,
                     notes: transposedNotes,
