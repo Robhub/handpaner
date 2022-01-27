@@ -12,7 +12,7 @@ export default {
         meta: [
             { charset: 'utf-8' },
             { name: 'color-scheme', content: 'light' },
-            { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+            { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' },
             { name: 'description', content: description },
             { name: 'og:title', content: title },
             { name: 'og:image', content: image },
