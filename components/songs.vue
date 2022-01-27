@@ -1,6 +1,6 @@
 <template>
     <div>
-        {{ uniqueSongs.length }} different songs.
+        <div class="total-songs">{{ uniqueSongs.length }} different songs.</div>
         <div class="categories">
             <div
                 v-for="cat of SongCategory"
@@ -24,7 +24,7 @@
                 }"
                 @click.stop="selectSong(song)"
             >
-                <template v-if="song.recording">♫</template>{{ song.name }} ({{ song.transpo }})
+                {{ song.name }} ({{ song.transpo }})
             </div>
         </div>
         <div class="song-actions">
@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
+import { groupBy } from 'lodash'
 import SelectPlaybackSpeed from '@/components/select-playbackspeed.vue'
 import SelectPlaybackLoop from '@/components/select-playbackloop.vue'
 import PlaybackProgress from '@/components/playback-progress.vue'
@@ -73,9 +73,12 @@ export default Vue.extend({
             },
         },
         displayedSongsSorted(): Song[] {
-            return (this.displayedSongs as Song[])
-                .filter((song) => song.category === this.selectedSongCategory || this.selectedSongCategory === null)
-                .sort((a: Song, b: Song) => a.name.localeCompare(b.name))
+            const filteredSongs = (this.displayedSongs as Song[]).filter(
+                (song) => song.category === this.selectedSongCategory || this.selectedSongCategory === null,
+            )
+            // const groupedSongs = groupBy(filteredSongs, 'name')
+            const sortedSongs = filteredSongs.sort((a: Song, b: Song) => a.name.localeCompare(b.name))
+            return sortedSongs
         },
         isPlaying(): boolean {
             return this.$store.state.player.recordPlaying !== null
@@ -154,5 +157,11 @@ export default Vue.extend({
 }
 .category.active {
     background: #00ffcc80;
+}
+.selectable {
+    margin-top: 4px;
+}
+.total-songs {
+    text-align: right;
 }
 </style>
