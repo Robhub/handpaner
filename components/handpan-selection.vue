@@ -25,7 +25,7 @@
             </select>
             <label><input type="checkbox" v-model="showRelative" /> show relative</label>
         </div>
-        <button v-if="!inputPanscale" @click="saveModel()">💾 Save model</button>
+        <div class="save-model"><button v-if="!inputPanscale" @click="saveModel()">💾 Save model</button></div>
         <div class="play-full"><nuxt-link :to="playPath">Play in full page</nuxt-link></div>
     </div>
 </template>
@@ -203,5 +203,9 @@ export default Vue.extend({
 }
 .form-line:not(:first-child) {
     margin-top: 5px;
+}
+.save-model,
+.play-full {
+    margin-top: 8px;
 }
 </style>

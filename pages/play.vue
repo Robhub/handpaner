@@ -8,6 +8,7 @@
             :selectedPanScale="null"
             :selectedScale="null"
         />
+        <div class="back-btn"><nuxt-link to="/">back</nuxt-link></div>
     </div>
 </template>
 
@@ -146,5 +147,12 @@ export default Vue.extend({
     height: calc(var(--size) * 0.28);
     margin-left: calc(var(--size) * (-0.14));
     margin-top: calc(var(--size) * (-0.06));
+}
+
+.back-btn {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    padding: 5px 10px;
 }
 </style>

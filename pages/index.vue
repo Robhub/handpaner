@@ -286,15 +286,4 @@ export default Vue.extend({
 .delete:hover {
     color: red;
 }
-.play-options {
-    display: flex;
-    justify-content: center;
-}
-.play-options > * {
-    margin: 0 8px;
-}
-.play-full {
-    margin-top: 10px;
-    text-align: center;
-}
 </style>
