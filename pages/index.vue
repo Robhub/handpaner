@@ -213,7 +213,6 @@ export default Vue.extend({
 
 <style scoped>
 /deep/ .selectables,
-/deep/ .chord-type,
 /deep/ .panscales,
 /deep/ .scales {
     display: flex;
@@ -270,7 +269,6 @@ export default Vue.extend({
     background: white;
     border: 1px solid #666;
     min-height: 130px;
-    padding: 8px;
 }
 .zone {
     margin-top: 16px;

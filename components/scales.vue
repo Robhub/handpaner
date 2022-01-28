@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="zone-scales">
         <div class="scales">
             <div
                 class="scale"
@@ -73,3 +73,9 @@ export default Vue.extend({
     },
 })
 </script>
+
+<style scoped>
+.zone-scales {
+    padding: 8px;
+}
+</style>

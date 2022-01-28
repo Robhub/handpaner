@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="zone-songs">
         <div class="total-songs">{{ uniqueSongs.length }} different songs.</div>
         <div class="categories">
             <div
@@ -163,5 +163,8 @@ export default Vue.extend({
 }
 .total-songs {
     text-align: right;
+}
+.zone-songs {
+    padding: 8px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="zone-panscales">
         <div class="panscales">
             <div
                 v-for="panScale in displayedPanScales"
@@ -65,3 +65,9 @@ export default Vue.extend({
     },
 })
 </script>
+
+<style scoped>
+.zone-panscales {
+    padding: 8px;
+}
+</style>

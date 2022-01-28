@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="zone-panselect">
         <div class="form-line">
             <span>Ding</span>
             <select v-model="inputDing" @change="dingChanged">
@@ -207,5 +207,8 @@ export default Vue.extend({
 .save-model,
 .play-full {
     margin-top: 8px;
+}
+.zone-panselect {
+    padding: 8px;
 }
 </style>

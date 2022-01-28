@@ -59,7 +59,6 @@ export default Vue.extend({
 
 <style scoped>
 .arpegiator {
-    margin-top: 8px;
     display: flex;
     flex-wrap: wrap;
 }

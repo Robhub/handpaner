@@ -1,17 +1,19 @@
 <template>
-    <div>
+    <div class="zone-chords">
         <div v-for="chord in displayedChords" class="chord-type" v-bind:key="chord.type">
             <div class="chord-type-name">{{ chord.type }}</div>
-            <div
-                class="chord"
-                v-for="chordd in chord.chords"
-                v-bind:key="chordd.label"
-                @click.stop="selectChord(chord, chordd)"
-                v-bind:class="{
-                    highlight: chordd.label === selectedChord.label,
-                }"
-                v-html="chordd.label"
-            ></div>
+            <div class="chord-list">
+                <div
+                    class="chord"
+                    v-for="chordd in chord.chords"
+                    v-bind:key="chordd.label"
+                    @click.stop="selectChord(chord, chordd)"
+                    v-bind:class="{
+                        highlight: chordd.label === selectedChord.label,
+                    }"
+                    v-html="chordd.label"
+                ></div>
+            </div>
         </div>
         <div class="actions">
             <Arpegiator v-if="selectedChord.noteNames" :arpegiatedNotes="notesMatchingChord" />
@@ -88,9 +90,31 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.chord-type {
+    display: flex;
+    align-items: center;
+    padding: 2px 8px;
+}
+.chord-type:first-child {
+    padding-top: 8px;
+}
+.chord-type:nth-child(even) {
+    background: #f8f8f8;
+}
+.chord {
+    margin: 1px;
+    background: white;
+}
 .chord-type-name {
     min-width: 28px;
     padding-right: 8px;
     text-align: right;
+}
+.chord-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+.actions {
+    padding: 8px;
 }
 </style>
