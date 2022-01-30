@@ -68,6 +68,7 @@ export default Vue.extend({
 .arpegiator {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
 }
 .arpegiator * {
     margin: 2px 5px;
