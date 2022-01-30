@@ -92,7 +92,7 @@ export default Vue.extend({
 }
 @media (orientation: landscape) {
     /deep/ .handpan-diagram.hasBottom {
-        --size: calc((98vh - 90px) / 2);
+        --size: calc(98vh - 90px);
     }
 }
 /deep/ .handpan-shape {
@@ -103,11 +103,15 @@ export default Vue.extend({
 /deep/ .ding,
 /deep/ .gu,
 /deep/ .note span {
-    width: calc(var(--size) * 0.23);
-    height: calc(var(--size) * 0.23);
+    width: calc(var(--size) * 0.22);
+    height: calc(var(--size) * 0.22);
     /* margin-left: calc(var(--size) * (-0.1)); */
     /* margin-top: calc(var(--size) * (-0.1)); */
     font-size: calc(var(--size) * 0.05);
+}
+/deep/ .gu {
+    margin-left: calc(var(--size) * (-0.11));
+    margin-top: calc(var(--size) * (-0.11));
 }
 /deep/ .note {
     height: 100%;

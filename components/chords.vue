@@ -56,6 +56,7 @@ export default Vue.extend({
     },
     beforeDestroy() {
         this.$store.commit('player/setRecordPlaying', null)
+        this.unselectChord()
     },
     methods: {
         selectChord(chordType: any, chord: any) {

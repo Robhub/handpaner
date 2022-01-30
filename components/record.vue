@@ -52,13 +52,13 @@ export default Vue.extend({
 
 <style scoped>
 .record {
+    margin-top: 22px; /* for ios */
     height: 30px;
     display: flex;
     justify-content: center;
-    margin: 0 -8px;
 }
-.record > * {
-    margin: 0 8px;
+.record > *:not(first-child) {
+    margin-left: 8px;
 }
 button:not(:disabled) {
     cursor: pointer;

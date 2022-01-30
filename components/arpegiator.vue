@@ -3,12 +3,14 @@
         <SelectArpeggio />
         <button v-if="isPlaying" @click.stop="stopArpegiator()">Stop</button>
         <button v-if="arpegiatedNotes && arpegiatedNotes.length && !isPlaying" @click.stop="playArpegiator()">Play</button>
+        <SelectPlaybackSpeed />
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import SelectArpeggio from '@/components/select-arpeggio.vue'
+import SelectPlaybackSpeed from '@/components/select-playbackspeed.vue'
 import { generateArpeggioRecord, ArpeggioMode } from '@/domain/arpeggio'
 export default Vue.extend({
     props: {
@@ -16,6 +18,7 @@ export default Vue.extend({
     },
     components: {
         SelectArpeggio,
+        SelectPlaybackSpeed,
     },
     computed: {
         isPlaying(): boolean {
@@ -38,6 +41,10 @@ export default Vue.extend({
             const record = generateArpeggioRecord(this.arpegiatedNotes as string[], this.arpeggioMode)
             this.$store.commit('player/setRecordQueued', record)
         },
+    },
+    beforeDestroy() {
+        this.$store.commit('player/setRecordPlaying', null)
+        this.$store.commit('player/setRecordQueued', null)
     },
     methods: {
         playArpegiator() {

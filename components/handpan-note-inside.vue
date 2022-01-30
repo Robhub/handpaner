@@ -4,7 +4,7 @@
             {{ relative }}
         </template>
         <template v-else>
-            {{ note.noteName.replace('#', '♯').replace('b', '♭') }}<sub>{{ note.octave }}</sub>
+            {{ note.noteName }}<sub>{{ note.octave }}</sub>
         </template>
     </div>
 </template>

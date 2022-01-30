@@ -44,7 +44,7 @@ export default Vue.extend({
             return this.timeToPercentSong(this.getNoteTime(noteIndex))
         },
         timeToPercentSong(time: number): number {
-            return Math.round((time / this.parsedSong.endTime) * 300)
+            return Math.round((time / this.parsedSong.endTime) * 280)
         },
         processElapsed(elapsed: number): void {
             if (this.parsedSong) {
@@ -76,7 +76,7 @@ export default Vue.extend({
 <style scoped>
 .progressbar {
     position: relative;
-    width: 300px;
+    width: 280px;
     height: 20px;
     border: 1px solid black;
 }

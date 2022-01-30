@@ -179,11 +179,16 @@ export default Vue.extend({
         },
         beginPlayback(recordParsed: RecordParsed): void {
             const selectedSong = this.$store.state.selection.selectedSong
+            const selectedChord = this.$store.state.selection.selectedChord
+            const selectedScale = this.$store.state.selection.selectedScale
+            const selectedPanScale = this.$store.state.selection.selectedPanScale
             let speedRatio = 1
             let playbackStart = 0
             let playbackEnd = recordParsed.endTime
-            if (selectedSong) {
+            if (selectedSong || selectedChord.noteNames || selectedScale.noteNames || selectedPanScale) {
                 speedRatio = this.$store.state.options.playbackSpeed
+            }
+            if (selectedSong) {
                 playbackStart = recordParsed.record[this.$store.state.selection.playbackStart].time
                 const endIndex = this.$store.state.selection.playbackEnd + 1
                 playbackEnd = endIndex < recordParsed.record.length ? recordParsed.record[endIndex].time : recordParsed.endTime

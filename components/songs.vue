@@ -62,6 +62,7 @@ export default Vue.extend({
     },
     beforeDestroy() {
         this.$store.commit('player/setRecordPlaying', null)
+        this.unselectSong()
     },
     computed: {
         selectedSongCategory: {
@@ -150,6 +151,7 @@ export default Vue.extend({
     min-width: 42px;
     text-align: center;
     margin-left: 8px;
+    margin-top: 4px;
 }
 .category:not(.active):hover {
     border-color: black;
