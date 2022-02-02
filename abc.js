@@ -1,6 +1,15 @@
 let input = `
-cB|A3A ce|d2d2cB|A3A ce|d4cB|A3A ce|d2d2cB|A3A ce|d4
-cd|e3e dc|d4cB|A2AB cB|G4cd|e3e dc|d4cB|A2AB AG|A4
+"Am" Pe2 dc BA |"G/E" Bd GA Bd |"F" Pc2 Bd cB | Pc2 A2 PA2 |"C" Pe2 dc BA |"G" Bd GA Bd | %6
+"F" Pc2 Bd cB |"G" AG ED EG |"A"[Q:1/4=120] Pe2 dc BA |"G/E" Bd GA Bd |"F" Pc2 Bd cB | Pc2 A2 PA2 | %12
+"C" Pe2 dc BA |"G" Bd GA Bd |"F" Pc2 Bd cB |"G" AG ED EG |"A" PE2 AB c2 | PE2 AB c2 | %18
+"G/E" Bd GA Bd | PcB AG ED |"F" PE2 AB c2 |"F/D" PE2 AB c2 |"G" Bd GA Bd |"F" Pc2 A2 A2 | %24
+"A" PE2 AB c2 | PE2 AB c2 |"G/E" Bd GA Bd | PcB AG ED |"F" PE2 AB c2 |"F/D" PE2 AB c2 | %30
+"G" Bd GA Bd |"F" Pc2 A2 A2 |"A"[Q:1/4=120] Pe2 dc BA |"G/E" Bd GA Bd |"F" Pc2 Bd cB | Pc2 A2 PA2 | %36
+"C" Pe2 dc BA |"G" Bd GA Bd |"F" Pc2 Bd cB |"G" AG ED EG |"A"[Q:1/4=120] Pe2 dc BA | %41
+"G/E" Bd GA Bd |"F" Pc2 Bd cB | Pc2 A2 PA2 |"C" Pe2 dc BA |"G" Bd GA Bd |"F" Pc2 Bd cB | %47
+"G" AG ED EG |"A" PE2 AB c2 | PE2 AB c2 |"G/E" Bd GA Bd | PcB AG ED |"F" PE2 AB c2 | %53
+"F/D" PE2 AB c2 |"G" Bd GA Bd |"F" Pc2 A2 A2 |"A" PE2 AB c2 | PE2 AB c2 |"G/E" Bd GA Bd | %59
+ PcB AG ED |"F" PE2 AB c2 |"F/D" PE2 AB c2 |"G" Bd GA Bd |"F" Pc2 A2 A2 | %64
 `
 
 // const key = 'Cmin' // Ebmaj (bbb)
@@ -12,10 +21,11 @@ const key = 'Amin' // Cmaj Ddor ()
 
 // const crocheDuration = 140
 // const crocheDuration = 160
-// const crocheDuration = 180
+const crocheDuration = 180
 // const crocheDuration = 200
-const crocheDuration = 240
+// const crocheDuration = 240
 // const crocheDuration = 280
+// const crocheDuration = 300
 // const crocheDuration = 360
 let t = 0
 let wait = 0
@@ -26,7 +36,7 @@ let measureAccidentals = {}
 input = input.replace(/\![^\!]+\!/g, '') // remove annotations
 input = input.replace(/"[^"]+"/g, '') // remove chords labels
 input = input.replace(/ /g, '') // remove spaces
-const matches = [...input.matchAll(/(\[)?([\^=_])?([a-gA-Gz](?:[,']{1,2})?)([1234678\/])?([\-\>\<])?(\])?(\|)?/g)].flatMap(
+const matches = [...input.matchAll(/(\[)?([\^=_])?([a-gA-Gz](?:[,']{1,2})?)([1234678\/]{1,3})?([\-\>\<])?(\])?(\|)?/g)].flatMap(
     (matchedGroups) => {
         let isChordStart = matchedGroups[1]
         let accidental = matchedGroups[2]
@@ -50,6 +60,9 @@ const matches = [...input.matchAll(/(\[)?([\^=_])?([a-gA-Gz](?:[,']{1,2})?)([123
         }
         if (duration === '1') {
             duree = 1
+        }
+        if (duration === '3/2') {
+            duree = 1.5
         }
         if (duration === '2') {
             duree = 2
