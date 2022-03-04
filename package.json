@@ -18,6 +18,7 @@
         "@nuxt/types": "^2.15.8",
         "@nuxt/typescript-build": "^2.1.0",
         "@types/lodash": "^4.14.177",
+        "axios": "^0.26.0",
         "lodash-es": "^4.17.21",
         "nuxt": "^2.15.8",
         "vuex-persist": "^3.1.3"

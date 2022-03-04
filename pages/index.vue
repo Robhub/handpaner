@@ -52,6 +52,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import axios from 'axios'
+import { Capacitor } from '@capacitor/core'
 import { genSongs, genChords, genScales, genPanScales } from '../music'
 import HandpanDiagrams from '@/components/handpan-diagrams.vue'
 import Songs from '@/components/songs.vue'
@@ -128,6 +130,9 @@ export default Vue.extend({
     },
     mounted() {
         this.$store.commit('selection/setHighlightedNotes', [])
+        if (Capacitor.getPlatform() === 'web') {
+            axios.get('http://melojam.com/handpaner/')
+        }
     },
     methods: {
         onSelectionChanged(): void {
