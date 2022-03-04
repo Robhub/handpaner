@@ -131,7 +131,7 @@ export default Vue.extend({
     mounted() {
         this.$store.commit('selection/setHighlightedNotes', [])
         if (Capacitor.getPlatform() === 'web') {
-            axios.get('http://melojam.com/handpaner/')
+            axios.get('//melojam.com/handpaner/')
         }
     },
     methods: {
