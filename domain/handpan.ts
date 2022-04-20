@@ -196,6 +196,8 @@ const ALL_PANSCALES_DATA = [
     { definition: 'A/ D E F G# A B C D E', name: 'Romanian Hijaz' },
     { definition: 'A/ C E F G# A B C E', name: 'Romanian mineur harmonique' },
     { definition: 'C/ (D) (E) F G A B C D E (F) G (A) (B) (C) (D)', name: 'Sabye' },
+    { definition: 'E/ A B D E F G# A B', name: 'Saladin' },
+    { definition: 'C/ G A# C D D# F G G# C', name: 'ShelloPango' },
     { definition: 'A/ E F A B C D E A', name: 'Ursa minor' },
     { definition: 'C/ G B C D E F G C', name: 'Ysha Savita' },
 ] as PanScaleData[]
