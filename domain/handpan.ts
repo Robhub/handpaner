@@ -130,7 +130,8 @@ const ALL_PANSCALES_DATA = [
     { definition: 'A/ C E F G A B C E', name: 'Equinox' },
     { definition: 'F/ (C#3) (G) G# C C# D# F G G# C', name: 'Equinox bottomised' },
     { definition: 'A/ (B) (C) E F (F#) G A B C (D) E', name: 'Equinox lowpygkurdorian mini' },
-    { definition: 'C/ E G A B C D F# G', name: 'Golden Gate' },
+    { definition: 'C/ E G B C D F# G', name: 'Golden Gate' },
+    { definition: 'C/ E G B C D F# G B', name: 'Golden Gate' },
     { definition: 'A/ (B) (C) (D) E F G# A B C D E (G#) A (B) (C)', name: 'Harmonic Lora' },
     { definition: 'E/ A B C D E F G# A', name: 'Harmonic minor' },
     {
