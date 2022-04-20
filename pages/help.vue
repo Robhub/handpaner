@@ -18,9 +18,16 @@
         <h2>Features</h2>
         <div>
             At any time you can select another Ding and it will transpose the current sound model to this particular ding tonality. You can
-            also edit the notes input field and the sound model will change in realtime. To add bottom notes, put each note individually in
-            parenthesis. For example D/ (G) A B C D E F G A (B) (C). You can also specify the octave by putting a number after the note
-            letter, for example D/ (C3) A B C D E F G A.
+            also edit the notes input field and the sound model will change in realtime.
+	    <br/>
+	    <br/>
+            To add bottom notes, put each note individually in parenthesis ( ). For example D/ (G) A B C D E F G A (B) (C).
+            <br/>
+            <br/>
+            To add mutant notes (Cyclops), put each note individually in square brackets [ ]. For example, E/ A B C# D# E F# G# B C# [D#] [E].
+            <br/>
+            <br/>
+            You can also specify the octave by putting a number after the note letter. In case you want to add a bottom note which is lower than the ding, then you have to add the note with octacve number in paranthesis after the ding. For example, the notes of a handpan with D3 ding and having C3 as bottom note can be input as  D/ (C3) A B C D E F G A. 
         </div>
         <h2>Model</h2>
         <div>
