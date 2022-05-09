@@ -6,7 +6,8 @@
     "scripts": {
         "dev": "nuxt --hostname 0.0.0.0",
         "generate": "nuxt generate",
-        "android": "cap open android"
+        "android": "cap open android",
+        "android-build": "cap copy android"
     },
     "author": "Robin BERGERE",
     "license": "MIT",

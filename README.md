@@ -35,7 +35,8 @@ I have put together a small set of songs, playable songs have a small music note
 
 `npm run dev`
 
-## running on Android
+## Android
+Android relies on Android Studio (or, optionally, the Android CLI tools) to build the app:
 
 Put this in capacitor.config.json with your local network ip (but do not commit this) :
 ```
@@ -45,6 +46,10 @@ Put this in capacitor.config.json with your local network ip (but do not commit 
 },
 ```
 
-`npx cap copy android`
+`npm run android-build`
+
 `npm run android`
-`npm run dev`
+
+Once Android Studio launches, you can build your app through the standard Android Studio workflow.
+
+Prebuild APK can be found on `static/handpaner.apk`.
