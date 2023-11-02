@@ -1,15 +1,16 @@
 let input = `
-"Am" Pe2 dc BA |"G/E" Bd GA Bd |"F" Pc2 Bd cB | Pc2 A2 PA2 |"C" Pe2 dc BA |"G" Bd GA Bd | %6
-"F" Pc2 Bd cB |"G" AG ED EG |"A"[Q:1/4=120] Pe2 dc BA |"G/E" Bd GA Bd |"F" Pc2 Bd cB | Pc2 A2 PA2 | %12
-"C" Pe2 dc BA |"G" Bd GA Bd |"F" Pc2 Bd cB |"G" AG ED EG |"A" PE2 AB c2 | PE2 AB c2 | %18
-"G/E" Bd GA Bd | PcB AG ED |"F" PE2 AB c2 |"F/D" PE2 AB c2 |"G" Bd GA Bd |"F" Pc2 A2 A2 | %24
-"A" PE2 AB c2 | PE2 AB c2 |"G/E" Bd GA Bd | PcB AG ED |"F" PE2 AB c2 |"F/D" PE2 AB c2 | %30
-"G" Bd GA Bd |"F" Pc2 A2 A2 |"A"[Q:1/4=120] Pe2 dc BA |"G/E" Bd GA Bd |"F" Pc2 Bd cB | Pc2 A2 PA2 | %36
-"C" Pe2 dc BA |"G" Bd GA Bd |"F" Pc2 Bd cB |"G" AG ED EG |"A"[Q:1/4=120] Pe2 dc BA | %41
-"G/E" Bd GA Bd |"F" Pc2 Bd cB | Pc2 A2 PA2 |"C" Pe2 dc BA |"G" Bd GA Bd |"F" Pc2 Bd cB | %47
-"G" AG ED EG |"A" PE2 AB c2 | PE2 AB c2 |"G/E" Bd GA Bd | PcB AG ED |"F" PE2 AB c2 | %53
-"F/D" PE2 AB c2 |"G" Bd GA Bd |"F" Pc2 A2 A2 |"A" PE2 AB c2 | PE2 AB c2 |"G/E" Bd GA Bd | %59
- PcB AG ED |"F" PE2 AB c2 |"F/D" PE2 AB c2 |"G" Bd GA Bd |"F" Pc2 A2 A2 | %64
+[Cc]2 EG CcEG | [CB]2 EG CBEG | [Cd]2 EG CdEG | [Cc]2 EG CcEG | [A,B]2 EA A,BEA | %5
+[A,d]2 EA A,dEA | [A,c]2 EA A,cEA | [A,B]2 EA A,BEA | [Cd]2 EG CdEG | [Cc]2 EG CcEG | %10
+[CB]2 EG CBEG | [Cd]2 EG CdEG | [A,c]2 EA A,cEA | [A,B]2 EA A,BEA | [A,d]2 EA A,dEA | %15
+[A,c]2 EA A,2 [B,B]2 | [Cc]2 EG CcEG | [B,d]2 DG B,dDG | [A,c]2 EA A,cEA | [A,c]2 EA A,cEG | %20
+[G,B]2 Dd G,BDd | [Df]2 Ac DfAc | [A,e]2 EA A,cEA | [A,c]2 EA [A,c]2 [B,d]2 | [Cc]2 EG CcEG | %25
+[B,d]2 DG B,dDG | [A,c]2 EA A,cEA | [A,c]2 EA A,cEG | [G,B]2 Dd G,BDd | [Df]2 Ac DfAc | %30
+[A,e]2 EA A,cEA | [A,e]2 EA A,cEA | %32
+
+
+
+
+
 `
 
 // const key = 'Cmin' // Ebmaj (bbb)

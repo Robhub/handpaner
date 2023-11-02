@@ -72,9 +72,6 @@ export default Vue.extend({
     overflow: hidden;
     flex-wrap: wrap;
 }
-/deep/ .handpan-shape.is-bottom {
-    --deg: 66deg;
-}
 @media (orientation: portrait) {
     /deep/ .handpan-diagram {
         --size: 98vw;
