@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">handpaner</string>
-    <string name="title_activity_main">handpaner</string>
+    <string name="app_name">android</string>
+    <string name="title_activity_main">android</string>
     <string name="package_name">com.handpaner.pro</string>
     <string name="custom_url_scheme">com.handpaner.pro</string>
 </resources>
