@@ -1,6 +1,6 @@
 {
 	"appId": "com.handpaner.pro",
-	"appName": "android",
+	"appName": "handpaner",
 	"bundledWebRuntime": false,
 	"npmClient": "npm",
 	"webDir": "dist",
