@@ -1,15 +1,33 @@
 let input = `
-[Cc]2 EG CcEG | [CB]2 EG CBEG | [Cd]2 EG CdEG | [Cc]2 EG CcEG | [A,B]2 EA A,BEA | %5
-[A,d]2 EA A,dEA | [A,c]2 EA A,cEA | [A,B]2 EA A,BEA | [Cd]2 EG CdEG | [Cc]2 EG CcEG | %10
-[CB]2 EG CBEG | [Cd]2 EG CdEG | [A,c]2 EA A,cEA | [A,B]2 EA A,BEA | [A,d]2 EA A,dEA | %15
-[A,c]2 EA A,2 [B,B]2 | [Cc]2 EG CcEG | [B,d]2 DG B,dDG | [A,c]2 EA A,cEA | [A,c]2 EA A,cEG | %20
-[G,B]2 Dd G,BDd | [Df]2 Ac DfAc | [A,e]2 EA A,cEA | [A,c]2 EA [A,c]2 [B,d]2 | [Cc]2 EG CcEG | %25
-[B,d]2 DG B,dDG | [A,c]2 EA A,cEA | [A,c]2 EA A,cEG | [G,B]2 Dd G,BDd | [Df]2 Ac DfAc | %30
-[A,e]2 EA A,cEA | [A,e]2 EA A,cEA | %32
 
-
-
-
+"^Swing" z"_5" E |"Am""_7" A"_6'"B"_8" c"_7'"d"_9" e"_8'"f |"E7/G#""_7'" e4 z"_7'" e | %3
+"G""_7'" e"_8"d"_6'" c"_7"B"_6'" c"_7'"e |"D/F#""_7'" d4 z"_7'" d | %5
+"F""_7'" d"_8"c"_6'" B"_7"A"_6'" B"_8"c |"E7""_7" B4 z"_8" d | %7
+"Dm""_7'" d"_8"c"_6'" B"_7"A"_6'" B"_8"c |"E7""_7" B4 z"_4'" E | %9
+"A""_7" A"_6'"B"_8" c"_7'"d"_9" e"_8'"f |"E/G#""_7'" e4 z"_7'" e | %11
+"G""_7'" e"_8"d"_6'" c"_7"B"_6'" c"_7'"e |"D/F#""_7'" d4 z"_7'" d | %13
+"F""_7'" d"_8"c"_6'" B"_7"A"_6'" B"_8"c |"E""_7" B4 z"_8" d | %15
+"D""_7'" d"_8"c"_6'" B"_7"A"E""_7" B"_6'"c |"A""_7" A2 z"_9" e"_9" e"_9"e | %17
+"D""_9" e2"_7'" d"_8"c"_7'" d"_9"e |"G""_8" d6 |"C""_6" G"_5''"A"_7" B"_6'"c"_8" d"_7'"e | %20
+"F""_8" c2 z"_8" c"_8" c"_8"c |"D""_8" c2"_6'" B"_8"c- c"_7'"d | %22
+"E""_7" B2 z"_5''" A"_4''" ^G"_7"B |"A""_6'" B2"_7" A2 z2 |"A" z2 z"_9" e"_9" e"_9"e | %25
+"D""_9" e2"_7'" d"_8"c"_7'" d"_9"e |"G""_8" d6 |"C""_6" G"_5''"A"_7" B"_6'"c"_8" d"_7'"e | %28
+"F""_8" c2 z"_8" c"_8" c"_8"c |"D""_8" c2"_6'" B"_8"c- c"_7'"d | %30
+"E""_7" B2 z"_5''" A"_4''" ^G"_7"B |"A""_6'" B2"_7" A2 z2 | z4 z"_5" E | %33
+"A""_7" A"_6'"B"_8" c"_7'"d"_9" e"_8'"f |"E/G#""_7'" e4 z"_7'" e | %35
+"G""_7'" e"_8"d"_6'" c"_7"B"_6'" c"_7'"e |"D/F#""_7'" d4 z"_7'" d | %37
+"F""_7'" d"_8"c"_6'" B"_7"A"_6'" B"_8"c |"E""_7" B4 z"_8" d | %39
+"D""_7'" d"_8"c"_6'" B"_7"A"_6'" B"_8"c |"E""_7" B4 z"_4'" E | %41
+"A""_7" A"_6'"B"_8" c"_7'"d"_9" e"_8'"f |"E/G#""_7'" e4 z"_7'" e | %43
+"G""_7'" e"_8"d"_6'" c"_7"B"_6'" c"_7'"e |"D/F#""_7'" d4 z"_7'" d | %45
+"F""_7'" d"_8"c"_6'" B"_7"A"_6'" B"_8"c |"E""_7" B4 z"_8" d | %47
+"D""_7'" d"_8"c"_6'" B"_7"A"E""_7" B"_6'"c |"A""_7" A2 z"_9" e"_9" e"_9"e | %49
+"D""_9" e2"_7'" d"_8"c"_7'" d"_9"e |"G""_8" d6 |"C""_6" G"_5''"A"_7" B"_6'"c"_8" d"_7'"e | %52
+"F""_8" c2 z"_8" c"_8" c"_8"c |"D""_8" c2"_6'" B"_8"c- c"_7'"d | %54
+"E""_7" B2 z"_5''" A"_4''" ^G"_7"B |"A""_6'" B2"_7" A2 z2 |"A" z2 z"_9" e"_9" e"_9"e | %57
+"D""_9" e2"_7'" d"_8"c"_7'" d"_9"e |"G""_8" d6 |"C""_6" G"_5''"A"_7" B"_6'"c"_8" d"_7'"e | %60
+"F""_8" c2 z"_8" c"_8" c"_8"c |"D""_8" c2"_6'" B"_8"c- c"_7'"d | %62
+"E""_7" B2 z"_5''" A"_4''" ^G"_7"B |"A""_6'" B2"_7" A2 z2 | [EAc]4 z2 | %65
 
 `
 
@@ -22,9 +40,9 @@ const key = 'Amin' // Cmaj Ddor ()
 
 // const crocheDuration = 140
 // const crocheDuration = 160
-const crocheDuration = 180
+// const crocheDuration = 180
 // const crocheDuration = 200
-// const crocheDuration = 240
+const crocheDuration = 240
 // const crocheDuration = 280
 // const crocheDuration = 300
 // const crocheDuration = 360

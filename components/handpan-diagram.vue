@@ -160,6 +160,12 @@ export default Vue.extend({
             return this.$store.state.options.flipHorizontal
         },
     },
+    beforeDestroy() {
+        if (this.playInterval) {
+            clearTimeout(this.playInterval)
+        }
+        this.notesTimeouts.forEach((noteTimeout) => clearTimeout(noteTimeout))
+    },
     watch: {
         recordPlaying(recordPlaying) {
             clearTimeout(this.playInterval)
