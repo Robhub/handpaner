@@ -21,6 +21,10 @@ npm run dev
 
 ## Publishing on Android PlayStore
 
+App name is in strings.xml
+
+Beware android SDK version in variables.gradle https://apilevels.com/#fn:1
+
 -   increment versionCode and versionName in android/app/build.gradle
 -   npx nuxt generate
 -   npx cap copy android
