@@ -90,6 +90,10 @@ export const chords = [
 ]
 
 export const samplesDispoShello = [
+    'C2', // Audacity
+    'C#2', // Audacity
+    'D2', // Audacity
+    'D#2', // Audacity
     'E2',
     'F2',
     'F#2',
@@ -132,6 +136,16 @@ export const samplesDispoShello = [
     'G5',
     'G#5',
     'A5',
+    'A#5', // Audacity
+    'B5', // Audacity
+    'C6', // Audacity
+    'C#6', // Audacity
+    'D6', // Audacity
+    'D#6', // Audacity
+    'E6', // Audacity
+    'F6', // Audacity
+    'F#6', // Audacity
+    'G6', // Audacity
 ]
 export const samplesDispoVarious = [
     'C3',
@@ -167,5 +181,5 @@ export const samplesBanks = [
         buffer: {} as any,
         logo: '/shellopan_sm.png',
     },
-    { name: 'Various', folder: 'various', samplesDispo: samplesDispoVarious, buffer: {} as any },
+    // { name: 'Various', folder: 'various', samplesDispo: samplesDispoVarious, buffer: {} as any },
 ]

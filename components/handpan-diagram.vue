@@ -14,7 +14,7 @@
                 v-bind:class="{
                     highlight: isHighlighted(handpan.getDing()),
                     highlightplus: isRoot(handpan.getDing()),
-                    highlightless: isNoteInModel(handpan.getDing()),
+                    highlightless: isHighlightless(handpan.getDing()),
                 }"
                 @mousedown="playNoteMouse($event, handpan.getDing())"
                 @touchstart="playNoteTouch($event, handpan.getDing())"
@@ -29,7 +29,7 @@
                             highlight: isHighlighted(note),
                             special: isSpecial(note),
                             highlightplus: isRoot(note),
-                            highlightless: isNoteInModel(note),
+                            highlightless: isHighlightless(note),
                         }"
                         @mousedown="playNoteMouse($event, note)"
                         @touchstart="playNoteTouch($event, note)"
@@ -46,7 +46,7 @@
                             highlight: isHighlighted(note),
                             special: isSpecial(note),
                             highlightplus: isRoot(note),
-                            highlightless: isNoteInModel(note),
+                            highlightless: isHighlightless(note),
                         }"
                         @mousedown="playNoteMouse($event, note)"
                         @touchstart="playNoteTouch($event, note)"
@@ -66,7 +66,7 @@
                             highlight: isHighlighted(note),
                             special: isSpecial(note),
                             highlightplus: isRoot(note),
-                            highlightless: isNoteInModel(note),
+                            highlightless: isHighlightless(note),
                         }"
                         @mousedown="playNoteMouse($event, note)"
                         @touchstart="playNoteTouch($event, note)"
@@ -83,7 +83,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { default as HandpanNoteInside } from '../components/handpan-note-inside.vue'
-import { HandpanNote, HandpanModel } from '@/domain/handpan'
+import { HandpanUser, HandpanNote, HandpanModel } from '@/domain/handpan'
 import { flatToSharp, alternateFlatSharp } from '../music'
 import { playSample, playGu, playClac } from '@/domain/player'
 import * as DATA from '../data'
@@ -261,13 +261,16 @@ export default Vue.extend({
             }
         },
         playNoteByFullname(noteFullname: string): void {
-            const noteFound = this.handpan.notes.find((note) => {
-                return note.noteName + note.octave === noteFullname
+            const handpanUsers = this.$store.state.selection.handpansUser as HandpanUser[]
+            let foundNote: HandpanNote | undefined
+            let firstHandpanToHaveNote = handpanUsers.find((handpanUser) => {
+                foundNote = handpanUser.handpanModel.notes.find((note) => note.noteName + note.octave === noteFullname)
+                return foundNote
             })
-            if (noteFound) {
-                this.playNote(noteFound)
-            } else {
-                console.log('note not found in the pan', noteFullname)
+            if (foundNote) {
+                if (this.handpan === firstHandpanToHaveNote?.handpanModel) {
+                    this.playNote(foundNote)
+                }
             }
         },
         playNote(note: HandpanNote): void {
@@ -315,9 +318,34 @@ export default Vue.extend({
             }
             return isInPanScale
         },
+        isHighlightless(note: HandpanNote): boolean {
+            const noteName = note.noteName
+            const otherNote = alternateFlatSharp(noteName)
+            const highlightedNotes = this.$store.state.selection.highlightedNotes
+            if (highlightedNotes.indexOf(note.noteName + note.octave) !== -1) {
+                return true
+            }
+            if (this.selectedChord && this.selectedChord.noteNames) {
+                if (this.selectedChord.noteNames.indexOf(noteName) !== -1 || this.selectedChord.noteNames.indexOf(otherNote) !== -1)
+                    return true
+            }
+            if (this.selectedScale && this.selectedScale.noteNames) {
+                if (this.selectedScale.noteNames.indexOf(noteName) !== -1 || this.selectedScale.noteNames.indexOf(otherNote) !== -1)
+                    return true
+            }
+            return this.isNoteInModel(note)
+        },
         isHighlighted(note: HandpanNote): boolean {
             const noteName = note.noteName
             const octave = note.octave
+            const noteFullname = noteName + note.octave
+            const handpanUsers = this.$store.state.selection.handpansUser as HandpanUser[]
+            const firstHandpanToHaveNote = handpanUsers.find((handpanUser) =>
+                handpanUser.handpanModel.notes.find((note) => note.noteName + note.octave === noteFullname),
+            )
+            if (this.handpan !== firstHandpanToHaveNote?.handpanModel) {
+                return false
+            }
             const highlightedNotes = this.$store.state.selection.highlightedNotes
             if (highlightedNotes.indexOf(noteName + octave) !== -1) {
                 return true

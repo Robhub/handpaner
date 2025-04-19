@@ -85,6 +85,10 @@ export class HandpanModel {
 }
 
 export const ALL_DINGS = [
+    'C2',
+    'C#2',
+    'D2',
+    'D#2',
     'E2',
     'F2',
     'F#2',
@@ -145,6 +149,12 @@ const ALL_PANSCALES_DATA = [
     { definition: 'B/ E F G# A B C D D#', name: 'Hijaz Kar (Mercury)' },
     { definition: 'E/ B C D E F G# A B', name: 'Hijaz Major' },
     { definition: 'D/ A A# C D D# F# G A C D', name: 'Hijaz Tarznauyn' },
+    {
+        definition:
+            'F#3/ (A2) (B2) (C#3) (D#3) (E3) A3 B3 C#4 D#4 E4 F#4 G#4 A4 B4 (C5) C#5 D#5 [E5] [F#5] [G#5] [A5] [B5] [C#6] [E6] [F#6]',
+        name: 'Infinite Minor',
+        videos: ['https://www.youtube.com/watch?v=yoJttw7jiYQ'],
+    },
     { definition: 'A/ E F A B C D E', name: 'Insen' },
     { definition: 'A/ E F A B C D E F', name: 'Insen' },
     { definition: 'A/ E F G A B C E G', name: 'Integral (Mercury)' },
